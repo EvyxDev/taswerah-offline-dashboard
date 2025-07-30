@@ -20,7 +20,7 @@ import Link from "next/link";
 import { dateOptions } from "@/lib/constants/data.constant";
 import { useTranslations } from "next-intl";
 
-export default function PrintedPage() {
+export default function PrintedPage({ Printed }: { Printed: string[] }) {
   const t = useTranslations("printedSent");
   const [selectedDate, setSelectedDate] = useState("2025-02-20");
 
@@ -47,13 +47,13 @@ export default function PrintedPage() {
       case "printed":
         return (
           <div className="flex items-center gap-5 w-full flex-wrap">
-            {[...Array(7)].map((_, idx) => (
+            {Printed.map((barcode) => (
               <Link
-                key={idx}
-                href={`printed-sent/folder/${idx + 1}`}
+                key={barcode}
+                href={`printed-sent/folder/${barcode}`}
                 className="w-full max-w-[300px]"
               >
-                <Folder />
+                <Folder id={barcode} />
               </Link>
             ))}
           </div>

@@ -4,7 +4,10 @@ import { cookies } from "next/headers";
 
 export const getAuthToken = async () => {
   try {
-    const jwt = (await cookies()).get("next-auth.session-token")?.value;
+    const cookieName =
+      cookies().get("next-auth.session-token") ||
+      cookies().get("__Secure-next-auth.session-token");
+    const jwt = await cookieName?.value;
 
     if (!jwt) {
       console.error("No session token found in cookies");

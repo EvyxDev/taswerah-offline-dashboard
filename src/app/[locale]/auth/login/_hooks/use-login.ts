@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useRouter } from "@/i18n/routing";
 import { LoginFields } from "@/lib/schemes/auth.schema";
-import { AuthenticationError } from "@/lib/utils/app-errors";
 import { useMutation } from "@tanstack/react-query";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
@@ -21,7 +20,7 @@ export default function useLogin() {
         callbackUrl: decodeURIComponent(searchParams.get("callbackUrl") || "/"),
       });
 
-      if (response?.error) throw new AuthenticationError(response.error);
+      if (response?.error) throw new Error(response.error);
 
       return response;
     },

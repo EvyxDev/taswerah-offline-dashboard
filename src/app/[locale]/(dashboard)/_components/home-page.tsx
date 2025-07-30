@@ -1,3 +1,4 @@
+"use client";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,9 +10,32 @@ import { IoMdHome } from "react-icons/io";
 
 import { useTranslations } from "next-intl";
 import HomeTable from "./home-table";
+import { usePathname, useRouter } from "@/i18n/routing";
+type Props = {
+  PhotoGraphers: Employee[];
+  pagination: {
+    currentPage: number;
+    totalPages: number[];
+    limit: number;
+  };
+};
 
-export default function HomePage() {
-  const t = useTranslations();
+export default function HomePage({ PhotoGraphers, pagination }: Props) {
+  // Translation
+  const t = useTranslations("employees");
+
+  // Router
+  const router = useRouter();
+  const pathname = usePathname();
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams();
+    params.set("page", newPage.toString());
+    params.set("limit", pagination.limit.toString());
+
+    // Update URL with new parameters
+    router.push(`${pathname}?${params.toString()}`);
+  };
+  console.log(PhotoGraphers);
   return (
     <div className=" space-y-8 px-6 xl:px-10 py-5">
       <Breadcrumb>
@@ -28,7 +52,12 @@ export default function HomePage() {
         <h2 className="text-3xl font-homenaje  text-main-black mb-5">
           {t("dashboard.employees")}
         </h2>
-        <HomeTable />
+        <HomeTable
+          PhotoGraphers={PhotoGraphers}
+          onPageChange={handlePageChange}
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages[0]}
+        />
       </div>
     </div>
   );

@@ -18,14 +18,41 @@ import {
 //   DropdownMenuItem,
 //   DropdownMenuTrigger,
 // } from "@/components/ui/dropdown-menu";
-import { allEmployees } from "@/lib/constants/data.constant";
 import { Card } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-
-export default function HomeTable() {
+import { PaginationComponent } from "@/components/common/pagination-comp";
+// import TablePagination from "./table-pagination";
+// import { useState } from "react";
+// import { useQuery } from "@tanstack/react-query";
+interface Props {
+  PhotoGraphers: Employee[];
+  onPageChange: (page: number) => void;
+  currentPage: number;
+  totalPages: number;
+}
+export default function HomeTable0({
+  currentPage,
+  PhotoGraphers,
+  onPageChange,
+  totalPages,
+}: Props) {
+  // locale = useLocale();
   const t = useTranslations();
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const limit = 5;
 
+  // const {
+  //   data: branchData,
+
+  // } = useQuery<APIResponse<BranchListData>, Error>({
+  //   queryKey: ["branches", "ar", currentPage, limit],
+  //   queryFn: () => GetListBranches("ar", currentPage, limit),
+  // });
+
+  // const successfulResponse = branchData as SuccessfulResponse<BranchListData>;
+
+  const PhotoGraphersData = PhotoGraphers;
   return (
     <Card className=" bg-background max-w-screen-2xl mx-auto rounded-2xl py-6 ">
       <div className="">
@@ -39,7 +66,7 @@ export default function HomeTable() {
               variant="secondary"
               className="bg-[#535862] font-homenaje t text-white hover:bg-[#535862]"
             >
-              {allEmployees.length}
+              {PhotoGraphersData.length}
             </Badge>
           </div>
 
@@ -71,7 +98,6 @@ export default function HomeTable() {
             </DropdownMenuContent>
           </DropdownMenu> */}
         </div>
-
         {/* Table */}
         <div className="border">
           <Table className="px-5">
@@ -92,10 +118,10 @@ export default function HomeTable() {
               </TableRow>
             </TableHeader>
             <TableBody className="">
-              {allEmployees.length > 0 ? (
-                allEmployees.map((employee, index) => (
+              {PhotoGraphersData?.length > 0 ? (
+                PhotoGraphersData?.map((PhotoGrapher, index) => (
                   <TableRow
-                    key={employee.id}
+                    key={PhotoGrapher.id}
                     className={`px-7 h-[70px] ${
                       index % 2 === 0 ? "bg-[#E9EAEB]" : "bg-white"
                     }`}
@@ -104,29 +130,29 @@ export default function HomeTable() {
                       <div className="flex items-center gap-3 ">
                         <Avatar className="h-10 w-10">
                           <AvatarImage
-                            src={employee.avatar || "/placeholder.svg"}
-                            alt={employee.name}
+                            src={PhotoGrapher.name || "/placeholder.svg"}
+                            alt={PhotoGrapher.name}
                           />
                           <AvatarFallback className="text-sm font-medium">
-                            {employee.initials}
+                            {PhotoGrapher.name.slice(0, 2)}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col">
                           <span className="font-medium font-homenaje text-lg">
-                            {employee.name}
+                            {PhotoGrapher.name}
                           </span>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell className="text-center font-homenaje text-lg font-medium text-muted-foreground ml-12">
-                      {employee.customers}
+                      {PhotoGrapher.stats.total_customers}
                     </TableCell>
                     <TableCell className="text-center font-homenaje text-lg font-medium text-muted-foreground">
-                      {employee.photos}
+                      {PhotoGrapher.stats.total_photos}
                     </TableCell>
                     <TableCell className="text-center font-homenaje text-lg font-medium !text-white ">
                       <Link
-                        href={`/employee-photos/${employee.id}`}
+                        href={`/employee-photos/${PhotoGrapher.id}?name=${PhotoGrapher.name}`}
                         className={
                           index % 2 === 0
                             ? "bg-black rounded-full px-2 cursor-pointer text-white py-1"
@@ -154,6 +180,18 @@ export default function HomeTable() {
             </TableBody>
           </Table>
         </div>
+        {PhotoGraphersData?.length > 0 && (
+          <>
+            <div className="mt-6">
+              <PaginationComponent
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={onPageChange}
+                maxVisiblePages={5}
+              />
+            </div>
+          </>
+        )}{" "}
       </div>
     </Card>
   );

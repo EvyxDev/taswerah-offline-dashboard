@@ -11,7 +11,7 @@ export interface customStuff extends User {
     name: string;
     email: string;
     phone: string;
-    branch: Tbransh;
+    branch: number;
   } & DatabaseProperies;
   token: string;
 }

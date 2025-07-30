@@ -72,7 +72,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 key={href}
                 href={href}
                 className={cn(
-                  "font-homenaje text-2xl text-white px-7 py-5 rounded-2xl transition-colors backdrop-blur-3xl",
+                  "font-homenaje text-2xl text-white px-7 py-3  rounded-2xl transition-colors backdrop-blur-3xl",
                   isActive(pathname, href) ? "bg-white/10" : "bg-transparent"
                 )}
               >

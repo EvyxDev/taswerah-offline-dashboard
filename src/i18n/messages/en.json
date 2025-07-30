@@ -4,7 +4,7 @@
   },
   "navigation": {
     "dashboard": "Home",
-    "employees": "Employees",
+    "employees": "Photographers",
     "branches": "Branches",
     "packages": "Packages",
     "payments": "Payments",
@@ -12,7 +12,8 @@
     "next": "Next",
     "previous": "Previous",
     "readyToPrint": "Ready to Print",
-    "printedSent": "Printed & Sent"
+    "printedSent": "Printed & Sent",
+    "orders": "Orders"
   },
   "dashboard": {
     "totalSales": "Total Sales",
@@ -37,7 +38,11 @@
     "action": "Action",
     "viewPhotos": "View photos",
     "employeeName": "Olivia Rhye",
-    "employeeInitials": "OR"
+    "employeeInitials": "OR",
+    "noDataTitle": "No Data Available",
+    "noDataDescription": "There's no sales data to display at the moment",
+    "noPhotosTitle": "No Photos Available",
+    "noPhotosDescription": "No photos have been captured or sold yet"
   },
   "branches": {
     "status": "Status",
@@ -63,7 +68,14 @@
     "addEmployee": "Add Employee",
     "save": "Add",
     "cancel": "Cancel",
-    "selectBranch": "Select branch"
+    "selectBranch": "Select branch",
+    "navigation": {
+      "dashboard": "Home",
+      "orders": "Orders"
+    },
+    "dashboard": {
+      "employees": "Photographers"
+    }
   },
   "packages": {
     "status": "Status",
@@ -75,11 +87,6 @@
     "noPackagesFound": "No packages found",
     "addPackage": "Add Package",
     "save": "Add",
-    "name": "Name",
-    "noPhotos": "NO. Photos",
-    "price": "Price",
-    "description": "Description",
-    "branch": "Branch",
     "image": "Image"
   },
   "payments": {
@@ -152,5 +159,29 @@
     "date": "Date",
     "back": "Back",
     "image": "Image"
-  }
+  },
+  "order": {
+    "dashboard": {
+      "employees": "Orders"
+    },
+    "navigation": {
+      "orders": "Orders"
+    },
+    "code": "Code",
+    "noPhotos": "NO. Photos",
+    "pay": "Pay",
+    "noOrdersTitle": "No Orders Yet",
+    "noOrdersDescription": "there is not any orders at the moment. "
+  },
+  "payment": {
+    "title": "Payment Details",
+    "description": "Enter the payment amount received from customer",
+    "amount": "Payment Amount",
+    "processing": "Processing...",
+    "payNow": "Process Payment"
+  },
+  "common": {
+    "cancel": "Cancel"
+  },
+  "application-title": "Taswera"
 }

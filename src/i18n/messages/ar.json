@@ -4,7 +4,7 @@
   },
   "navigation": {
     "dashboard": "الصفحة الرئيسية",
-    "employees": "الموظفين",
+    "employees": "المصورين",
     "branches": "الفروع",
     "packages": "الحزم",
     "payments": "المدفوعات",
@@ -12,7 +12,8 @@
     "next": "التالي",
     "previous": "السابق",
     "readyToPrint": "جاهز للطباعة",
-    "printedSent": "تم الطباعة والإرسال"
+    "printedSent": "تم الطباعة والإرسال",
+    "orders": "الطلبات"
   },
   "dashboard": {
     "totalSales": "إجمالي المبيعات",
@@ -37,7 +38,11 @@
     "action": "الإجراء",
     "viewPhotos": "عرض الصور",
     "employeeName": "أوليفيا راي",
-    "employeeInitials": "أو آر"
+    "employeeInitials": "أو آر",
+    "editPhotographer": " تحديث مصور",
+    "photographer_updated_successfully": "تم تحديث بيانات المصور بنجاح",
+    "photographer_created_successfully": "تم تحديث بيانات المصور بنجاح",
+    "error_updating_photographer": "فشل في تحديث بيانات المصور. حاول مرة أخرى"
   },
   "employees": {
     "employeesTab": "الموظفين",
@@ -53,7 +58,14 @@
     "addEmployee": "إضافة موظف",
     "save": "إضافة",
     "cancel": "إلغاء",
-    "selectBranch": "اختر الفرع"
+    "selectBranch": "اختر الفرع",
+    "navigation": {
+      "dashboard": "االصفحة الرئيسة",
+      "orders": "الطلبات"
+    },
+    "dashboard": {
+      "employees": "المصورين"
+    }
   },
   "photographers": {
     "add": "إضافة",
@@ -84,11 +96,6 @@
     "noPackagesFound": "لا توجد باقات",
     "addPackage": "إضافة حزمة",
     "save": "إضافة",
-    "name": "الاسم",
-    "noPhotos": "عدد الصور",
-    "price": "السعر",
-    "description": "الوصف",
-    "branch": "الفرع",
     "image": "الصورة"
   },
   "payments": {
@@ -151,5 +158,29 @@
     "date": "التاريخ",
     "back": "رجوع",
     "image": "صورة"
-  }
+  },
+  "order": {
+    "dashboard": {
+      "employees": "الطلبات"
+    },
+    "navigation": {
+      "orders": "الطلبات"
+    },
+    "code": "الكود",
+    "noPhotos": "عدد الصور",
+    "pay": "أدفع",
+    "noOrdersTitle": "لا يوجد طلابات",
+    "noOrdersDescription": "لا توجد أي طلبات في الوقت الحالي"
+  },
+  "payment": {
+    "title": "تفاصيل الدفع",
+    "description": "أدخل مبلغ الدفع المستلم من العميل",
+    "amount": "مبلغ الدفع",
+    "processing": "جاري الدفع",
+    "payNow": "ادفع"
+  },
+  "common": {
+    "cancel": "الغاء"
+  },
+  "application-title": "تصويرة"
 }

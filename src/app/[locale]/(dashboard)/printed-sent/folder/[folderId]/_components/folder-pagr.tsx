@@ -9,16 +9,8 @@ import {
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 import Image from "next/image";
-const images: string[] = [
-  "/assets/image-1.png",
-  "/assets/image-2.png",
-  "/assets/image-3.png",
-  "/assets/image.png",
-];
 
-const repeatedImages = Array.from({ length: 8 }, (_, i) => images[i % 4]);
-
-export default function FolderPage() {
+export default function FolderPage({ photos }: { photos: Photo[] }) {
   const router = useRouter();
   const t = useTranslations();
   return (
@@ -41,17 +33,17 @@ export default function FolderPage() {
         </button>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        {repeatedImages.map((src, idx) => (
+        {photos?.map((photo) => (
           <div
-            key={idx}
+            key={photo.id}
             className="relative w-full aspect-square bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center"
           >
             <Image
-              src={src}
-              alt={`${t("printedSent.image")} ${idx + 1}`}
+              src={photo.file_path}
+              alt={`${t("printedSent.image")} ${photo.id + 1}`}
               fill
-              style={{ objectFit: "cover" }}
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="object-cover"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw "
             />
           </div>
         ))}

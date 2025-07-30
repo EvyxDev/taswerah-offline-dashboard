@@ -3,7 +3,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Receipt from "./taswera-receipt";
 import { TableCell } from "@/components/ui/table";
 
-export function ReceiptDialog() {
+export function ReceiptDialog({ clientId }: { clientId: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -17,7 +17,7 @@ export function ReceiptDialog() {
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="w-fit max-h-[80vh] overflow-y-auto rounded-none">
-          <Receipt />
+          <Receipt clientId={clientId} />
         </DialogContent>
       </Dialog>
     </>

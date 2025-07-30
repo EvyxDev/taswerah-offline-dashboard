@@ -14,7 +14,7 @@ declare module "next-auth" {
       name: string;
       email: string;
       phone: string;
-      branch: Tbransh;
+      branch: number;
     } & DatabaseProperies;
     token: string;
   }
