@@ -8,12 +8,13 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/tailwind-merge";
 import LogOut from "./components/log-out";
 import { useLocale, useTranslations } from "next-intl";
 import { NAV_LINKS } from "@/lib/constants/nav.constant";
+import { useSession } from "next-auth/react";
+import { Link } from "@/i18n/routing";
 
 function stripLocale(path: string, locale: string) {
   const segments = path.split("/");
@@ -32,7 +33,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const locale = useLocale();
   const pathname = stripLocale(rawPath, locale);
   const t = useTranslations("navigation");
-
+  const user = useSession().data?.user;
+  const name = user?.name;
+  const email = user?.email;
   return (
     <>
       <Sidebar
@@ -57,16 +60,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="rounded-2xl"
             />
             <h6 className="font-homenaje text-2xl text-gray-100 mt-2">
-              Samantha
+              {name}
             </h6>
             <p className="font-homenaje text-md text-gray-400 -mt-0.5">
-              samantha@email.com
+              {email}{" "}
             </p>
           </div>
         </SidebarHeader>
 
         <SidebarContent>
-          <div className="flex flex-col mt-14 space-y-0">
+          <div className="flex flex-col space-y-0">
             {NAV_LINKS.map(({ href, label }) => (
               <Link
                 key={href}

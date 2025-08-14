@@ -14,24 +14,31 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Package } from "lucide-react";
 import { PayDialog } from "./pay-dialog";
+import { CreateOrderDialog } from "./create-dialog";
 
 type Props = {
-  invoices: TInvoice[];
+  orders: TOrders[];
+  employees: Employee[];
+  shifts: TShift[];
 };
 
-export default function OrderTable({ invoices }: Props) {
+export default function OrderTable({ orders, employees, shifts }: Props) {
   const t = useTranslations();
   const [selectedBarcode, setSelectedBarcode] = useState<string | null>(null);
+  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
   const [isPayDialogOpen, setIsPayDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
-  const handlePayClick = (barcode: string) => {
-    setSelectedBarcode(barcode);
+  const handlePayClick = (order: TOrders) => {
+    setSelectedBarcode(order.barcode_prefix);
+    setSelectedOrderId(order.id);
     setIsPayDialogOpen(true);
   };
 
   const handleCloseDialog = () => {
     setIsPayDialogOpen(false);
     setSelectedBarcode(null);
+    setSelectedOrderId(null);
   };
 
   return (
@@ -48,29 +55,38 @@ export default function OrderTable({ invoices }: Props) {
                 variant="secondary"
                 className="bg-[#535862] font-homenaje text-white hover:bg-[#535862]"
               >
-                {invoices.length}
+                {orders.length}
               </Badge>
             </div>
+            <button
+              className="main-button"
+              onClick={() => setIsCreateDialogOpen(true)}
+            >
+              Add
+            </button>
           </div>
 
           {/* Table or Empty State */}
-          {invoices?.length > 0 ? (
+          {orders?.length > 0 ? (
             <div className="border">
               <Table className="px-5">
                 <TableHeader>
                   <TableRow className="px-7">
-                    <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-start min-w-[200px]">
+                    <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-start min-w-[200px]">
                       {t("order.code")}
                     </TableHead>
-                    <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center min-w-[150px] sm:w-[100px]">
+                    <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-center min-w-[150px] sm:w-[100px]">
                       {t("order.noPhotos")}
+                    </TableHead>
+                    <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-center min-w-[150px] sm:w-[100px]">
+                      Phone Number
                     </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody className="">
-                  {invoices.map((invoice, index) => (
+                  {orders.map((order, index) => (
                     <TableRow
-                      key={invoice.id}
+                      key={order.id}
                       className={`px-7 h-[70px] ${
                         index % 2 === 0 ? "bg-[#E9EAEB]" : "bg-white"
                       }`}
@@ -78,18 +94,21 @@ export default function OrderTable({ invoices }: Props) {
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <span className="font-medium font-homenaje text-lg">
-                            {invoice.barcode_prefix}
+                            {order.barcode_prefix}
                           </span>
                         </div>
                       </TableCell>
 
                       <TableCell className="text-center font-homenaje text-lg font-medium text-muted-foreground">
-                        {invoice.num_photos}
+                        {order.photos_count}
+                      </TableCell>
+                      <TableCell className="text-center font-homenaje text-lg font-medium text-muted-foreground">
+                        {order.phone_number}
                       </TableCell>
 
                       <TableCell className="text-center">
                         <Button
-                          onClick={() => handlePayClick(invoice.barcode_prefix)}
+                          onClick={() => handlePayClick(order)}
                           className="bg-[#535862] hover:bg-[#424751] text-white font-homenaje text-sm px-4 py-2 rounded-md"
                         >
                           {t("order.pay")}
@@ -101,7 +120,6 @@ export default function OrderTable({ invoices }: Props) {
               </Table>
             </div>
           ) : (
-            // Empty State
             <div className="flex flex-col items-center justify-center py-16 px-8">
               <div className="bg-gray-100 rounded-full p-6 mb-6">
                 <Package className="w-12 h-12 text-gray-400" />
@@ -116,11 +134,17 @@ export default function OrderTable({ invoices }: Props) {
           )}
         </div>
       </Card>
-
+      <CreateOrderDialog
+        isOpen={isCreateDialogOpen}
+        onClose={() => setIsCreateDialogOpen(false)}
+        employees={employees}
+      />
       <PayDialog
         isOpen={isPayDialogOpen}
         onClose={handleCloseDialog}
         barcode={selectedBarcode}
+        orderId={selectedOrderId}
+        shifts={shifts}
       />
     </>
   );

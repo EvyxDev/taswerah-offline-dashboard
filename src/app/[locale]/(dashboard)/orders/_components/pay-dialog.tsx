@@ -24,50 +24,67 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { CreditCard, X, QrCode, DollarSign } from "lucide-react";
-import { UpdateInvoiceTotal } from "../_action/update-Invoice-total";
+import { SubmitOrderAction } from "../_action/submit-order";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "sonner";
 
 type PayDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   barcode: string | null;
+  orderId: number | null;
+  shifts: TShift[];
 };
 
 const formSchema = z.object({
-  amount: z
+  pay_amount: z
     .string()
     .min(1, "Amount is required")
     .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
       message: "Amount must be a positive number",
     }),
+  shift_id: z.string().min(1, "Shift is required"),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
-export function PayDialog({ isOpen, onClose, barcode }: PayDialogProps) {
+export function PayDialog({
+  isOpen,
+  onClose,
+  barcode,
+  orderId,
+  shifts,
+}: PayDialogProps) {
   const t = useTranslations();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      amount: "",
-    },
+    defaultValues: { pay_amount: "", shift_id: "" },
   });
 
   const onSubmit = async (data: FormData) => {
     setIsProcessing(true);
-
     try {
-      const result = await UpdateInvoiceTotal(
-        barcode!,
-        parseFloat(data.amount)
-      );
-      console.log("Payment processed successfully:", result);
-
+      const payload = await SubmitOrderAction(orderId!, {
+        shift_id: Number(data.shift_id),
+        pay_amount: parseFloat(data.pay_amount),
+      });
+      if ("success" in payload && payload.success === false) {
+        throw new Error(payload.message);
+      }
+      toast.success("Payment submitted");
       form.reset();
       onClose();
     } catch (error) {
-      console.error("Payment failed:", error);
+      const message = error instanceof Error ? error.message : "Payment failed";
+      toast.error(message);
     } finally {
       setIsProcessing(false);
     }
@@ -77,7 +94,7 @@ export function PayDialog({ isOpen, onClose, barcode }: PayDialogProps) {
     onClose();
   };
 
-  if (!barcode) return null;
+  if (!barcode || !orderId) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -104,7 +121,6 @@ export function PayDialog({ isOpen, onClose, barcode }: PayDialogProps) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="py-4">
-              {/* Order Details */}
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <div className="flex items-center gap-3 mb-3">
                   <QrCode className="w-5 h-5 text-gray-600" />
@@ -120,10 +136,46 @@ export function PayDialog({ isOpen, onClose, barcode }: PayDialogProps) {
                 </Badge>
               </div>
 
-              {/* Amount Input */}
               <FormField
                 control={form.control}
-                name="amount"
+                name="shift_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium text-gray-700 font-homenaje">
+                      Shift
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="font-homenaje h-12">
+                          <SelectValue placeholder="Select a shift" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {shifts.map((s) => (
+                          <SelectItem
+                            key={s.id}
+                            value={String(s.id)}
+                            className="font-homenaje"
+                          >
+                            <span className="font-medium">
+                              {s.name} ({s.from.slice(0, 5)} -{" "}
+                              {s.to.slice(0, 5)})
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="pay_amount"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-sm font-medium text-gray-700 font-homenaje">

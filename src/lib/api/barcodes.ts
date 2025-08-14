@@ -59,3 +59,41 @@ export async function getPhotosByBarcode(token: string, barcode: string) {
     throw new Error("Error in catch");
   }
 }
+
+export async function GetOrdersBySendType(
+  token: string,
+  type: "print" | "send"
+) {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API}/branch-manager/orders/by-send-type?type=${type}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch orders by send type. Status: ${response.status}`
+      );
+    }
+
+    const payload = (await response.json()) as APIResponse<{
+      barcodes: string[];
+    }>;
+    if (!("data" in payload)) {
+      throw new Error("Invalid API response: missing 'data' field");
+    }
+    return payload.data;
+  } catch (error: any) {
+    throw new Error(
+      error?.message ||
+        "Unexpected error occurred while fetching orders by send type"
+    );
+  }
+}

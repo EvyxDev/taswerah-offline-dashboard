@@ -7,7 +7,6 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
-
 import Folder from "@/components/common/folder";
 import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import {
@@ -19,11 +18,19 @@ import { RiFilter2Fill } from "react-icons/ri";
 import Link from "next/link";
 import { dateOptions } from "@/lib/constants/data.constant";
 import { useTranslations } from "next-intl";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export default function PrintedPage({ Printed }: { Printed: string[] }) {
+type PrintedSentPageProps = {
+  printed: string[];
+  sent: string[];
+};
+
+export default function PrintedPage({ printed, sent }: PrintedSentPageProps) {
   const t = useTranslations("printedSent");
   const [selectedDate, setSelectedDate] = useState("2025-02-20");
-
+  const [activeTab, setActiveTab] = useState("printed");
+  console.log(sent);
+  console.log(printed);
   const getSelectedDateLabel = () => {
     const option = dateOptions.find((opt) => opt.value === selectedDate);
     return option ? option.label : "20-02-2025";
@@ -31,62 +38,33 @@ export default function PrintedPage({ Printed }: { Printed: string[] }) {
   const handleDateChange = (date: string) => {
     setSelectedDate(date);
   };
-  const [activeTab, setActiveTab] = useState("printed");
+
   const locale =
     typeof window !== "undefined"
       ? window.location.pathname.split("/")[1]
       : "en";
 
-  const tabs = [
-    { value: "printed", label: t("printedTab") },
-    { value: "sent", label: t("sentTab") },
-  ];
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case "printed":
-        return (
-          <div className="flex items-center gap-5 w-full flex-wrap">
-            {Printed.map((barcode) => (
-              <Link
-                key={barcode}
-                href={`printed-sent/folder/${barcode}`}
-                className="w-full max-w-[300px]"
-              >
-                <Folder id={barcode} />
-              </Link>
-            ))}
-          </div>
-        );
-      case "sent":
-        return (
-          <div className="flex items-center gap-5 w-full flex-wrap">
-            {[...Array(7)].map((_, idx) => (
-              <Link
-                key={idx}
-                href={`printed-sent/folder/${idx + 1}`}
-                className="w-full max-w-[300px]"
-              >
-                <Folder />
-              </Link>
-            ))}
-          </div>
-        );
-      default:
-        return (
-          <div className="flex items-center gap-5 w-full flex-wrap">
-            {[...Array(7)].map((_, idx) => (
-              <Link
-                key={idx}
-                href={`folder/${idx + 1}`}
-                className="w-full max-w-[300px]"
-              >
-                <Folder />
-              </Link>
-            ))}
-          </div>
-        );
+  const renderList = (codes: string[]) => {
+    if (!codes || codes.length === 0) {
+      return (
+        <div className="text-center text-gray-500 font-homenaje w-full py-8">
+          {t("noData") || "No data to show"}
+        </div>
+      );
     }
+    return (
+      <div className="flex items-center gap-5 w-full flex-wrap">
+        {codes.map((code) => (
+          <Link
+            key={code}
+            href={`printed-sent/folder/${code}`}
+            className="w-full max-w-[300px]"
+          >
+            <Folder id={code} />
+          </Link>
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -103,26 +81,29 @@ export default function PrintedPage({ Printed }: { Printed: string[] }) {
 
       <div className="py-10">
         <div className="w-full">
-          {/* Custom Tab Navigation */}
-          <div className="flex flex-col gap-5   sm:flex-row  items-center justify-between">
-            <div className="bg-transparent gap-5 flex self-start">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.value}
-                  onClick={() => setActiveTab(tab.value)}
-                  className={` text-xl sm:text-3xl font-homenaje py-2 sm:py-4 px-4 sm:px-8 rounded-2xl transition-colors ${
-                    activeTab === tab.value
-                      ? "bg-black text-white"
-                      : "bg-[#FAFAFA] text-black hover:bg-gray-200"
-                  }`}
-                  style={{
-                    direction: locale === "ar" ? "rtl" : "ltr",
-                  }}
+          <div className="flex flex-col gap-5 sm:flex-row items-center justify-between">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
+              dir={locale === "ar" ? "rtl" : "ltr"}
+            >
+              <TabsList className="bg-transparent gap-5 h-auto p-0 justify-start">
+                <TabsTrigger
+                  value="printed"
+                  className="text-xl sm:text-3xl font-homenaje py-2 sm:py-4 px-4 sm:px-8 rounded-2xl transition-colors data-[state=active]:bg-black data-[state=active]:text-white bg-[#FAFAFA] text-black hover:bg-gray-200"
                 >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
+                  {t("printedTab")}
+                </TabsTrigger>
+                <TabsTrigger
+                  value="sent"
+                  className="text-xl sm:text-3xl font-homenaje py-2 sm:py-4 px-4 sm:px-8 rounded-2xl transition-colors data-[state=active]:bg-black data-[state=active]:text-white bg-[#FAFAFA] text-black hover:bg-gray-200"
+                >
+                  {t("sentTab")}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
             <DropdownMenu>
               <DropdownMenuTrigger className="self-end" asChild>
                 <Button
@@ -152,8 +133,16 @@ export default function PrintedPage({ Printed }: { Printed: string[] }) {
             </DropdownMenu>
           </div>
 
-          {/* Content */}
-          <div className="mt-10">{renderContent()}</div>
+          <div className="mt-10">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              dir={locale === "ar" ? "rtl" : "ltr"}
+            >
+              <TabsContent value="printed">{renderList(printed)}</TabsContent>
+              <TabsContent value="sent">{renderList(sent)}</TabsContent>
+            </Tabs>
+          </div>
         </div>
       </div>
     </div>

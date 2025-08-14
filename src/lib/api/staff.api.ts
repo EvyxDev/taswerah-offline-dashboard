@@ -22,7 +22,6 @@ export async function GetAllPhotographers(page = 1, limit = 10) {
         cache: "no-store",
       }
     );
-    console.log(response);
     if (!response.ok) {
       throw new Error(`Failed to fetch data. Status: ${response.status}`);
     }

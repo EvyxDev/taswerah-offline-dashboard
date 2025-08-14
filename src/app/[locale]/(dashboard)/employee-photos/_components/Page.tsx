@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 import Folder from "@/components/common/folder";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -11,18 +13,21 @@ import {
 import { useTranslations } from "next-intl";
 import { IoMdHome } from "react-icons/io";
 import { FiFolder, FiUpload } from "react-icons/fi";
+import ImportPhotosDialog from "./import-photos-dialog";
 
 interface EmployeePhotosPageProps {
   employeeName: string;
+  employeeId: string;
   codes: string[];
 }
 
 export default function EmployeePhotosPage({
   employeeName,
   codes,
+  employeeId,
 }: EmployeePhotosPageProps) {
   const t = useTranslations();
-  console.log(codes);
+  const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
 
   const hasPhotos = codes && codes.length > 0;
 
@@ -101,7 +106,7 @@ export default function EmployeePhotosPage({
                   No Photos Found
                 </h3>
                 <p className="text-gray-500 mb-6 leading-relaxed">
-                  This employee doesn&lsquo;t have any photo codes yet.
+                  This employee doesn&apos;t have any photo codes yet.
                 </p>
               </div>
             </div>
@@ -109,11 +114,18 @@ export default function EmployeePhotosPage({
         </div>
       </div>
 
-      {hasPhotos && (
-        <button className="main-button w-fit mt-auto self-center">
-          Import photos by codes
-        </button>
-      )}
+      <button
+        className="main-button w-fit mt-auto self-center"
+        onClick={() => setIsImportDialogOpen(true)}
+      >
+        Import photos by codes
+      </button>
+
+      <ImportPhotosDialog
+        isOpen={isImportDialogOpen}
+        onClose={() => setIsImportDialogOpen(false)}
+        employeeId={employeeId}
+      />
     </div>
   );
 }

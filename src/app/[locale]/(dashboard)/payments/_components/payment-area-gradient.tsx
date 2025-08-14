@@ -71,12 +71,10 @@ export function ChartAreaGradient({ SalesChart }: { SalesChart: SalesChart }) {
             {/* Empty state text */}
             <div>
               <h3 className="text-lg font-medium text-gray-900 mb-1">
-                {t("dashboard.noDataTitle", { default: "No Data Available" })}
+                {t("dashboard.noDataTitle")}
               </h3>
               <p className="text-sm text-gray-500">
-                {t("dashboard.noDataDescription", {
-                  default: "There's no sales data to display at the moment.",
-                })}
+                {t("dashboard.noDataDescription")}
               </p>
             </div>
           </div>

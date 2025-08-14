@@ -13,3 +13,15 @@ declare type TInvoice = {
   branch: Tbransh;
   staff: TStaff;
 };
+declare type TOrders = {
+  id: number;
+  barcode_prefix: string;
+  total_price: string;
+  status: string;
+  phone_number: string;
+  photos_count: string;
+  type: string;
+};
+declare type TOrdersRespnse = {
+  data: TOrders[];
+};

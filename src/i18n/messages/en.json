@@ -13,7 +13,8 @@
     "previous": "Previous",
     "readyToPrint": "Ready to Print",
     "printedSent": "Printed & Sent",
-    "orders": "Orders"
+    "orders": "Orders",
+    "shifts": "Shifts"
   },
   "dashboard": {
     "totalSales": "Total Sales",
@@ -171,7 +172,13 @@
     "noPhotos": "NO. Photos",
     "pay": "Pay",
     "noOrdersTitle": "No Orders Yet",
-    "noOrdersDescription": "there is not any orders at the moment. "
+    "noOrdersDescription": "there is not any orders at the moment. ",
+    "create": {
+      "title": "Create New Order"
+    },
+    "barcode_prefix": "Barcode Prefix",
+    "phone_number": "Phone Number",
+    "employee": "Employee"
   },
   "payment": {
     "title": "Payment Details",

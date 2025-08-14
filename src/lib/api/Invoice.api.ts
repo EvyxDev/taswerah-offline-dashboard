@@ -92,6 +92,36 @@ export async function GetAllInvoices(token: string) {
     );
   }
 }
+export async function GetAllOrders(token: string) {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API}/branch-manager/orders?lmit=1000`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch invoice. Status: ${response.status}`);
+    }
+
+    const payload: APIResponse<TOrdersRespnse> = await response.json();
+
+    if (!("data" in payload)) {
+      throw new Error("Invalid API response: missing 'data' field");
+    }
+
+    return payload.data;
+  } catch (error: any) {
+    console.error("GetInvoice error:", error);
+    throw new Error(
+      error?.message || "Unexpected error occurred while fetching invoice"
+    );
+  }
+}
 
 export async function GetReadyToPrintCodes(token: string) {
   try {
@@ -158,6 +188,42 @@ export async function GetUploadedbBarcodes(token: string, id: string) {
     throw new Error(
       error?.message ||
         "Unexpected error occurred while fetching ready-to-print codes"
+    );
+  }
+}
+
+export async function SubmitOrder(
+  id: number | string,
+  data: { shift_id: number; pay_amount: number },
+  token: string
+) {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API}/branch-manager/orders_submit/${id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to submit order. Status: ${response.status}`);
+    }
+
+    const payload: APIResponse<any> = await response.json();
+
+    if (!("message" in payload)) {
+      throw new Error("Invalid API response");
+    }
+
+    return payload;
+  } catch (error: any) {
+    throw new Error(
+      error?.message || "Unexpected error occurred while submitting order"
     );
   }
 }

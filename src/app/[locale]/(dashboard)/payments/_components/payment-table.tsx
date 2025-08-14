@@ -113,7 +113,7 @@ export default function PaymentTable({ clients }: { clients: Client[] }) {
           <Table className="px-5">
             <TableHeader>
               <TableRow className="px-7">
-                <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-start min-w-[100px]">
+                <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-start min-w-[100px]">
                   {t("payments.clientCode")}
                 </TableHead>
                 {/* <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center min-w-[100px] ">
@@ -125,16 +125,16 @@ export default function PaymentTable({ clients }: { clients: Client[] }) {
                 <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center min-w-[150px] ">
                   {t("payments.method")}
                 </TableHead> */}
-                <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center min-w-[100px]">
+                <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-center min-w-[100px]">
                   {t("payments.paid")}
                 </TableHead>
-                <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center min-w-[150px]">
+                <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-center min-w-[150px]">
                   {t("payments.date")}
                 </TableHead>
                 {/* <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center min-w-[150px]">
                   {t("payments.sentViaWhatsapp")}
                 </TableHead> */}
-                <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center min-w-[140px]">
+                <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-center min-w-[140px]">
                   {t("payments.receipt")}
                 </TableHead>
               </TableRow>

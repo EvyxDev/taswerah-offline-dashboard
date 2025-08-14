@@ -68,14 +68,10 @@ export function PhotoSalesChart({ photoStats }: { photoStats: PhotoStats }) {
             {/* Empty state text */}
             <div>
               <h3 className="text-lg font-medium text-gray-900 mb-1">
-                {t("dashboard.noPhotosTitle", {
-                  default: "No Photos Available",
-                })}
+                {t("dashboard.noPhotosTitle")}
               </h3>
               <p className="text-sm text-gray-500">
-                {t("dashboard.noPhotosDescription", {
-                  default: "No photos have been captured or sold yet.",
-                })}
+                {t("dashboard.noPhotosDescription")}
               </p>
             </div>
           </div>

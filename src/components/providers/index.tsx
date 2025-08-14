@@ -9,6 +9,7 @@ import {
 } from "next-intl";
 import ReactQueryProvider from "./components/react-query.provider";
 import { getFormats } from "@/i18n/request";
+import { Toaster } from "@/components/ui/sonner";
 
 type ProvidersProps = {
   children: React.ReactNode;
@@ -32,6 +33,7 @@ export default function Providers({ children }: ProvidersProps) {
           formats={getFormats(locale)}
         >
           {children}
+          <Toaster />
         </NextIntlClientProvider>
       </NextAuthProvider>
     </ReactQueryProvider>

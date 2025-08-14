@@ -7,6 +7,7 @@ const nextConfig = {
   images: {
     domains: ["taswera.evyx.lol"],
   },
+  output: "standalone",
 };
 
 export default withNextIntl(nextConfig);

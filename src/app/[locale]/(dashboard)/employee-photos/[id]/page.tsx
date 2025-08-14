@@ -28,6 +28,7 @@ export default async function Page({
       <EmployeePhotosPage
         employeeName={employeeName || ""}
         codes={codes.barcodes}
+        employeeId={employeeId}
       />
     </>
   );

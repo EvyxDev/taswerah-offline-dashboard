@@ -103,16 +103,16 @@ export default function HomeTable0({
           <Table className="px-5">
             <TableHeader>
               <TableRow className=" px-7">
-                <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-start min-w-[200px] ">
+                <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-start min-w-[200px] ">
                   {t("dashboard.name")}
                 </TableHead>
-                <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center  min-w-[150px] sm:w-[100px]">
+                <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-center  min-w-[150px] sm:w-[100px]">
                   {t("dashboard.noCustomers")}
                 </TableHead>
-                <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center  min-w-[150px] sm:w-[100px]">
+                <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-center  min-w-[150px] sm:w-[100px]">
                   {t("dashboard.noPhotos")}
                 </TableHead>
-                <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center min-w-[150px] sm:w-[150px]">
+                <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-center min-w-[150px] sm:w-[150px]">
                   {t("dashboard.action")}
                 </TableHead>
               </TableRow>

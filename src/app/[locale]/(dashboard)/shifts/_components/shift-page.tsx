@@ -9,15 +9,13 @@ import {
 import { IoMdHome } from "react-icons/io";
 
 import { useTranslations } from "next-intl";
+import ShiftsTable from "./shifts-table";
 
-import OrderTable from "./order-table";
 type Props = {
-  orders: TOrders[];
-  employees: Employee[];
   shifts: TShift[];
 };
 
-export default function OrderPage({ orders, employees, shifts }: Props) {
+export default function ShiftPage({ shifts }: Props) {
   // Translation
   const t = useTranslations("order");
 
@@ -37,7 +35,7 @@ export default function OrderPage({ orders, employees, shifts }: Props) {
         <h2 className="text-3xl font-homenaje  text-main-black mb-5">
           {t("dashboard.employees")}
         </h2>
-        <OrderTable employees={employees} orders={orders} shifts={shifts} />
+        <ShiftsTable shifts={shifts} />
       </div>
     </div>
   );

@@ -1,0 +1,202 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @next/next/no-img-element */
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import ImageUploader from "./file-upload-area";
+import { useUploadPhotos } from "../_hooks/use-upload-photos";
+
+const importPhotosSchema = z.object({
+  barcodePrefix: z.string().min(1, "Barcode prefix is required"),
+  photos: z.array(z.instanceof(File)).min(1, "At least one photo is required"),
+});
+
+type ImportPhotosFormData = z.infer<typeof importPhotosSchema>;
+
+interface SelectedFile {
+  file: File;
+  preview: string;
+}
+
+interface ImportPhotosDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  employeeId: string;
+}
+
+export default function ImportPhotosDialog({
+  isOpen,
+  onClose,
+  employeeId,
+}: ImportPhotosDialogProps) {
+  const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
+
+  const form = useForm<ImportPhotosFormData>({
+    resolver: zodResolver(importPhotosSchema),
+    defaultValues: {
+      barcodePrefix: "",
+      photos: [],
+    },
+  });
+
+  // Use the mutation hook
+  const uploadPhotosMutation = useUploadPhotos({
+    onSuccess: () => {
+      handleDialogClose();
+    },
+    onError: (error) => {
+      console.error("Upload failed:", error);
+    },
+  });
+
+  const handleFilesChange = (files: SelectedFile[]) => {
+    setSelectedFiles(files);
+    const fileArray = files.map((sf) => sf.file);
+    form.setValue("photos", fileArray);
+
+    if (fileArray.length === 0) {
+      form.setError("photos", {
+        type: "manual",
+        message: "At least one photo is required",
+      });
+    } else {
+      form.clearErrors("photos");
+    }
+  };
+
+  const handleFileError = (error: string) => {
+    form.setError("photos", {
+      type: "manual",
+      message: error,
+    });
+  };
+
+  const onSubmit = async (data: ImportPhotosFormData) => {
+    uploadPhotosMutation.mutate({
+      photos: data.photos,
+      barcodePrefix: data.barcodePrefix,
+      employeeId: employeeId,
+    });
+  };
+
+  const handleDialogClose = () => {
+    if (!uploadPhotosMutation.isPending) {
+      selectedFiles.forEach(({ preview }) => URL.revokeObjectURL(preview));
+      setSelectedFiles([]);
+      form.reset();
+      onClose();
+    }
+  };
+
+  const isUploading = uploadPhotosMutation.isPending;
+
+  return (
+    <Dialog open={isOpen} onOpenChange={handleDialogClose}>
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="font-homenaje text-xl">
+            Import Photos by Codes
+          </DialogTitle>
+          <DialogDescription>
+            Select images from a folder and enter the barcode prefix for these
+            photos.
+          </DialogDescription>
+        </DialogHeader>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Barcode Prefix Field */}
+            <FormField
+              control={form.control}
+              name="barcodePrefix"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-medium">Barcode Prefix</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter barcode prefix (e.g., 8888)"
+                      {...field}
+                      disabled={isUploading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* File Upload Field using ImageUploader component */}
+            <FormField
+              control={form.control}
+              name="photos"
+              render={() => (
+                <FormItem>
+                  <FormLabel className="font-medium">Select Photos</FormLabel>
+                  <FormControl>
+                    <ImageUploader
+                      selectedFiles={selectedFiles}
+                      onFilesChange={handleFilesChange}
+                      onError={handleFileError}
+                      disabled={isUploading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Root Error Display */}
+            {form.formState.errors.root && (
+              <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md">
+                {form.formState.errors.root.message}
+              </div>
+            )}
+
+            {/* Display mutation error if any */}
+            {uploadPhotosMutation.isError && (
+              <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md">
+                {uploadPhotosMutation.error?.message || "Upload failed"}
+              </div>
+            )}
+
+            <DialogFooter className="gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleDialogClose}
+                disabled={isUploading}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isUploading}
+                className="bg-main-black text-white hover:bg-gray-800"
+              >
+                {isUploading ? "Uploading..." : "Upload Photos"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+}

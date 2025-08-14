@@ -13,7 +13,8 @@
     "previous": "السابق",
     "readyToPrint": "جاهز للطباعة",
     "printedSent": "تم الطباعة والإرسال",
-    "orders": "الطلبات"
+    "orders": "الطلبات",
+    "shifts": "الورديات"
   },
   "dashboard": {
     "totalSales": "إجمالي المبيعات",
@@ -42,7 +43,11 @@
     "editPhotographer": " تحديث مصور",
     "photographer_updated_successfully": "تم تحديث بيانات المصور بنجاح",
     "photographer_created_successfully": "تم تحديث بيانات المصور بنجاح",
-    "error_updating_photographer": "فشل في تحديث بيانات المصور. حاول مرة أخرى"
+    "error_updating_photographer": "فشل في تحديث بيانات المصور. حاول مرة أخرى",
+    "noDataTitle": "لا توجد بيانات متاحة",
+    "noDataDescription": "لا توجد بيانات مبيعات لعرضها في الوقت الحالي.",
+    "noPhotosTitle": "لا توجد صور متاحة",
+    "noPhotosDescription": "لم يتم التقاط أو بيع أي صور بعد."
   },
   "employees": {
     "employeesTab": "الموظفين",
@@ -170,7 +175,10 @@
     "noPhotos": "عدد الصور",
     "pay": "أدفع",
     "noOrdersTitle": "لا يوجد طلابات",
-    "noOrdersDescription": "لا توجد أي طلبات في الوقت الحالي"
+    "noOrdersDescription": "لا توجد أي طلبات في الوقت الحالي",
+    "create": {
+      "title": "اضافة طلب"
+    }
   },
   "payment": {
     "title": "تفاصيل الدفع",

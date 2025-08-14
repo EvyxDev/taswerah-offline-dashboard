@@ -15,10 +15,10 @@ interface ReadyToPrintPage {
 
 export default function ReadyToPrintPage({ barcodes }: ReadyToPrintPage) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedBarcode, setSelectedBarcode] = useState<string>("");
+  const [selectedCodePrefix, setSelectedCodePrefix] = useState<string>("");
 
   const handleFolderClick = (barcode: string) => {
-    setSelectedBarcode(barcode);
+    setSelectedCodePrefix(barcode);
     setDialogOpen(true);
   };
 
@@ -53,7 +53,7 @@ export default function ReadyToPrintPage({ barcodes }: ReadyToPrintPage) {
       <ReadyToPrintDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
-        barcode={selectedBarcode}
+        barcode={selectedCodePrefix}
       />
     </>
   );
