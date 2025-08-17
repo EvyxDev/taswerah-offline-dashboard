@@ -1,17 +1,30 @@
 import { GetPaymentsByBransh } from "@/lib/api/payments.api";
 import PaymentPage from "./_components/payment-page";
-import { GetClentsByBranch } from "@/lib/api/client.api";
+import { GetShifts } from "@/lib/api/shifts.api";
 
-export default async function Page() {
-  const payment = await GetPaymentsByBransh();
-  const clients = await GetClentsByBranch();
-
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const shiftIdParam =
+    typeof searchParams?.shift_id === "string"
+      ? searchParams.shift_id
+      : Array.isArray(searchParams?.shift_id)
+      ? searchParams.shift_id[0]
+      : undefined;
+  const [payment, shifts] = await Promise.all([
+    GetPaymentsByBransh(shiftIdParam),
+    GetShifts(),
+  ]);
   return (
     <>
       <PaymentPage
-        SalesChart={payment?.sales_data}
-        photoStats={payment?.photo_distribution}
-        clients={clients.data}
+        monthlyPayments={payment.monthly_payments}
+        photoStats={payment.photo_stats}
+        clients={payment.clients || []}
+        shifts={shifts}
+        selectedShiftId={shiftIdParam}
       />
     </>
   );

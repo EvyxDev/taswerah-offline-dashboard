@@ -42,6 +42,19 @@ declare type paymentStates = {
   photo_distribution: PhotoStats;
   employees: Employee[];
 };
+declare type paymentStates2 = {
+  branch: string;
+  monthly_payments: { month: string; value: number }[];
+  distribution: { send_print: number; other: number };
+  clients?: Client[];
+  photo_stats: {
+    print: number;
+    send: number;
+    print_and_send: number;
+    total: number;
+    distribution: { send_print: number; other: number };
+  };
+};
 declare type Client = {
   id: number;
   barcode: string;

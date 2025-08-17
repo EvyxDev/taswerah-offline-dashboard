@@ -3,7 +3,9 @@ import { authOptions } from "@/auth";
 import { getServerSession } from "next-auth/next";
 import { getAuthToken } from "../utils/auth.token";
 
-export async function GetPaymentsByBransh(): Promise<paymentStates> {
+export async function GetPaymentsByBransh(
+  shiftId?: string | number
+): Promise<paymentStates2> {
   try {
     // Get the session to extract user ID
     const token = await getAuthToken();
@@ -13,16 +15,21 @@ export async function GetPaymentsByBransh(): Promise<paymentStates> {
       throw new Error("User not authenticated or user ID not found in session");
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API}/branch-manager/payments/${1}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
+    const url = new URL(
+      `${process.env.NEXT_PUBLIC_API}/branch-manager/payments/dashboard`
     );
+    if (shiftId !== undefined && shiftId !== null && `${shiftId}`.length > 0) {
+      url.searchParams.set("shift_id", String(shiftId));
+    }
+
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
+    });
     console.log(
       `${process.env.NEXT_PUBLIC_API}/onlinedashboard/admin/payments/${session.user.id}`
     );
@@ -30,7 +37,7 @@ export async function GetPaymentsByBransh(): Promise<paymentStates> {
       throw new Error(`Failed to fetch data. Status: ${response.status}`);
     }
 
-    const payload: APIResponse<paymentStates> = await response.json();
+    const payload: APIResponse<paymentStates2> = await response.json();
 
     if (!("data" in payload)) {
       throw new Error(payload.message);

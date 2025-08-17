@@ -145,10 +145,10 @@ export default function HomeTable0({
                       </div>
                     </TableCell>
                     <TableCell className="text-center font-homenaje text-lg font-medium text-muted-foreground ml-12">
-                      {PhotoGrapher.stats.total_customers}
+                      {PhotoGrapher.stats?.total_customers}
                     </TableCell>
                     <TableCell className="text-center font-homenaje text-lg font-medium text-muted-foreground">
-                      {PhotoGrapher.stats.total_photos}
+                      {PhotoGrapher.stats?.total_photos}
                     </TableCell>
                     <TableCell className="text-center font-homenaje text-lg font-medium !text-white ">
                       <Link

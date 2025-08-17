@@ -11,36 +11,29 @@ import {
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { useTranslations } from "next-intl";
 
-// Props
-type PhotoStats = {
-  sold_percentage: number;
-  sold_count: number;
-  captured_count: number;
-};
+type PhotoStatsNew = paymentStates2["photo_stats"];
 
 const chartConfig = {
-  sold: {
-    label: "Sold",
+  print: {
+    label: "Print",
     color: "#6BA3D6",
   },
-  captured: {
-    label: "Captured",
+  send: {
+    label: "Send",
     color: "#D1D5DB",
+  },
+  both: {
+    label: "Both",
+    color: "#9CA3AF",
   },
 } satisfies ChartConfig;
 
-export function PhotoSalesChart({ photoStats }: { photoStats: PhotoStats }) {
+export function PhotoSalesChart({ photoStats }: { photoStats: PhotoStatsNew }) {
   const t = useTranslations();
 
-  // Check if there's no data at all
-  const hasNoData =
-    !photoStats ||
-    (photoStats.sold_count === 0 && photoStats.captured_count === 0) ||
-    (photoStats.sold_count === null && photoStats.captured_count === null) ||
-    (photoStats.sold_count === undefined &&
-      photoStats.captured_count === undefined);
+  const total = photoStats?.total ?? 0;
+  const hasNoData = !photoStats || total === 0;
 
-  // If no data, show empty state
   if (hasNoData) {
     return (
       <Card className="w-full min-w-xs mx-auto p-0 rounded-3xl">
@@ -82,18 +75,13 @@ export function PhotoSalesChart({ photoStats }: { photoStats: PhotoStats }) {
   }
 
   const chartData = [
+    { name: "Print", value: photoStats.print, fill: chartConfig.print.color },
+    { name: "Send", value: photoStats.send, fill: chartConfig.send.color },
     {
-      name: "Sold",
-      value: photoStats.sold_count,
-      fill: chartConfig.sold.color,
+      name: "Both",
+      value: photoStats.print_and_send,
+      fill: chartConfig.both.color,
     },
-    { name: "Gap1", value: 3, fill: "transparent" },
-    {
-      name: "Captured",
-      value: photoStats.captured_count,
-      fill: chartConfig.captured.color,
-    },
-    { name: "Gap2", value: 3, fill: "transparent" },
   ];
 
   return (
@@ -127,26 +115,39 @@ export function PhotoSalesChart({ photoStats }: { photoStats: PhotoStats }) {
             </PieChart>
           </ChartContainer>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <div className="text-4xl font-bold text-gray-900">
-              {photoStats.sold_percentage}%
-            </div>
+            <div className="text-4xl font-bold text-gray-900">{total}</div>
             <div className="text-lg text-gray-600 mt-1">
-              {t("dashboard.soldPhotos")}
+              {t("payments.clients")}
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-6 -mt-7">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-[#6BA3D6]" />
+            <div
+              className="w-4 h-4 rounded-full"
+              style={{ backgroundColor: chartConfig.print.color }}
+            />
             <span className="text-sm font-medium font-homenaje text-gray-700">
-              {t("dashboard.sold")}
+              {t("readyToPrint.print")}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-[#D1D5DB]" />
+            <div
+              className="w-4 h-4 rounded-full"
+              style={{ backgroundColor: chartConfig.send.color }}
+            />
             <span className="text-sm font-medium font-homenaje text-gray-700">
-              {t("dashboard.captured")}
+              {t("readyToPrint.sendSoftCopy")}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div
+              className="w-4 h-4 rounded-full"
+              style={{ backgroundColor: chartConfig.both.color }}
+            />
+            <span className="text-sm font-medium font-homenaje text-gray-700">
+              {t("readyToPrint.both")}
             </span>
           </div>
         </div>

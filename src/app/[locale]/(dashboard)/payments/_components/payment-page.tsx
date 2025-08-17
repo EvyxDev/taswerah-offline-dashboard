@@ -8,15 +8,20 @@ import {
 import DashTable from "./payment-table";
 import { useTranslations } from "next-intl";
 import ChartsSectoin from "./charts-sectoin";
+import { ShiftSelect } from "./shift-select";
 
 export default function PaymentPage({
-  SalesChart,
+  monthlyPayments,
   photoStats,
   clients,
+  shifts,
+  selectedShiftId,
 }: {
-  SalesChart: SalesChart;
-  photoStats: PhotoStats;
+  monthlyPayments: paymentStates2["monthly_payments"];
+  photoStats: paymentStates2["photo_stats"];
   clients: Client[];
+  shifts: TShift[];
+  selectedShiftId?: string;
 }) {
   const t = useTranslations("payments");
   return (
@@ -31,10 +36,16 @@ export default function PaymentPage({
         </BreadcrumbList>
       </Breadcrumb>
       <div className="pb-10 pt-5 space-y-8">
-        <h2 className="text-3xl font-homenaje  text-main-black mb-5">
-          {t("title")}
-        </h2>
-        <ChartsSectoin SalesChart={SalesChart} photoStats={photoStats} />
+        <div className="flex items-center justify-between">
+          <h2 className="text-3xl font-homenaje  text-main-black mb-5">
+            {t("title")}
+          </h2>
+          <ShiftSelect shifts={shifts} selectedShiftId={selectedShiftId} />
+        </div>
+        <ChartsSectoin
+          monthlyPayments={monthlyPayments}
+          photoStats={photoStats}
+        />
         <DashTable clients={clients} />
       </div>
     </div>

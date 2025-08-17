@@ -20,10 +20,9 @@ import { useTranslations } from "next-intl";
 
 export const description = "An area chart with gradient fill";
 
-type SalesChart = {
-  labels: string[];
-  data: number[];
-};
+type MonthlyPayment = { month: string; value: number };
+
+type MonthlyPayments = MonthlyPayment[];
 
 const chartConfig = {
   desktop: {
@@ -32,19 +31,18 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function ChartAreaGradient({ SalesChart }: { SalesChart: SalesChart }) {
+export function ChartAreaGradient({
+  monthlyPayments,
+}: {
+  monthlyPayments: MonthlyPayments;
+}) {
   const t = useTranslations();
 
   // Check if there's no data at all
   const hasNoData =
-    !SalesChart ||
-    !SalesChart.labels ||
-    !SalesChart.data ||
-    SalesChart.labels.length === 0 ||
-    SalesChart.data.length === 0 ||
-    SalesChart.data.every(
-      (value) => value === 0 || value === null || value === undefined
-    );
+    !monthlyPayments ||
+    monthlyPayments.length === 0 ||
+    monthlyPayments.every((entry) => !entry.value || entry.value === 0);
 
   // If no data, show empty state
   if (hasNoData) {
@@ -83,9 +81,9 @@ export function ChartAreaGradient({ SalesChart }: { SalesChart: SalesChart }) {
     );
   }
 
-  const chartData = SalesChart.labels.map((label, index) => ({
-    month: label,
-    desktop: SalesChart.data[index] ?? 0,
+  const chartData = monthlyPayments.map((entry) => ({
+    month: entry.month,
+    desktop: entry.value ?? 0,
   }));
 
   return (
@@ -114,7 +112,10 @@ export function ChartAreaGradient({ SalesChart }: { SalesChart: SalesChart }) {
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              domain={[0, Math.max(800, ...(SalesChart?.data || []))]}
+              domain={[
+                0,
+                Math.max(800, ...monthlyPayments.map((e) => e.value || 0)),
+              ]}
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <defs>
