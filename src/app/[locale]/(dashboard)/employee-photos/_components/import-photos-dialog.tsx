@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -49,6 +50,7 @@ export default function ImportPhotosDialog({
   employeeId,
 }: ImportPhotosDialogProps) {
   const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
+  const t = useTranslations();
 
   const form = useForm<ImportPhotosFormData>({
     resolver: zodResolver(importPhotosSchema),
@@ -114,11 +116,10 @@ export default function ImportPhotosDialog({
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-homenaje text-xl">
-            Import Photos by Codes
+            {t("employeePhotos.dialog.title")}
           </DialogTitle>
           <DialogDescription>
-            Select images from a folder and enter the barcode prefix for these
-            photos.
+            {t("employeePhotos.dialog.description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -130,10 +131,14 @@ export default function ImportPhotosDialog({
               name="barcodePrefix"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-medium">Barcode Prefix</FormLabel>
+                  <FormLabel className="font-medium">
+                    {t("employeePhotos.dialog.barcodePrefix")}
+                  </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter barcode prefix (e.g., 8888)"
+                      placeholder={t(
+                        "employeePhotos.dialog.barcodePrefixPlaceholder"
+                      )}
                       {...field}
                       disabled={isUploading}
                     />
@@ -149,7 +154,9 @@ export default function ImportPhotosDialog({
               name="photos"
               render={() => (
                 <FormItem>
-                  <FormLabel className="font-medium">Select Photos</FormLabel>
+                  <FormLabel className="font-medium">
+                    {t("employeePhotos.dialog.selectPhotos")}
+                  </FormLabel>
                   <FormControl>
                     <ImageUploader
                       selectedFiles={selectedFiles}
@@ -184,14 +191,16 @@ export default function ImportPhotosDialog({
                 onClick={handleDialogClose}
                 disabled={isUploading}
               >
-                Cancel
+                {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
                 disabled={isUploading}
                 className="bg-main-black text-white hover:bg-gray-800"
               >
-                {isUploading ? "Uploading..." : "Upload Photos"}
+                {isUploading
+                  ? t("employeePhotos.dialog.uploading")
+                  : t("employeePhotos.dialog.upload")}
               </Button>
             </DialogFooter>
           </form>

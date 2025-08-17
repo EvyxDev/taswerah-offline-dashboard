@@ -159,7 +159,7 @@ export function CreateOrderDialog({
                       <div className="relative">
                         <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
-                          placeholder="Enter barcode prefix"
+                          placeholder={t("order.barcode_prefix_placeholder")}
                           className="pl-10 font-homenaje h-12"
                           {...field}
                         />
@@ -183,7 +183,7 @@ export function CreateOrderDialog({
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
-                          placeholder="Enter phone number"
+                          placeholder={t("order.phone_number_placeholder")}
                           className="pl-10 font-homenaje h-12"
                           {...field}
                         />
@@ -209,7 +209,9 @@ export function CreateOrderDialog({
                     >
                       <FormControl>
                         <SelectTrigger className="font-homenaje h-12">
-                          <SelectValue placeholder="Select employee" />
+                          <SelectValue
+                            placeholder={t("order.select_employee_placeholder")}
+                          />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -235,7 +237,9 @@ export function CreateOrderDialog({
                 name="photos"
                 render={() => (
                   <FormItem>
-                    <FormLabel className="font-medium">Select Photos</FormLabel>
+                    <FormLabel className="font-medium">
+                      {t("order.select_photos")}
+                    </FormLabel>
                     <FormControl>
                       <ImageUploader
                         selectedFiles={selectedFiles}
@@ -272,7 +276,7 @@ export function CreateOrderDialog({
                 disabled={isUploading}
               >
                 <Plus className="w-4 h-4" />
-                Create
+                {t("order.create.submit")}
               </Button>
             </DialogFooter>
           </form>

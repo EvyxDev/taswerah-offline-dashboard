@@ -37,17 +37,42 @@ export default function ReadyToPrintPage({ barcodes }: ReadyToPrintPage) {
               {t("readyToPrint.title")}
             </h2>
           </div>
-          <div className="flex items-center gap-5 w-full flex-wrap">
-            {barcodes.map((barcode) => (
-              <div
-                key={barcode}
-                className="w-full max-w-[300px] cursor-pointer"
-                onClick={() => handleFolderClick(barcode)}
+          {barcodes && barcodes.length > 0 ? (
+            <div className="flex items-center gap-5 w-full flex-wrap">
+              {barcodes.map((barcode) => (
+                <div
+                  key={barcode}
+                  className="w-full max-w-[300px] cursor-pointer"
+                  onClick={() => handleFolderClick(barcode)}
+                >
+                  <Folder id={barcode} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center w-full py-16 text-center gap-3">
+              <svg
+                className="w-16 h-16 text-gray-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <Folder id={barcode} />
-              </div>
-            ))}
-          </div>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M3 7h5l2 3h9a2 2 0 012 2v5a2 2 0 01-2 2H6a3 3 0 01-3-3V7z"
+                />
+              </svg>
+              <h3 className="text-2xl font-semibold text-gray-800">
+                {t("readyToPrint.noDataTitle")}
+              </h3>
+              <p className="text-secondary">
+                {t("readyToPrint.noDataDescription")}
+              </p>
+            </div>
+          )}
         </div>
       </div>
       <ReadyToPrintDialog

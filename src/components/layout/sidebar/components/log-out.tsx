@@ -11,8 +11,8 @@ import {
 import { useState } from "react";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
-import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { useRouter } from "@/i18n/routing";
 
 export default function LogOut() {
   // Navigation
@@ -21,17 +21,17 @@ export default function LogOut() {
   const t = useTranslations("logout");
   const locale = useLocale();
   const isRTL = locale === "ar";
-  const route = useRouter();
 
   const handleLogout = async () => {
     const res = await signOut({
       redirect: false,
-      callbackUrl: "/auth/login",
+      callbackUrl: `/${locale}/auth/login`,
     });
 
     if (res?.url) {
       router.push(res.url);
     }
+    setIsDialogOpen(false);
   };
 
   return (
@@ -63,7 +63,7 @@ export default function LogOut() {
 
           <div className="flex justify-center my-4 sm:my-8">
             <Image
-              src="/assets/logout.png"
+              src="/assets/logout.gif"
               alt="Logout"
               width={80}
               height={60}
@@ -78,15 +78,13 @@ export default function LogOut() {
           >
             <button
               className="main-button w-full sm:w-1/2 font-homenaje text-lg sm:text-xl"
-              onClick={() => {
-                route.push("/auth/login");
-              }}
+              onClick={handleLogout}
             >
               {t("logOut")}
             </button>
             <button
               className="main-button-border w-full sm:w-1/2 font-homenaje text-lg sm:!text-2xl"
-              onClick={handleLogout}
+              onClick={() => setIsDialogOpen(false)}
             >
               {t("cancel")}
             </button>

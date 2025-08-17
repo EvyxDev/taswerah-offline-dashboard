@@ -19,6 +19,8 @@ import Link from "next/link";
 import { dateOptions } from "@/lib/constants/data.constant";
 import { useTranslations } from "next-intl";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useLocale } from "next-intl";
+import { IoMdHome } from "react-icons/io";
 
 type PrintedSentPageProps = {
   printed: string[];
@@ -29,8 +31,8 @@ export default function PrintedPage({ printed, sent }: PrintedSentPageProps) {
   const t = useTranslations("printedSent");
   const [selectedDate, setSelectedDate] = useState("2025-02-20");
   const [activeTab, setActiveTab] = useState("printed");
-  console.log(sent);
-  console.log(printed);
+  const locale = useLocale();
+
   const getSelectedDateLabel = () => {
     const option = dateOptions.find((opt) => opt.value === selectedDate);
     return option ? option.label : "20-02-2025";
@@ -38,11 +40,6 @@ export default function PrintedPage({ printed, sent }: PrintedSentPageProps) {
   const handleDateChange = (date: string) => {
     setSelectedDate(date);
   };
-
-  const locale =
-    typeof window !== "undefined"
-      ? window.location.pathname.split("/")[1]
-      : "en";
 
   const renderList = (codes: string[]) => {
     if (!codes || codes.length === 0) {
@@ -73,6 +70,7 @@ export default function PrintedPage({ printed, sent }: PrintedSentPageProps) {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbPage className="flex items-center gap-2 font-homenaje text-sm text-gray-400">
+              <IoMdHome size={28} color="black" className="-mt-2" />{" "}
               {t("breadcrumb")}
             </BreadcrumbPage>
           </BreadcrumbItem>

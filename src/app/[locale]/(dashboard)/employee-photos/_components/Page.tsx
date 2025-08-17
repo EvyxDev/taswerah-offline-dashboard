@@ -103,10 +103,10 @@ export default function EmployeePhotosPage({
                   </div>
                 </div>
                 <h3 className="text-xl font-homenaje text-gray-700 mb-2">
-                  No Photos Found
+                  {t("employeePhotos.emptyState.title")}
                 </h3>
                 <p className="text-gray-500 mb-6 leading-relaxed">
-                  This employee doesn&apos;t have any photo codes yet.
+                  {t("employeePhotos.emptyState.description")}
                 </p>
               </div>
             </div>
@@ -118,7 +118,7 @@ export default function EmployeePhotosPage({
         className="main-button w-fit mt-auto self-center"
         onClick={() => setIsImportDialogOpen(true)}
       >
-        Import photos by codes
+        {t("employeePhotos.import.button")}
       </button>
 
       <ImportPhotosDialog

@@ -2,20 +2,23 @@ import Providers from "@/components/providers";
 import { routing } from "@/i18n/routing";
 import { Metadata } from "next";
 import { hasLocale } from "next-intl";
-import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import localFont from "next/font/local";
+import { Noto_Kufi_Arabic } from "next/font/google";
 
 const Homenaje = localFont({
   src: "./fonts/Homenaje-Regular.ttf",
   variable: "--font-Homenaje",
 });
-export async function generateMetadata(): Promise<Metadata> {
-  // Translation
-  const t = await getTranslations();
 
+const NotoKufiArabic = Noto_Kufi_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+});
+export async function generateMetadata(): Promise<Metadata> {
   // Variables
-  const title = t("application-title");
+  const title = "Taswera Ofline Dahsboard";
 
   return {
     title,
@@ -33,7 +36,11 @@ export default function LocaleLayout({
 
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
-      <body className={` ${Homenaje.variable}`}>
+      <body
+        className={` ${Homenaje.variable} ${
+          locale === "ar" ? NotoKufiArabic.className : ""
+        }`}
+      >
         <Providers>
           {/* Main */}
           {children}

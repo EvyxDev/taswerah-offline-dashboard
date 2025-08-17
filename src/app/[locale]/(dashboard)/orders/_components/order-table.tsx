@@ -62,7 +62,7 @@ export default function OrderTable({ orders, employees, shifts }: Props) {
               className="main-button"
               onClick={() => setIsCreateDialogOpen(true)}
             >
-              Add
+              {t("order.create.open")}
             </button>
           </div>
 
@@ -79,7 +79,7 @@ export default function OrderTable({ orders, employees, shifts }: Props) {
                       {t("order.noPhotos")}
                     </TableHead>
                     <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-center min-w-[150px] sm:w-[100px]">
-                      Phone Number
+                      {t("order.phone_number")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>

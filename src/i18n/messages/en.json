@@ -95,6 +95,7 @@
     "title": "Payments",
     "clients": "Clients",
     "date": "Date",
+    "phoneNumber": "Phone Number",
     "clientCode": "Client Code",
     "package": "Package",
     "amount": "Amount (EGP)",
@@ -130,6 +131,8 @@
   "readyToPrint": {
     "breadcrumb": "Ready to print",
     "title": "Ready to print",
+    "noDataTitle": "No folders to show",
+    "noDataDescription": "There are no photo batches ready to print yet.",
     "fileDialogTitle": "File Dialog",
     "fileDialogContent": "This is the file dialog content.",
     "printConfirmation": "Print Confirmation",
@@ -161,6 +164,10 @@
     "back": "Back",
     "image": "Image"
   },
+  "settings": {
+    "comingSoonTitle": "Coming soon",
+    "comingSoonDescription": "We're working on this page. Please check back later."
+  },
   "order": {
     "dashboard": {
       "employees": "Orders"
@@ -177,8 +184,33 @@
       "title": "Create New Order"
     },
     "barcode_prefix": "Barcode Prefix",
+    "barcode_prefix_placeholder": "Enter barcode prefix",
     "phone_number": "Phone Number",
-    "employee": "Employee"
+    "phone_number_placeholder": "Enter phone number",
+    "employee": "Employee",
+    "select_employee_placeholder": "Select employee",
+    "select_photos": "Select Photos",
+    "create": {
+      "title": "Create New Order",
+      "open": "Add",
+      "submit": "Create"
+    }
+  },
+  "shifts": {
+    "label": "Shift",
+    "select_placeholder": "Select a shift",
+    "title": "Shifts",
+    "name": "Name",
+    "from": "From",
+    "to": "To",
+    "actions": "Actions",
+    "add": "Add",
+    "create_title": "Create Shift",
+    "edit_title": "Edit Shift",
+    "save": "Save",
+    "saving": "Saving...",
+    "delete_title": "Delete Shift",
+    "delete_description": "Are you sure you want to delete this shift? This action cannot be undone."
   },
   "payment": {
     "title": "Payment Details",
@@ -187,8 +219,32 @@
     "processing": "Processing...",
     "payNow": "Process Payment"
   },
+  "employeePhotos": {
+    "import": {
+      "button": "Import photos by codes"
+    },
+    "emptyState": {
+      "title": "No Photos Found",
+      "description": "This employee doesn't have any photo codes yet."
+    },
+    "dialog": {
+      "title": "Import Photos by Codes",
+      "description": "Select images from a folder and enter the barcode prefix for these photos.",
+      "barcodePrefix": "Barcode Prefix",
+      "barcodePrefixPlaceholder": "Enter barcode prefix (e.g., 8888)",
+      "selectPhotos": "Select Photos",
+      "upload": "Upload Photos",
+      "uploading": "Uploading..."
+    }
+  },
   "common": {
     "cancel": "Cancel"
+  },
+  "Error": {
+    "title": "Something went wrong",
+    "defaultMessage": "An unexpected error occurred. Please try again.",
+    "tryAgain": "Try again",
+    "goHome": "Back to Home"
   },
   "application-title": "Taswera"
 }

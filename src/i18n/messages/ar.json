@@ -108,6 +108,7 @@
     "title": "المدفوعات",
     "clients": "العملاء",
     "date": "التاريخ",
+    "phoneNumber": "رقم الهاتف",
     "clientCode": "كود العميل",
     "package": "الباقة",
     "amount": "المبلغ (جنيه)",
@@ -135,6 +136,8 @@
   "readyToPrint": {
     "breadcrumb": "جاهز للطباعة",
     "title": "جاهز للطباعة",
+    "noDataTitle": "لا يوجد مجلدات للعرض",
+    "noDataDescription": "لا توجد دفعات صور جاهزة للطباعة بعد.",
     "fileDialogTitle": "مربع حوار الملفات",
     "fileDialogContent": "هذا هو محتوى مربع حوار الملفات.",
     "printConfirmation": "تأكيد الطباعة",
@@ -164,6 +167,10 @@
     "back": "رجوع",
     "image": "صورة"
   },
+  "settings": {
+    "comingSoonTitle": "قريباً",
+    "comingSoonDescription": "نعمل على إعداد هذه الصفحة، يرجى العودة لاحقًا."
+  },
   "order": {
     "dashboard": {
       "employees": "الطلبات"
@@ -178,7 +185,35 @@
     "noOrdersDescription": "لا توجد أي طلبات في الوقت الحالي",
     "create": {
       "title": "اضافة طلب"
+    },
+    "barcode_prefix": "بادئة الباركود",
+    "barcode_prefix_placeholder": "أدخل بادئة الباركود",
+    "phone_number": "رقم الهاتف",
+    "phone_number_placeholder": "أدخل رقم الهاتف",
+    "employee": "الموظف",
+    "select_employee_placeholder": "اختر الموظف",
+    "select_photos": "اختر الصور",
+    "create": {
+      "title": "اضافة طلب",
+      "open": "إضافة",
+      "submit": "إنشاء"
     }
+  },
+  "shifts": {
+    "label": "الوردية",
+    "select_placeholder": "اختر وردية",
+    "title": "الورديات",
+    "name": "الاسم",
+    "from": "من",
+    "to": "إلى",
+    "actions": "إجراءات",
+    "add": "إضافة",
+    "create_title": "إنشاء وردية",
+    "edit_title": "تعديل وردية",
+    "save": "حفظ",
+    "saving": "جاري الحفظ...",
+    "delete_title": "حذف الوردية",
+    "delete_description": "هل أنت متأكد أنك تريد حذف هذه الوردية؟ لا يمكن التراجع عن هذا الإجراء."
   },
   "payment": {
     "title": "تفاصيل الدفع",
@@ -187,8 +222,32 @@
     "processing": "جاري الدفع",
     "payNow": "ادفع"
   },
+  "employeePhotos": {
+    "import": {
+      "button": "استيراد الصور بالأكواد"
+    },
+    "emptyState": {
+      "title": "لا توجد صور",
+      "description": "لا توجد أكواد صور لهذا الموظف حتى الآن."
+    },
+    "dialog": {
+      "title": "استيراد الصور بالأكواد",
+      "description": "اختر الصور من مجلد وأدخل بادئة الباركود لهذه الصور.",
+      "barcodePrefix": "بادئة الباركود",
+      "barcodePrefixPlaceholder": "أدخل بادئة الباركود (مثال: 8888)",
+      "selectPhotos": "اختر الصور",
+      "upload": "رفع الصور",
+      "uploading": "جاري الرفع..."
+    }
+  },
   "common": {
     "cancel": "الغاء"
+  },
+  "Error": {
+    "title": "حدث خطأ ما",
+    "defaultMessage": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
+    "tryAgain": "حاول مرة أخرى",
+    "goHome": "العودة إلى الرئيسية"
   },
   "application-title": "تصويرة"
 }

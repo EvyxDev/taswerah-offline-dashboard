@@ -3,6 +3,7 @@
 import DeleteDialog from "@/components/common/delete-dialog";
 import { HiMiniTrash } from "react-icons/hi2";
 import { FaPen } from "react-icons/fa6";
+import { useTranslations } from "next-intl";
 
 export default function ShiftActionsCell({
   onEdit,
@@ -11,12 +12,13 @@ export default function ShiftActionsCell({
   onEdit: () => void;
   onDelete: () => void;
 }) {
+  const t = useTranslations();
   return (
     <div className="flex justify-center gap-7">
       <DeleteDialog
         action={onDelete}
-        description="Are you sure you want to delete this shift? This action cannot be undone."
-        title="Delete Shift"
+        description={t("shifts.delete_description")}
+        title={t("shifts.delete_title")}
       >
         <button className="">
           <HiMiniTrash className="text-black text-2xl" />

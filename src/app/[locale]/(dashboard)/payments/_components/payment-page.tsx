@@ -9,6 +9,7 @@ import DashTable from "./payment-table";
 import { useTranslations } from "next-intl";
 import ChartsSectoin from "./charts-sectoin";
 import { ShiftSelect } from "./shift-select";
+import { IoMdHome } from "react-icons/io";
 
 export default function PaymentPage({
   monthlyPayments,
@@ -30,6 +31,7 @@ export default function PaymentPage({
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbPage className="flex items-center gap-2 font-homenaje text-sm text-gray-400">
+              <IoMdHome size={28} color="black" className="-mt-2" />{" "}
               {t("breadcrumb")}
             </BreadcrumbPage>
           </BreadcrumbItem>

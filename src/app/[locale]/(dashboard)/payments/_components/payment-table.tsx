@@ -21,11 +21,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PayemntData, dateOptions } from "@/lib/constants/data.constant";
 import { Card } from "@/components/ui/card";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ReceiptDialog } from "./receipt-dialog";
 
 export default function PaymentTable({ clients }: { clients: Client[] }) {
   const t = useTranslations();
+  const locale = useLocale();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedDate, setSelectedDate] = useState("all");
 
@@ -59,6 +60,19 @@ export default function PaymentTable({ clients }: { clients: Client[] }) {
   const getSelectedDateLabel = () => {
     const option = dateOptions.find((opt) => opt.value === selectedDate);
     return option ? option.label : "20-02-2025";
+  };
+
+  const formatDateTime = (value?: string | number | Date) => {
+    if (!value) return "";
+    const date = new Date(value);
+    if (isNaN(date.getTime())) return String(value);
+    return new Intl.DateTimeFormat(locale, {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
   };
 
   return (
@@ -116,26 +130,15 @@ export default function PaymentTable({ clients }: { clients: Client[] }) {
                 <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-start min-w-[100px]">
                   {t("payments.clientCode")}
                 </TableHead>
-                {/* <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center min-w-[100px] ">
-                  {t("payments.package")}
+
+                <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center min-w-[150px] ">
+                  {t("payments.phoneNumber")}
                 </TableHead>
                 <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center min-w-[150px] ">
                   {t("payments.amount")}
                 </TableHead>
-                <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center min-w-[150px] ">
-                  {t("payments.method")}
-                </TableHead> */}
-                <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-center min-w-[100px]">
-                  {t("payments.paid")}
-                </TableHead>
                 <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-center min-w-[150px]">
                   {t("payments.date")}
-                </TableHead>
-                {/* <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center min-w-[150px]">
-                  {t("payments.sentViaWhatsapp")}
-                </TableHead> */}
-                <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-center min-w-[140px]">
-                  {t("payments.receipt")}
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -151,23 +154,14 @@ export default function PaymentTable({ clients }: { clients: Client[] }) {
                     <TableCell>{client.barcode}</TableCell>
 
                     <TableCell className="text-center font-homenaje text-lg ">
-                      <div className="flex justify-center w-full">
-                        <div className="bg-white px-1 rounded-sm w-fit">
-                          {client.barcode
-                            ? t("payments.yes")
-                            : t("payments.no")}
-                        </div>
-                      </div>
+                      {client.phone_number}
+                    </TableCell>
+                    <TableCell className="text-center font-homenaje text-lg ">
+                      100
                     </TableCell>
                     <TableCell className="text-center font-homenaje text-lg mx-auto ">
-                      <div className="flex justify-center w-full">
-                        <div className="bg-[#5B5B5B] text-white px-2  rounded-full w-fit">
-                          {client.last_visit}
-                        </div>
-                      </div>
+                      {formatDateTime(client.created_at)}
                     </TableCell>
-
-                    <ReceiptDialog clientId={client.id.toString()} />
                   </TableRow>
                 ))
               ) : (

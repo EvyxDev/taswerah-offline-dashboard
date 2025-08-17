@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import ShiftHeader from "./shift-header";
 import ShiftActionsCell from "./shift-actions-cell";
 import ShiftFormDialog from "./shift-form-dialog";
+import { useTranslations } from "next-intl";
 
 type Props = {
   shifts: TShift[];
@@ -24,6 +25,7 @@ type Props = {
 export default function ShiftsTable({ shifts }: Props) {
   const router = useRouter();
   const { deleteShift } = useDeleteShift();
+  const t = useTranslations();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingShift, setEditingShift] = useState<TShift | null>(null);
@@ -58,16 +60,16 @@ export default function ShiftsTable({ shifts }: Props) {
           <TableHeader>
             <TableRow className="px-7">
               <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-start min-w-[180px]">
-                Name
+                {t("shifts.name")}
               </TableHead>
               <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-center min-w-[120px]">
-                From
+                {t("shifts.from")}
               </TableHead>
               <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-center min-w-[120px]">
-                To
+                {t("shifts.to")}
               </TableHead>
               <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-center min-w-[200px]">
-                Actions
+                {t("shifts.actions")}
               </TableHead>
             </TableRow>
           </TableHeader>

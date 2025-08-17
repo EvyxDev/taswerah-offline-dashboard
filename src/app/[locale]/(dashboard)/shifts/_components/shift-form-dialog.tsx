@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import useCreateShift from "../_hooks/use-create-shift";
 import useUpdateShift from "../_hooks/use-update-shift";
+import { useTranslations } from "next-intl";
 
 const shiftSchema = z.object({
   name: z.string().min(1, "Name is required").max(100, "Name is too long"),
@@ -51,6 +52,7 @@ export default function ShiftFormDialog({
   const router = useRouter();
   const { addShift, isAdding } = useCreateShift();
   const { updateShift, isUpdating } = useUpdateShift();
+  const t = useTranslations();
 
   const form = useForm<ShiftFormValues>({
     resolver: zodResolver(shiftSchema),
@@ -59,7 +61,8 @@ export default function ShiftFormDialog({
   });
 
   const submitting = isAdding || isUpdating;
-  const title = mode === "edit" ? "Edit Shift" : "Create Shift";
+  const title =
+    mode === "edit" ? t("shifts.edit_title") : t("shifts.create_title");
 
   const onSubmit = (values: ShiftFormValues) => {
     if (mode === "edit" && shiftId != null) {
@@ -110,7 +113,9 @@ export default function ShiftFormDialog({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm text-gray-700">Name</FormLabel>
+                  <FormLabel className="text-sm text-gray-700">
+                    {t("shifts.name")}
+                  </FormLabel>
                   <FormControl>
                     <Input className="h-11" {...field} />
                   </FormControl>
@@ -125,7 +130,7 @@ export default function ShiftFormDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-sm text-gray-700">
-                      From
+                      {t("shifts.from")}
                     </FormLabel>
                     <FormControl>
                       <Input type="time" className="h-11" {...field} />
@@ -139,7 +144,9 @@ export default function ShiftFormDialog({
                 name="to"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm text-gray-700">To</FormLabel>
+                    <FormLabel className="text-sm text-gray-700">
+                      {t("shifts.to")}
+                    </FormLabel>
                     <FormControl>
                       <Input type="time" className="h-11" {...field} />
                     </FormControl>
@@ -156,14 +163,14 @@ export default function ShiftFormDialog({
                 className="font-homenaje"
                 disabled={submitting}
               >
-                Cancel
+                {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
                 disabled={submitting}
                 className="main-button text-white font-homenaje"
               >
-                {submitting ? "Saving..." : "Save"}
+                {submitting ? t("shifts.saving") : t("shifts.save")}
               </Button>
             </DialogFooter>
           </form>

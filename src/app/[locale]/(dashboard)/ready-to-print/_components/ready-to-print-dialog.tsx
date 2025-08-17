@@ -95,7 +95,16 @@ export default function ReadyToPrintDialog({
                 ].map(({ value, label }) => (
                   <div
                     key={value}
-                    className="relative bg-[#FAFAFA] flex-1 w-fit max-w-[180px] rounded-full h-10 flex items-center px-4 gap-4"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setSendType(value as typeof sendType)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSendType(value as typeof sendType);
+                      }
+                    }}
+                    className="relative bg-[#FAFAFA] flex-1 w-fit max-w-[180px] rounded-full h-10 flex items-center px-4 gap-4 cursor-pointer"
                   >
                     <RadioGroupItem
                       value={value}

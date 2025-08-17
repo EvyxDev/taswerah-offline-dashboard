@@ -142,7 +142,7 @@ export function PayDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-sm font-medium text-gray-700 font-homenaje">
-                      Shift
+                      {t("shifts.label", { default: "Shift" })}
                     </FormLabel>
                     <Select
                       onValueChange={field.onChange}
@@ -150,7 +150,11 @@ export function PayDialog({
                     >
                       <FormControl>
                         <SelectTrigger className="font-homenaje h-12">
-                          <SelectValue placeholder="Select a shift" />
+                          <SelectValue
+                            placeholder={t("shifts.select_placeholder", {
+                              default: "Select a shift",
+                            })}
+                          />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
