@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { getAuthToken } from "../utils/auth.token";
+
 export async function GetPrintedCodes(token: string) {
   try {
     const response = await fetch(
@@ -95,5 +97,48 @@ export async function GetOrdersBySendType(
       error?.message ||
         "Unexpected error occurred while fetching orders by send type"
     );
+  }
+}
+
+// Fetch paginated user barcodes
+export type BarcodeItem = {
+  barcode: string;
+  used: boolean;
+};
+
+export type PaginatedBarcodes = {
+  current_page: number;
+  data: BarcodeItem[];
+  last_page: number;
+  per_page: number | string;
+  total: number;
+};
+
+export async function GetUserBarcodes(page = 1, perPage = 15) {
+  const token = await getAuthToken();
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API}/branch-manager/users/barcodes?per_page=${perPage}&page=${page}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch barcodes. Status: ${response.status}`);
+    }
+
+    const payload = (await response.json()) as PaginatedBarcodes;
+    if (!payload || !Array.isArray(payload.data)) {
+      throw new Error("Invalid barcodes API response");
+    }
+    return payload;
+  } catch (error: any) {
+    throw new Error(error?.message || "Unexpected error fetching barcodes");
   }
 }

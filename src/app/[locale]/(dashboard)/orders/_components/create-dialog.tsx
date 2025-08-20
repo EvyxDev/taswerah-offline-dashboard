@@ -45,7 +45,9 @@ type CreateOrderDialogProps = {
 };
 
 const formSchema = z.object({
-  barcode_prefix: z.string().min(1, "Barcode prefix is required"),
+  barcode_prefix: z
+    .string()
+    .length(4, "Code must be exactly 4 characters (auto from folder name)"),
   phone_number: z
     .string()
     .min(1, "Phone number is required")
@@ -82,6 +84,24 @@ export function CreateOrderDialog({
       files.map((f) => f.file)
     );
     form.clearErrors("photos");
+  };
+
+  const handleFolderNameChange = (folderName: string | null) => {
+    const code = (folderName ?? "").trim();
+    form.setValue("barcode_prefix", code, { shouldValidate: true });
+    if (!code) {
+      form.setError("barcode_prefix", {
+        type: "manual",
+        message: "Select a folder so code can be auto-filled",
+      });
+    } else if (code.length !== 4) {
+      form.setError("barcode_prefix", {
+        type: "manual",
+        message: "Code must be exactly 4 characters (from folder name)",
+      });
+    } else {
+      form.clearErrors("barcode_prefix");
+    }
   };
 
   const handleFileError = (error: string) => {
@@ -162,6 +182,8 @@ export function CreateOrderDialog({
                           placeholder={t("order.barcode_prefix_placeholder")}
                           className="pl-10 font-homenaje h-12"
                           {...field}
+                          readOnly
+                          disabled
                         />
                       </div>
                     </FormControl>
@@ -245,14 +267,8 @@ export function CreateOrderDialog({
                         selectedFiles={selectedFiles}
                         onFilesChange={handleFilesChange}
                         onError={handleFileError}
+                        onFolderNameChange={handleFolderNameChange}
                         disabled={isUploading}
-                        maxFiles={10}
-                        maxSizePerFile={5}
-                        acceptedFormats={[
-                          "image/jpeg",
-                          "image/png",
-                          "image/webp",
-                        ]}
                       />
                     </FormControl>
                     <FormMessage />

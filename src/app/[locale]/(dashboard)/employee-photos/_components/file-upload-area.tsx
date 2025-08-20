@@ -9,10 +9,45 @@ interface SelectedFile {
   preview: string;
 }
 
+// Minimal types for WebKit directory drag-and-drop support
+interface WebkitFileSystemEntry {
+  isFile: boolean;
+  isDirectory: boolean;
+  name: string;
+  fullPath: string;
+}
+
+interface WebkitFileSystemFileEntry extends WebkitFileSystemEntry {
+  file: (
+    successCallback: (file: File) => void,
+    errorCallback?: (error: DOMException) => void
+  ) => void;
+}
+
+interface WebkitFileSystemDirectoryReader {
+  readEntries: (
+    successCallback: (entries: WebkitFileSystemEntry[]) => void,
+    errorCallback?: (error: DOMException) => void
+  ) => void;
+}
+
+interface WebkitFileSystemDirectoryEntry extends WebkitFileSystemEntry {
+  createReader: () => WebkitFileSystemDirectoryReader;
+}
+
+const isDirectoryEntry = (
+  entry: WebkitFileSystemEntry
+): entry is WebkitFileSystemDirectoryEntry => entry.isDirectory === true;
+
+const isFileEntry = (
+  entry: WebkitFileSystemEntry
+): entry is WebkitFileSystemFileEntry => entry.isFile === true;
+
 interface ImageUploaderProps {
   selectedFiles: SelectedFile[];
   onFilesChange: (files: SelectedFile[]) => void;
   onError?: (error: string) => void;
+  onFolderNameChange?: (folderName: string | null) => void;
   disabled?: boolean;
   maxFiles?: number;
   maxSizePerFile?: number; // in MB
@@ -23,9 +58,9 @@ export default function ImageUploader({
   selectedFiles,
   onFilesChange,
   onError,
+  onFolderNameChange,
   disabled = false,
-  maxFiles = 100,
-  maxSizePerFile = 10,
+  // maxSizePerFile retained for prop compatibility but not used
   acceptedFormats = [
     "image/jpeg",
     "image/jpg",
@@ -37,48 +72,140 @@ export default function ImageUploader({
 }: ImageUploaderProps) {
   const [isDragOver, setIsDragOver] = useState(false);
 
+  const detectTopLevelFolderName = useCallback(
+    (files: File[]): string | null => {
+      for (const file of files) {
+        const relativePath = (
+          file as unknown as { webkitRelativePath?: string }
+        ).webkitRelativePath;
+        if (relativePath && typeof relativePath === "string") {
+          const firstSegment = relativePath.split("/")[0];
+          if (firstSegment) return firstSegment;
+        }
+      }
+      return null;
+    },
+    []
+  );
+
   const validateFiles = useCallback(
     (files: File[]): { validFiles: File[]; errors: string[] } => {
-      const errors: string[] = [];
-      const validFiles: File[] = [];
-
-      for (const file of files) {
-        if (
-          !acceptedFormats.some(
-            (format) =>
-              file.type === format ||
-              file.type.startsWith(format.split("/")[0] + "/")
-          )
-        ) {
-          errors.push(`${file.name}: Unsupported file format`);
-          continue;
-        }
-
-        // Check file size
-        if (file.size > maxSizePerFile * 1024 * 1024) {
-          errors.push(`${file.name}: File too large (max ${maxSizePerFile}MB)`);
-          continue;
-        }
-
-        validFiles.push(file);
-      }
-
-      // Check total files limit
-      if (selectedFiles.length + validFiles.length > maxFiles) {
-        errors.push(`Maximum ${maxFiles} files allowed`);
-        const allowedCount = maxFiles - selectedFiles.length;
-        return { validFiles: validFiles.slice(0, allowedCount), errors };
-      }
-
-      return { validFiles, errors };
+      return { validFiles: files, errors: [] };
     },
-    [selectedFiles.length, maxFiles, maxSizePerFile, acceptedFormats]
+    []
+  );
+
+  // Recursively collect files from dropped folders (Chrome/WebKit)
+  const collectFilesFromDataTransfer = useCallback(
+    async (
+      dataTransfer: DataTransfer
+    ): Promise<{ files: File[]; folderName: string | null }> => {
+      const items = Array.from(dataTransfer.items || []);
+      if (items.length === 0) {
+        return {
+          files: Array.from(dataTransfer.files || []),
+          folderName: null,
+        };
+      }
+
+      const files: File[] = [];
+      let topFolderName: string | null = null;
+
+      const traverseEntry = async (
+        entry: WebkitFileSystemEntry
+      ): Promise<void> => {
+        if (!entry) return;
+        if (isFileEntry(entry)) {
+          await new Promise<void>((resolve, reject) => {
+            entry.file(
+              (file: File) => {
+                try {
+                  const fullPath: string = (entry.fullPath || "").replace(
+                    /^\//,
+                    ""
+                  );
+                  if (!topFolderName) {
+                    topFolderName = fullPath.split("/")[0] || null;
+                  }
+                  files.push(file);
+                  resolve();
+                } catch (err) {
+                  reject(err as DOMException);
+                }
+              },
+              (err: DOMException) => reject(err)
+            );
+          });
+        } else if (isDirectoryEntry(entry)) {
+          if (!topFolderName) {
+            const dirPath = (entry.fullPath || "").replace(/^\//, "");
+            topFolderName = dirPath.split("/")[0] || entry.name || null;
+          }
+          const reader = entry.createReader();
+          await new Promise<void>((resolve) => {
+            const readEntries = () => {
+              reader.readEntries(async (entries: WebkitFileSystemEntry[]) => {
+                if (!entries.length) {
+                  resolve();
+                  return;
+                }
+                await Promise.all(entries.map((child) => traverseEntry(child)));
+                readEntries();
+              });
+            };
+            readEntries();
+          });
+        }
+      };
+
+      await Promise.all(
+        items.map(async (item) => {
+          const entryGetter = (
+            item as unknown as {
+              webkitGetAsEntry?: () => WebkitFileSystemEntry | null;
+            }
+          ).webkitGetAsEntry;
+          const entry =
+            typeof entryGetter === "function" ? entryGetter.call(item) : null;
+          if (entry) {
+            if (!topFolderName) {
+              const initialPath = (entry.fullPath || "").replace(/^\//, "");
+              const entryWithName: WebkitFileSystemEntry =
+                entry as WebkitFileSystemEntry;
+              topFolderName =
+                initialPath.split("/")[0] || entryWithName.name || null;
+            }
+            await traverseEntry(entry);
+            return;
+          }
+          const file = item.getAsFile && item.getAsFile();
+          if (file) files.push(file);
+        })
+      );
+
+      return { files, folderName: topFolderName };
+    },
+    []
   );
 
   const processFiles = useCallback(
-    (files: File[]) => {
+    (files: File[], folderNameOverride?: string | null) => {
       if (files.length === 0) {
         onError?.("Please select at least one image file");
+        return;
+      }
+
+      // Enforce folder-based selection with exactly 4-character folder name
+      const detectedFolder =
+        folderNameOverride ?? detectTopLevelFolderName(files);
+      if (!detectedFolder) {
+        // silently ignore non-folder drops
+        onFolderNameChange?.(null);
+        return;
+      }
+      if (detectedFolder.length !== 4) {
+        onError?.("Folder name must be exactly 4 characters");
+        onFolderNameChange?.(detectedFolder);
         return;
       }
 
@@ -97,9 +224,17 @@ export default function ImageUploader({
         preview: URL.createObjectURL(file),
       }));
 
+      onFolderNameChange?.(detectedFolder);
       onFilesChange([...selectedFiles, ...newFiles]);
     },
-    [selectedFiles, validateFiles, onError, onFilesChange]
+    [
+      selectedFiles,
+      validateFiles,
+      onError,
+      onFilesChange,
+      detectTopLevelFolderName,
+      onFolderNameChange,
+    ]
   );
 
   const handleFileSelect = useCallback(
@@ -112,14 +247,16 @@ export default function ImageUploader({
   );
 
   const handleDrop = useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
+    async (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
       setIsDragOver(false);
 
-      const files = Array.from(event.dataTransfer.files);
-      processFiles(files);
+      const { files, folderName } = await collectFilesFromDataTransfer(
+        event.dataTransfer
+      );
+      processFiles(files, folderName);
     },
-    [processFiles]
+    [processFiles, collectFilesFromDataTransfer]
   );
 
   const handleDragOver = useCallback(
@@ -151,22 +288,23 @@ export default function ImageUploader({
   const clearAllFiles = useCallback(() => {
     selectedFiles.forEach(({ preview }) => URL.revokeObjectURL(preview));
     onFilesChange([]);
-  }, [selectedFiles, onFilesChange]);
+    onFolderNameChange?.(null);
+  }, [selectedFiles, onFilesChange, onFolderNameChange]);
 
   // const getTotalSize = useCallback(() => {
-  //   return selectedFiles.reduce((acc, file) => acc + file.file.size, 0);
+  // 	return selectedFiles.reduce((acc, file) => acc + file.file.size, 0);
   // }, [selectedFiles]);
 
   // const getFormatsList = useCallback(() => {
-  //   return acceptedFormats
-  //     .map((format) => format.split("/")[1].toUpperCase())
-  //     .join(", ");
+  // 	return acceptedFormats
+  // 		.map((format) => format.split("/")[1].toUpperCase())
+  // 		.join(", ");
   // }, [acceptedFormats]);
 
   return (
     <div className="space-y-4">
       {/* Upload Options */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4">
         {/* Folder Selection */}
         <div className="relative">
           <input
@@ -187,28 +325,8 @@ export default function ImageUploader({
               Select Entire Folder
             </p>
             <p className="text-xs text-gray-500">
-              Choose a folder containing images
-            </p>
-          </div>
-        </div>
-
-        {/* Multiple Files Selection */}
-        <div className="relative">
-          <input
-            type="file"
-            multiple
-            accept={acceptedFormats.join(",")}
-            onChange={handleFileSelect}
-            disabled={disabled}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-          />
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors bg-gray-50 hover:bg-gray-100">
-            <FiUpload size={24} className="mx-auto mb-2 text-gray-400" />
-            <p className="text-sm font-medium text-gray-700 mb-1">
-              Select Multiple Files
-            </p>
-            <p className="text-xs text-gray-500">
-              Choose individual image files
+              Choose a folder containing images (folder name must be exactly 4
+              characters)
             </p>
           </div>
         </div>
@@ -234,9 +352,7 @@ export default function ImageUploader({
         <p className="text-base font-medium text-gray-700 mb-2">
           {isDragOver ? "Drop images here" : "Drag and drop images here"}
         </p>
-        <p className="text-sm text-gray-500">
-          Or use the options above to select files or folders
-        </p>
+        <p className="text-sm text-gray-500">Or select a folder above</p>
       </div>
 
       {/* Selected Files Preview */}

@@ -25,7 +25,8 @@ export function DialogSwicher({ className }: { className?: string }) {
   const switchLocale = () => {
     // Toggle between languages
     const nextLocale = locale === "en" ? "ar" : "en";
-    router.push(`${pathname}?${searchParams.toString()}`, {
+    const queryString = searchParams ? `?${searchParams.toString()}` : "";
+    router.push(`${pathname}${queryString}`, {
       locale: nextLocale as Locale,
     });
   };

@@ -14,7 +14,8 @@
     "readyToPrint": "جاهز للطباعة",
     "printedSent": "تم الطباعة والإرسال",
     "orders": "الطلبات",
-    "shifts": "الورديات"
+    "shifts": "الورديات",
+    "barcodes": "الاكواد"
   },
   "dashboard": {
     "totalSales": "إجمالي المبيعات",
@@ -75,7 +76,11 @@
   "photographers": {
     "add": "إضافة",
     "addPhotographer": "إضافة مصور",
+    "editPhotographer": "تحديث مصور",
     "save": "إضافة",
+    "update": "تحديث",
+    "adding": "جارٍ الإضافة...",
+    "updating": "جارٍ التحديث...",
     "cancel": "إلغاء",
     "selectBranch": "اختر الفرع",
     "name": "الاسم",
@@ -165,6 +170,7 @@
     "sentTab": "تم الإرسال",
     "date": "التاريخ",
     "back": "رجوع",
+    "download": "تحميل ZIP",
     "image": "صورة"
   },
   "settings": {
@@ -221,6 +227,20 @@
     "amount": "مبلغ الدفع",
     "processing": "جاري الدفع",
     "payNow": "ادفع"
+  },
+  "barcodes": {
+    "title": "أكواد الباركود",
+    "barcode": "الباركود",
+    "used": "مستخدم",
+    "yes": "نعم",
+    "no": "لا",
+    "empty": "لا توجد أكواد باركود",
+    "generate_title": "توليد أكواد باركود",
+    "quantity": "الكمية",
+    "generate": "توليد",
+    "generating": "جارٍ التوليد...",
+    "generated": "تم توليد الأكواد",
+    "generate_error": "فشل في التوليد"
   },
   "employeePhotos": {
     "import": {

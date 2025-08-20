@@ -27,7 +27,9 @@ import ImageUploader from "./file-upload-area";
 import { useUploadPhotos } from "../_hooks/use-upload-photos";
 
 const importPhotosSchema = z.object({
-  barcodePrefix: z.string().min(1, "Barcode prefix is required"),
+  barcodePrefix: z
+    .string()
+    .length(4, "Code must be exactly 4 characters (auto from folder name)"),
   photos: z.array(z.instanceof(File)).min(1, "At least one photo is required"),
 });
 
@@ -85,6 +87,24 @@ export default function ImportPhotosDialog({
     }
   };
 
+  const handleFolderNameChange = (folderName: string | null) => {
+    const code = (folderName ?? "").trim();
+    form.setValue("barcodePrefix", code, { shouldValidate: true });
+    if (!code) {
+      form.setError("barcodePrefix", {
+        type: "manual",
+        message: "Select a folder so code can be auto-filled",
+      });
+    } else if (code.length !== 4) {
+      form.setError("barcodePrefix", {
+        type: "manual",
+        message: "Code must be exactly 4 characters (from folder name)",
+      });
+    } else {
+      form.clearErrors("barcodePrefix");
+    }
+  };
+
   const handleFileError = (error: string) => {
     form.setError("photos", {
       type: "manual",
@@ -98,10 +118,12 @@ export default function ImportPhotosDialog({
       barcodePrefix: data.barcodePrefix,
       employeeId: employeeId,
     });
+    // Close immediately after submit as requested
+    handleDialogClose(true);
   };
 
-  const handleDialogClose = () => {
-    if (!uploadPhotosMutation.isPending) {
+  const handleDialogClose = (force = false) => {
+    if (force || !uploadPhotosMutation.isPending) {
       selectedFiles.forEach(({ preview }) => URL.revokeObjectURL(preview));
       setSelectedFiles([]);
       form.reset();
@@ -112,7 +134,7 @@ export default function ImportPhotosDialog({
   const isUploading = uploadPhotosMutation.isPending;
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleDialogClose}>
+    <Dialog open={isOpen} onOpenChange={() => handleDialogClose()}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-homenaje text-xl">
@@ -140,7 +162,8 @@ export default function ImportPhotosDialog({
                         "employeePhotos.dialog.barcodePrefixPlaceholder"
                       )}
                       {...field}
-                      disabled={isUploading}
+                      readOnly
+                      disabled
                     />
                   </FormControl>
                   <FormMessage />
@@ -162,6 +185,7 @@ export default function ImportPhotosDialog({
                       selectedFiles={selectedFiles}
                       onFilesChange={handleFilesChange}
                       onError={handleFileError}
+                      onFolderNameChange={handleFolderNameChange}
                       disabled={isUploading}
                     />
                   </FormControl>
@@ -188,7 +212,7 @@ export default function ImportPhotosDialog({
               <Button
                 type="button"
                 variant="outline"
-                onClick={handleDialogClose}
+                onClick={() => handleDialogClose()}
                 disabled={isUploading}
               >
                 {t("common.cancel")}

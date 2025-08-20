@@ -29,7 +29,7 @@ function isActive(pathname: string, href: string) {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const rawPath = usePathname();
+  const rawPath = usePathname() || "/";
   const locale = useLocale();
   const pathname = stripLocale(rawPath, locale);
   const t = useTranslations("navigation");

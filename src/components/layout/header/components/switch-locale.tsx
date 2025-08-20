@@ -30,7 +30,8 @@ export function SwitchLocale({ className }: { className?: string }) {
 
   // Functions
   const switchLocale = (locale: Locale) => {
-    router.push(`${pathname}?${searchParams.toString()}`, { locale });
+    const queryString = searchParams ? `?${searchParams.toString()}` : "";
+    router.push(`${pathname}${queryString}`, { locale });
   };
 
   const currentLanguage = languages.find((lang) => lang.code === locale);

@@ -21,13 +21,14 @@ export function ShiftSelect({
   const searchParams = useSearchParams();
 
   const handleChange = (value: string) => {
-    const params = new URLSearchParams(searchParams?.toString());
+    const params = new URLSearchParams(searchParams?.toString() || "");
     if (value === "all") {
       params.delete("shift_id");
     } else {
       params.set("shift_id", value);
     }
-    router.push(`${pathname}?${params.toString()}`);
+    const queryString = params.toString();
+    router.push(`${pathname}${queryString ? `?${queryString}` : ""}`);
   };
 
   const currentValue = selectedShiftId ?? "all";

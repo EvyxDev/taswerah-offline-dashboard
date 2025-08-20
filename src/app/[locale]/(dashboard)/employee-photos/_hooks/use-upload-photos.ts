@@ -37,14 +37,10 @@ export const useUploadPhotos = ({
 
       return result;
     },
-    onSuccess: (data) => {
-      // Show success message
-      alert(data.message || "Photos uploaded successfully!");
+    onSuccess: () => {
       onSuccess?.();
     },
     onError: (error: Error) => {
-      // Show error message
-      alert(error.message || "Failed to upload photos");
       onError?.(error.message);
     },
   });

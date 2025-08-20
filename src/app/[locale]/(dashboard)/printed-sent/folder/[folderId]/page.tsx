@@ -17,7 +17,7 @@ export default async function Page({ params }: PageProps) {
   const photos = await getPhotosByBarcode(token || "", folderId || "");
   return (
     <>
-      <FolderPage photos={photos} />
+      <FolderPage photos={photos} folderId={folderId} />
     </>
   );
 }

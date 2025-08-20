@@ -1,9 +1,10 @@
 export const NAV_LINKS = [
   { href: "/", label: "dashboard" },
-  { href: "/orders", label: "orders" },
+  { href: "/barcodes", label: "barcodes" },
   { href: "/shifts", label: "shifts" },
+  { href: "/orders", label: "orders" },
+  { href: "/employees", label: "employees" },
   { href: "/ready-to-print", label: "readyToPrint" },
-  { href: "/payments", label: "payments" },
   { href: "/printed-sent", label: "printedSent" },
-  { href: "/settings", label: "settings" },
+  { href: "/payments", label: "payments" },
 ];

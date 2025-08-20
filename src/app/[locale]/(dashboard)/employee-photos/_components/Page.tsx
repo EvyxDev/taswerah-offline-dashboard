@@ -32,7 +32,7 @@ export default function EmployeePhotosPage({
   const hasPhotos = codes && codes.length > 0;
 
   return (
-    <div className="flex flex-col min-h-screen px-6 xl:px-10 py-5">
+    <div className="flex flex-col px-6 xl:px-10 py-5">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -52,7 +52,7 @@ export default function EmployeePhotosPage({
       </Breadcrumb>
 
       {/* Main content grows to fill space */}
-      <div className="flex-grow pb-10 pt-5 space-y-8">
+      <div className=" pb-10 pt-5 space-y-8">
         <div className="flex items-center justify-between w-full mb-5">
           <h2 className="text-3xl font-homenaje text-main-black">
             {t("dashboard.viewPhotos")}
@@ -77,7 +77,7 @@ export default function EmployeePhotosPage({
           </div>
         </div>
 
-        <div className="flex-col flex h-full">
+        <div className="">
           {hasPhotos ? (
             <div className="flex items-center gap-5 w-full flex-wrap">
               {codes.map((code) => {
@@ -115,7 +115,7 @@ export default function EmployeePhotosPage({
       </div>
 
       <button
-        className="main-button w-fit mt-auto self-center"
+        className="main-button w-fit self-center mt-60"
         onClick={() => setIsImportDialogOpen(true)}
       >
         {t("employeePhotos.import.button")}

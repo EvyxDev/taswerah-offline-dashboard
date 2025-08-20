@@ -14,7 +14,8 @@
     "readyToPrint": "Ready to Print",
     "printedSent": "Printed & Sent",
     "orders": "Orders",
-    "shifts": "Shifts"
+    "shifts": "Shifts",
+    "barcodes": "Barcodes"
   },
   "dashboard": {
     "totalSales": "Total Sales",
@@ -122,7 +123,11 @@
   "photographers": {
     "add": "Add",
     "addPhotographer": "Add Photographer",
+    "editPhotographer": "Edit Photographer",
     "save": "Add",
+    "update": "Update",
+    "adding": "Adding...",
+    "updating": "Updating...",
     "cancel": "Cancel",
     "selectBranch": "Select branch",
     "name": "Name",
@@ -162,6 +167,7 @@
     "sentTab": "Sent",
     "date": "Date",
     "back": "Back",
+    "download": "Download ZIP",
     "image": "Image"
   },
   "settings": {
@@ -218,6 +224,20 @@
     "amount": "Payment Amount",
     "processing": "Processing...",
     "payNow": "Process Payment"
+  },
+  "barcodes": {
+    "title": "Barcodes",
+    "barcode": "Barcode",
+    "used": "Used",
+    "yes": "Yes",
+    "no": "No",
+    "empty": "No barcodes found",
+    "generate_title": "Generate Barcodes",
+    "quantity": "Quantity",
+    "generate": "Generate",
+    "generating": "Generating...",
+    "generated": "Barcodes generated",
+    "generate_error": "Failed to generate"
   },
   "employeePhotos": {
     "import": {

@@ -18,20 +18,17 @@ import { RiFilter2Fill } from "react-icons/ri";
 import Link from "next/link";
 import { dateOptions } from "@/lib/constants/data.constant";
 import { useTranslations } from "next-intl";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLocale } from "next-intl";
 import { IoMdHome } from "react-icons/io";
 
 type PrintedSentPageProps = {
   printed: string[];
-  sent: string[];
 };
 
-export default function PrintedPage({ printed, sent }: PrintedSentPageProps) {
+export default function PrintedPage({ printed }: PrintedSentPageProps) {
   const t = useTranslations("printedSent");
   const [selectedDate, setSelectedDate] = useState("2025-02-20");
-  const [activeTab, setActiveTab] = useState("printed");
-  const locale = useLocale();
+  useLocale();
 
   const getSelectedDateLabel = () => {
     const option = dateOptions.find((opt) => opt.value === selectedDate);
@@ -80,27 +77,9 @@ export default function PrintedPage({ printed, sent }: PrintedSentPageProps) {
       <div className="py-10">
         <div className="w-full">
           <div className="flex flex-col gap-5 sm:flex-row items-center justify-between">
-            <Tabs
-              value={activeTab}
-              onValueChange={setActiveTab}
-              className="w-full"
-              dir={locale === "ar" ? "rtl" : "ltr"}
-            >
-              <TabsList className="bg-transparent gap-5 h-auto p-0 justify-start">
-                <TabsTrigger
-                  value="printed"
-                  className="text-xl sm:text-3xl font-homenaje py-2 sm:py-4 px-4 sm:px-8 rounded-2xl transition-colors data-[state=active]:bg-black data-[state=active]:text-white bg-[#FAFAFA] text-black hover:bg-gray-200"
-                >
-                  {t("printedTab")}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="sent"
-                  className="text-xl sm:text-3xl font-homenaje py-2 sm:py-4 px-4 sm:px-8 rounded-2xl transition-colors data-[state=active]:bg-black data-[state=active]:text-white bg-[#FAFAFA] text-black hover:bg-gray-200"
-                >
-                  {t("sentTab")}
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <div className="text-xl sm:text-3xl font-homenaje py-2 sm:py-4 px-4 sm:px-8 rounded-2xl bg-black text-white">
+              {t("printedTab")}
+            </div>
 
             <DropdownMenu>
               <DropdownMenuTrigger className="self-end" asChild>
@@ -131,16 +110,7 @@ export default function PrintedPage({ printed, sent }: PrintedSentPageProps) {
             </DropdownMenu>
           </div>
 
-          <div className="mt-10">
-            <Tabs
-              value={activeTab}
-              onValueChange={setActiveTab}
-              dir={locale === "ar" ? "rtl" : "ltr"}
-            >
-              <TabsContent value="printed">{renderList(printed)}</TabsContent>
-              <TabsContent value="sent">{renderList(sent)}</TabsContent>
-            </Tabs>
-          </div>
+          <div className="mt-10">{renderList(printed)}</div>
         </div>
       </div>
     </div>

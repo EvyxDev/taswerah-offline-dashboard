@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useRouter } from "@/i18n/routing";
 import { LoginFields } from "@/lib/schemes/auth.schema";
@@ -13,11 +14,12 @@ export default function useLogin() {
   // Mutation
   const { isPending, error, mutate } = useMutation({
     mutationFn: async ({ phone, password }: LoginFields) => {
+      const callbackUrlParam = searchParams?.get("callbackUrl") || "/";
       const response = await signIn("credentials", {
         phone,
         password,
         redirect: false,
-        callbackUrl: decodeURIComponent(searchParams.get("callbackUrl") || "/"),
+        callbackUrl: decodeURIComponent(callbackUrlParam),
       });
 
       if (response?.error) throw new Error(response.error);
