@@ -114,11 +114,25 @@ export type PaginatedBarcodes = {
   total: number;
 };
 
-export async function GetUserBarcodes(page = 1, perPage = 15) {
+export async function GetUserBarcodes(
+  page = 1,
+  perPage = 15,
+  filter?: "yes" | "no"
+) {
   const token = await getAuthToken();
   try {
+    const params = new URLSearchParams({
+      per_page: String(perPage),
+      page: String(page),
+    });
+    if (filter === "yes") {
+      params.set("filter", "yes");
+    }
+
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API}/branch-manager/users/barcodes?per_page=${perPage}&page=${page}`,
+      `${
+        process.env.NEXT_PUBLIC_API
+      }/branch-manager/users/barcodes?${params.toString()}`,
       {
         method: "GET",
         headers: {

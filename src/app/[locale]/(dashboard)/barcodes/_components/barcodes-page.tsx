@@ -17,6 +17,13 @@ import { Badge } from "@/components/ui/badge";
 import { PaginationComponent } from "@/components/common/pagination-comp";
 import GenerateBarcodesDialog from "./generate-barcodes-dialog";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
@@ -31,17 +38,30 @@ type Props = {
     totalPages: number;
     limit: number;
   };
+  filter?: "yes" | "no";
 };
 
-export default function BarcodesPage({ barcodes, pagination }: Props) {
+export default function BarcodesPage({ barcodes, pagination, filter }: Props) {
   const t = useTranslations("barcodes");
   const router = useRouter();
   const pathname = usePathname();
+  const selectedFilterValue = filter === "yes" ? "yes" : "all";
 
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams();
     params.set("page", newPage.toString());
     params.set("limit", pagination.limit.toString());
+    if (filter === "yes" || filter === "no") {
+      params.set("filter", filter);
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const handleFilterChange = (nextValue: "all" | "yes") => {
+    const params = new URLSearchParams();
+    params.set("page", "1");
+    params.set("limit", pagination.limit.toString());
+    if (nextValue === "yes") params.set("filter", "yes");
     router.push(`${pathname}?${params.toString()}`);
   };
 
@@ -76,7 +96,27 @@ export default function BarcodesPage({ barcodes, pagination }: Props) {
                 {rows.length}
               </Badge>
             </div>
-            <GenerateBarcodesDialog />
+            <div className="flex items-center gap-3">
+              <div className="min-w-[160px]">
+                <Select
+                  value={selectedFilterValue}
+                  onValueChange={(v) => handleFilterChange(v as "all" | "yes")}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t("used", { default: "Used" })} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">
+                      {t("all", { default: "All" })}
+                    </SelectItem>
+                    <SelectItem value="yes">
+                      {t("yes", { default: "Yes" })}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <GenerateBarcodesDialog />
+            </div>
           </div>
 
           <div className="border">
