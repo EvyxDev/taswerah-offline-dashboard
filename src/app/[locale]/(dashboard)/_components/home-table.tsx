@@ -59,12 +59,12 @@ export default function HomeTable0({
         {/* Header */}
         <div className="flex sm:flex-row gap-5 flex-col items-center justify-between mb-8 px-7">
           <div className="flex items-center gap-3 self-start">
-            <h2 className="text-2xl font-homenaje  text-foreground">
+            <h2 className="text-2xl font-homenaje rtl:font-almarai  text-foreground">
               {t("navigation.employees")}
             </h2>
             <Badge
               variant="secondary"
-              className="bg-[#535862] font-homenaje t text-white hover:bg-[#535862]"
+              className="bg-[#535862] font-homenaje rtl:font-almarai rtl:text-sm text-white hover:bg-[#535862]"
             >
               {PhotoGraphersData.length}
             </Badge>
@@ -103,16 +103,16 @@ export default function HomeTable0({
           <Table className="px-5">
             <TableHeader>
               <TableRow className=" px-7">
-                <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-start min-w-[200px] ">
+                <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-start min-w-[200px] ">
                   {t("dashboard.name")}
                 </TableHead>
-                <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-center  min-w-[150px] sm:w-[100px]">
+                <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-center  min-w-[150px] sm:w-[100px]">
                   {t("dashboard.noCustomers")}
                 </TableHead>
-                <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-center  min-w-[150px] sm:w-[100px]">
+                <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-center  min-w-[150px] sm:w-[100px]">
                   {t("dashboard.noPhotos")}
                 </TableHead>
-                <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-center min-w-[150px] sm:w-[150px]">
+                <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-center min-w-[150px] sm:w-[150px]">
                   {t("dashboard.action")}
                 </TableHead>
               </TableRow>
@@ -138,19 +138,19 @@ export default function HomeTable0({
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col">
-                          <span className="font-medium font-homenaje text-lg">
+                          <span className="font-medium font-homenaje rtl:font-almarai text-lg">
                             {PhotoGrapher.name}
                           </span>
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="text-center font-homenaje text-lg font-medium text-muted-foreground ml-12">
+                    <TableCell className="text-center font-homenaje rtl:font-almarai text-lg font-medium text-muted-foreground ml-12">
                       {PhotoGrapher.stats?.total_customers}
                     </TableCell>
-                    <TableCell className="text-center font-homenaje text-lg font-medium text-muted-foreground">
+                    <TableCell className="text-center font-homenaje rtl:font-almarai text-lg font-medium text-muted-foreground">
                       {PhotoGrapher.stats?.total_photos}
                     </TableCell>
-                    <TableCell className="text-center font-homenaje text-lg font-medium !text-white ">
+                    <TableCell className="text-center font-homenaje rtl:font-almarai text-lg rtl:text-sm font-medium !text-white ">
                       <Link
                         href={`/employee-photos/${PhotoGrapher.id}?name=${PhotoGrapher.name}`}
                         className={

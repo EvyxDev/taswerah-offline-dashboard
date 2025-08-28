@@ -41,7 +41,7 @@ export default function DeleteDialog({
     <>
       <span onClick={() => setOpen(true)}>{children}</span>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[420px] text-center font-homenaje">
+        <DialogContent className="sm:max-w-[420px] text-center font-homenaje rtl:font-almarai">
           <DialogHeader>
             <DialogTitle className="text-2xl">{title}</DialogTitle>
             <DialogDescription className="text-gray-500">
@@ -52,14 +52,14 @@ export default function DeleteDialog({
             <Button
               variant="outline"
               onClick={() => setOpen(false)}
-              className="font-homenaje"
+              className="font-homenaje rtl:font-almarai"
             >
               Cancel
             </Button>
             <Button
               onClick={onConfirm}
               disabled={pending}
-              className="bg-red-600 hover:bg-red-700 text-white font-homenaje"
+              className="bg-red-600 hover:bg-red-700 text-white font-homenaje rtl:font-almarai"
             >
               {pending ? "Deleting..." : "Delete"}
             </Button>

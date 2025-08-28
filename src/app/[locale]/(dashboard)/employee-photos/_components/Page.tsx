@@ -38,9 +38,9 @@ export default function EmployeePhotosPage({
           <BreadcrumbItem>
             <BreadcrumbLink
               href="/"
-              className="flex items-center gap-2 font-homenaje text-sm text-gray-400"
+              className="flex items-center gap-2 font-homenaje rtl:font-almarai text-sm text-gray-400"
             >
-              <BreadcrumbPage className="flex items-center gap-2 font-homenaje text-sm text-gray-400">
+              <BreadcrumbPage className="flex items-center gap-2 font-homenaje rtl:font-almarai text-sm text-gray-400">
                 <IoMdHome size={28} color="black" className="-mt-2" />
                 {t("navigation.dashboard")}
               </BreadcrumbPage>
@@ -54,7 +54,7 @@ export default function EmployeePhotosPage({
       {/* Main content grows to fill space */}
       <div className=" pb-10 pt-5 space-y-8">
         <div className="flex items-center justify-between w-full mb-5">
-          <h2 className="text-3xl font-homenaje text-main-black">
+          <h2 className="text-3xl font-homenaje rtl:font-almarai text-main-black">
             {t("dashboard.viewPhotos")}
           </h2>
           <div className="flex items-center gap-3 border-main-black border-1 border p-3 rounded-xl">
@@ -70,7 +70,7 @@ export default function EmployeePhotosPage({
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <span className="font-medium font-homenaje text-xl">
+              <span className="font-medium font-homenaje rtl:font-almarai text-xl">
                 {employeeName || t("dashboard.employeeName")}
               </span>
             </div>
@@ -102,7 +102,7 @@ export default function EmployeePhotosPage({
                     </div>
                   </div>
                 </div>
-                <h3 className="text-xl font-homenaje text-gray-700 mb-2">
+                <h3 className="text-xl font-homenaje rtl:font-almarai text-gray-700 mb-2">
                   {t("employeePhotos.emptyState.title")}
                 </h3>
                 <p className="text-gray-500 mb-6 leading-relaxed">

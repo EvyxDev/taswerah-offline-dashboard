@@ -41,7 +41,7 @@ export default function PrintedPage({ printed }: PrintedSentPageProps) {
   const renderList = (codes: string[]) => {
     if (!codes || codes.length === 0) {
       return (
-        <div className="text-center text-gray-500 font-homenaje w-full py-8">
+        <div className="text-center text-gray-500 font-homenaje rtl:font-almarai w-full py-8">
           {t("noData") || "No data to show"}
         </div>
       );
@@ -52,7 +52,7 @@ export default function PrintedPage({ printed }: PrintedSentPageProps) {
           <Link
             key={code}
             href={`printed-sent/folder/${code}`}
-            className="w-full max-w-[300px]"
+            className="w-full max-w-[230px]"
           >
             <Folder id={code} />
           </Link>
@@ -66,7 +66,7 @@ export default function PrintedPage({ printed }: PrintedSentPageProps) {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbPage className="flex items-center gap-2 font-homenaje text-sm text-gray-400">
+            <BreadcrumbPage className="flex items-center gap-2 font-homenaje rtl:font-almarai text-sm text-gray-400">
               <IoMdHome size={28} color="black" className="-mt-2" />{" "}
               {t("breadcrumb")}
             </BreadcrumbPage>
@@ -77,7 +77,7 @@ export default function PrintedPage({ printed }: PrintedSentPageProps) {
       <div className="py-10">
         <div className="w-full">
           <div className="flex flex-col gap-5 sm:flex-row items-center justify-between">
-            <div className="text-xl sm:text-3xl font-homenaje py-2 sm:py-4 px-4 sm:px-8 rounded-2xl bg-black text-white">
+            <div className="text-xl sm:text-3xl font-homenaje rtl:font-almarai py-2 sm:py-4 px-4 sm:px-8 rounded-2xl bg-black text-white">
               {t("printedTab")}
             </div>
 
@@ -85,7 +85,7 @@ export default function PrintedPage({ printed }: PrintedSentPageProps) {
               <DropdownMenuTrigger className="self-end" asChild>
                 <Button
                   variant="outline"
-                  className="flex items-center gap-2  font-homenaje !text-[#5B5B5B] rounded-full bg-[#F5F6FA] "
+                  className="flex items-center gap-2  font-homenaje rtl:font-almarai !text-[#5B5B5B] rounded-full bg-[#F5F6FA] "
                 >
                   <RiFilter2Fill className="h-4 w-4" />
                   {t("date")}: {getSelectedDateLabel()}

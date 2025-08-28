@@ -39,7 +39,7 @@ export default function ReadyToPrintDialog({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="overflow-auto px-4 py-6 !max-w-[700px] w-full">
         <div className="space-y-10">
-          <h3 className="text-center font-homenaje text-main-black text-3xl">
+          <h3 className="text-center font-homenaje rtl:font-almarai text-main-black text-3xl">
             {t("readyToPrint.printConfirmation")}
           </h3>
 

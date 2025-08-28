@@ -81,12 +81,12 @@ export default function PaymentTable({ clients }: { clients: Client[] }) {
         {/* Header */}
         <div className="flex sm:flex-row gap-5 flex-col items-center justify-between mb-8 px-7">
           <div className="flex items-center gap-3 self-start">
-            <h2 className="text-2xl font-homenaje  text-foreground">
+            <h2 className="text-2xl font-homenaje rtl:font-almarai  text-foreground">
               {t("payments.clients")}
             </h2>
             <Badge
               variant="secondary"
-              className="bg-[#535862] font-homenaje t text-white hover:bg-[#535862]"
+              className="bg-[#535862] font-homenaje rtl:font-almarai t text-white hover:bg-[#535862]"
             >
               {clients?.length || 0}
             </Badge>
@@ -127,17 +127,17 @@ export default function PaymentTable({ clients }: { clients: Client[] }) {
           <Table className="px-5">
             <TableHeader>
               <TableRow className="px-7">
-                <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-start min-w-[100px]">
+                <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-start min-w-[100px]">
                   {t("payments.clientCode")}
                 </TableHead>
 
-                <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center min-w-[150px] ">
+                <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg text-gray-400 text-muted-foreground text-center min-w-[150px] ">
                   {t("payments.phoneNumber")}
                 </TableHead>
-                <TableHead className="font-medium font-homenaje text-lg text-gray-400 text-muted-foreground text-center min-w-[150px] ">
+                <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg text-gray-400 text-muted-foreground text-center min-w-[150px] ">
                   {t("payments.amount")}
                 </TableHead>
-                <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-muted-foreground text-center min-w-[150px]">
+                <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-center min-w-[150px]">
                   {t("payments.date")}
                 </TableHead>
               </TableRow>
@@ -153,13 +153,13 @@ export default function PaymentTable({ clients }: { clients: Client[] }) {
                   >
                     <TableCell>{client.barcode}</TableCell>
 
-                    <TableCell className="text-center font-homenaje text-lg ">
+                    <TableCell className="text-center font-homenaje rtl:font-almarai text-lg ">
                       {client.phone_number}
                     </TableCell>
-                    <TableCell className="text-center font-homenaje text-lg ">
+                    <TableCell className="text-center font-homenaje rtl:font-almarai text-lg ">
                       100
                     </TableCell>
-                    <TableCell className="text-center font-homenaje text-lg mx-auto ">
+                    <TableCell className="text-center font-homenaje rtl:font-almarai text-lg mx-auto ">
                       {formatDateTime(client.created_at)}
                     </TableCell>
                   </TableRow>

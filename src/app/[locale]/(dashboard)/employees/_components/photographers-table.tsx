@@ -69,12 +69,12 @@ export default function PhotographersTable({
         {/* Header */}
         <div className="flex items-center justify-between mb-8 px-7">
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-homenaje  text-foreground">
+            <h2 className="text-2xl font-homenaje rtl:font-almarai  text-foreground">
               {t("photographersTab")}
             </h2>
             <Badge
               variant="secondary"
-              className="bg-[#535862] font-homenaje t text-white hover:bg-[#535862]"
+              className="bg-[#535862] font-homenaje rtl:font-almarai t text-white hover:bg-[#535862]"
             >
               {photoGraphersData?.length || 0}
             </Badge>
@@ -87,16 +87,16 @@ export default function PhotographersTable({
           <Table className="px-5">
             <TableHeader>
               <TableRow className=" px-7">
-                <TableHead className="font-medium font-homenaje text-black text-lg rtl:text-3xl  text-muted-foreground text-start  w-[150px]">
+                <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg    text-muted-foreground text-start  w-[150px]">
                   {t("status")}
                 </TableHead>
-                <TableHead className="font-medium font-homenaje text-black text-lg rtl:text-3xl  text-muted-foreground text-start  ">
+                <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg    text-muted-foreground text-start  ">
                   {t("name")}
                 </TableHead>
-                <TableHead className="font-medium font-homenaje text-black text-lg rtl:text-3xl  text-muted-foreground text-center w-[250px] ">
+                <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg    text-muted-foreground text-center w-[250px] ">
                   {t("branch")}
                 </TableHead>
-                <TableHead className="font-medium font-homenaje text-black text-lg rtl:text-3xl text-muted-foreground text-center w-[100px] "></TableHead>
+                <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg   text-muted-foreground text-center w-[100px] "></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className="">
@@ -130,13 +130,13 @@ export default function PhotographersTable({
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col">
-                          <span className="font-medium font-homenaje text-lg ">
+                          <span className="font-medium font-homenaje rtl:font-almarai text-lg ">
                             {photoGrapher.name}
                           </span>
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="text-center font-homenaje text-lg  font-medium text-muted-foreground ml-12">
+                    <TableCell className="text-center font-homenaje rtl:font-almarai text-lg  font-medium text-muted-foreground ml-12">
                       {photoGrapher?.branch?.name || t("unknown")}
                     </TableCell>
                     <TableCell className="text-center">

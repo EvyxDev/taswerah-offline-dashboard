@@ -39,10 +39,10 @@ export default function LogOut() {
       <div className={`mb-10 ${isRTL ? "pr-6" : "pl-6"}`}>
         <button
           onClick={() => setIsDialogOpen(true)}
-          className="flex items-center gap-3 text-white text-xl sm:text-2xl font-homenaje hover:text-gray-300 transition-colors"
+          className="flex items-center gap-3 text-white text-2xl rtl:text-lg font-homenaje rtl:font-almarai hover:text-gray-300 transition-colors"
         >
           <IoLogOut
-            className={`text-gray-400 text-xl sm:text-2xl ${
+            className={`text-gray-400 text-xl sm:text-2xl rtl:text-lg ${
               isRTL ? "rotate-0" : "rotate-180"
             }`}
           />
@@ -53,10 +53,10 @@ export default function LogOut() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="text-center px-4 py-6 sm:px-10 sm:py-12 rounded-3xl w-[90vw] max-w-md sm:max-w-3xl mx-auto">
           <DialogHeader className="flex items-center">
-            <DialogTitle className="text-2xl sm:text-4xl font-medium font-homenaje">
+            <DialogTitle className="text-2xl sm:text-4xl font-medium font-homenaje rtl:font-almarai">
               {t("logOut")}
             </DialogTitle>
-            <DialogDescription className="text-lg sm:text-4xl font-homenaje text-gray-500 mt-2 sm:mt-3">
+            <DialogDescription className="text-lg sm:text-4xl font-homenaje rtl:font-almarai text-gray-500 mt-2 sm:mt-3">
               {t("confirmMessage")}
             </DialogDescription>
           </DialogHeader>
@@ -77,13 +77,13 @@ export default function LogOut() {
             }`}
           >
             <button
-              className="main-button w-full sm:w-1/2 font-homenaje text-lg sm:text-xl"
+              className="main-button w-full sm:w-1/2 font-homenaje rtl:font-almarai text-lg sm:text-xl"
               onClick={handleLogout}
             >
               {t("logOut")}
             </button>
             <button
-              className="main-button-border w-full sm:w-1/2 font-homenaje text-lg sm:!text-2xl"
+              className="main-button-border w-full sm:w-1/2 font-homenaje rtl:font-almarai text-lg sm:!text-2xl"
               onClick={() => setIsDialogOpen(false)}
             >
               {t("cancel")}

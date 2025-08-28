@@ -99,7 +99,7 @@ export default function ShiftFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px] font-homenaje">
+      <DialogContent className="sm:max-w-[400px] font-homenaje rtl:font-almarai">
         <DialogHeader>
           <DialogTitle className="text-xl">{title}</DialogTitle>
         </DialogHeader>
@@ -155,12 +155,12 @@ export default function ShiftFormDialog({
                 )}
               />
             </div>
-            <DialogFooter>
+            <DialogFooter className="mt-5">
               <Button
                 type="button"
                 variant="outline"
                 onClick={onOpenChange}
-                className="font-homenaje"
+                className="font-homenaje rtl:font-almarai main-button-border !rounded-none !px-8 !py-7"
                 disabled={submitting}
               >
                 {t("common.cancel")}
@@ -168,7 +168,7 @@ export default function ShiftFormDialog({
               <Button
                 type="submit"
                 disabled={submitting}
-                className="main-button text-white font-homenaje"
+                className="main-button text-white font-homenaje rtl:font-almarai !rounded-none !px-8 !py-7"
               >
                 {submitting ? t("shifts.saving") : t("shifts.save")}
               </Button>

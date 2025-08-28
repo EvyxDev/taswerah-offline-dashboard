@@ -30,7 +30,7 @@ export default function PaymentPage({
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbPage className="flex items-center gap-2 font-homenaje text-sm text-gray-400">
+            <BreadcrumbPage className="flex items-center gap-2 font-homenaje rtl:font-almarai text-sm text-gray-400">
               <IoMdHome size={28} color="black" className="-mt-2" />{" "}
               {t("breadcrumb")}
             </BreadcrumbPage>
@@ -39,7 +39,7 @@ export default function PaymentPage({
       </Breadcrumb>
       <div className="pb-10 pt-5 space-y-8">
         <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-homenaje  text-main-black mb-5">
+          <h2 className="text-3xl font-homenaje rtl:font-almarai  text-main-black mb-5">
             {t("title")}
           </h2>
           <ShiftSelect shifts={shifts} selectedShiftId={selectedShiftId} />

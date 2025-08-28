@@ -140,7 +140,7 @@ export default function AddOrEditPhotographerForm({
 
         <div className="flex justify-center w-full mt-5 items-center">
           <Button
-            className="main-button !py-7"
+            className="main-button text-white font-homenaje rtl:font-almarai !rounded-none !px-8 !py-7 hover:!bg-[#202020]"
             type="submit"
             variant="default"
             disabled={isPending}

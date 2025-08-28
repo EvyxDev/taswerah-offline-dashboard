@@ -70,7 +70,7 @@ const TablePagination = ({ currentPage, totalPages, onPageChange }: Props) => {
         <div className="flex items-center justify-between mt-6 px-7">
           <Button
             variant="ghost"
-            className="flex items-center gap-2 font-homenaje text-xl shadow-sm border disabled:bg-[#FAFAFA]"
+            className="flex items-center gap-2 font-homenaje rtl:font-almarai text-xl shadow-sm border disabled:bg-[#FAFAFA]"
             onClick={goToPrevious}
             disabled={currentPage === 1}
           >
@@ -103,7 +103,7 @@ const TablePagination = ({ currentPage, totalPages, onPageChange }: Props) => {
 
           <Button
             variant="ghost"
-            className="flex items-center gap-2 font-homenaje text-xl shadow-sm border"
+            className="flex items-center gap-2 font-homenaje rtl:font-almarai text-xl shadow-sm border"
             onClick={goToNext}
             disabled={currentPage === totalPages}
           >

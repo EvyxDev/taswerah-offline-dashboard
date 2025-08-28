@@ -41,19 +41,19 @@ export default function GenerateBarcodesDialog() {
       <DialogTrigger asChild>
         <Button
           variant="default"
-          className="font-homenaje text-lg main-button !w-[50px] !px-0 !py-0"
+          className="font-homenaje rtl:font-almarai text-lg main-button !w-[50px] !px-2 !py-0 !rounded-none"
         >
           <FaPlus className="!text-6xl" />
         </Button>
       </DialogTrigger>
       <DialogContent className="!max-w-md">
         <DialogHeader className="text-center">
-          <DialogTitle className="text-center text-3xl font-homenaje font-normal mb-2">
+          <DialogTitle className="text-center text-3xl font-homenaje rtl:font-almarai font-normal mb-2">
             {t("generate_title", { default: "Generate Barcodes" })}
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-4">
-          <label className="font-homenaje text-lg">
+          <label className="font-homenaje rtl:font-almarai text-lg">
             {t("quantity", { default: "Quantity" })}
           </label>
           <Input

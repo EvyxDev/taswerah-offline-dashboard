@@ -8,7 +8,7 @@ const Page = () => {
     <div className=" space-y-8 px-6 xl:px-10 py-5">
       <div className="pb-10 pt-5 space-y-8 ">
         <div className="flex items-center justify-between w-full mb-5 ">
-          <h2 className="text-3xl font-homenaje  text-main-black ">
+          <h2 className="text-3xl font-homenaje rtl:font-almarai  text-main-black ">
             {t("navigation.settings")}
           </h2>
         </div>

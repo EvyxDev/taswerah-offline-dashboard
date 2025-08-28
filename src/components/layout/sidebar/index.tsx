@@ -36,11 +36,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = useSession().data?.user;
   const name = user?.name;
   const email = user?.email;
+
   return (
     <>
       <Sidebar
         side={locale === "ar" ? "right" : "left"}
-        className="px-12"
+        className="px-12 sidebar-custom-scroll"
         collapsible="offcanvas"
         {...props}
       >
@@ -50,6 +51,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             alt="Logo"
             width={180}
             height={0}
+            className="-ml-1"
           />
           <div className="flex flex-col mt-14">
             <Image
@@ -59,23 +61,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               height={0}
               className="rounded-2xl"
             />
-            <h6 className="font-homenaje text-2xl text-gray-100 mt-2">
+            <h6 className="font-homenaje rtl:font-almarai text-2xl text-gray-100 mt-2">
               {name}
             </h6>
-            <p className="font-homenaje text-md text-gray-400 -mt-0.5">
+            <p className="font-homenaje rtl:font-almarai text-md text-gray-400 -mt-0.5">
               {email}{" "}
             </p>
           </div>
         </SidebarHeader>
 
-        <SidebarContent>
+        <SidebarContent className="scrollbar-hide">
           <div className="flex flex-col space-y-0">
             {NAV_LINKS.map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
                 className={cn(
-                  "font-homenaje text-2xl text-white px-7 py-3  rounded-2xl transition-colors backdrop-blur-3xl",
+                  "font-homenaje rtl:font-almarai text-2xl rtl:text-lg text-white px-7 py-3  rounded-2xl transition-colors backdrop-blur-3xl",
                   isActive(pathname, href) ? "bg-white/10" : "bg-transparent"
                 )}
               >

@@ -59,16 +59,16 @@ export default function ShiftsTable({ shifts }: Props) {
         <Table className="px-5">
           <TableHeader>
             <TableRow className="px-7">
-              <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-start min-w-[180px]">
+              <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-start min-w-[180px]">
                 {t("shifts.name")}
               </TableHead>
-              <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-center min-w-[120px]">
+              <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-center min-w-[120px]">
                 {t("shifts.from")}
               </TableHead>
-              <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-center min-w-[120px]">
+              <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-center min-w-[120px]">
                 {t("shifts.to")}
               </TableHead>
-              <TableHead className="font-medium font-homenaje text-lg rtl:text-3xl text-gray-400 text-center min-w-[200px]">
+              <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-center min-w-[200px]">
                 {t("shifts.actions")}
               </TableHead>
             </TableRow>
@@ -81,13 +81,13 @@ export default function ShiftsTable({ shifts }: Props) {
                   index % 2 === 0 ? "bg-[#E9EAEB]" : "bg-white"
                 }`}
               >
-                <TableCell className="text-start font-homenaje text-lg font-medium">
+                <TableCell className="text-start font-homenaje rtl:font-almarai text-lg font-medium">
                   {shift.name}
                 </TableCell>
-                <TableCell className="text-center font-homenaje text-lg font-medium text-muted-foreground">
+                <TableCell className="text-center font-homenaje rtl:font-almarai text-lg font-medium text-muted-foreground">
                   {shift.from?.slice(0, 5)}
                 </TableCell>
-                <TableCell className="text-center font-homenaje text-lg font-medium text-muted-foreground">
+                <TableCell className="text-center font-homenaje rtl:font-almarai text-lg font-medium text-muted-foreground">
                   {shift.to?.slice(0, 5)}
                 </TableCell>
                 <TableCell className="text-center">

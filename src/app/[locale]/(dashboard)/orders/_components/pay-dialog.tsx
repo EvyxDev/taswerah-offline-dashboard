@@ -98,10 +98,10 @@ export function PayDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[425px] font-homenaje">
+      <DialogContent className="sm:max-w-[425px] font-homenaje rtl:font-almarai">
         <DialogHeader>
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-xl font-homenaje text-foreground">
+            <DialogTitle className="text-xl font-homenaje rtl:font-almarai text-foreground">
               {t("payment.title")}
             </DialogTitle>
             <Button
@@ -124,13 +124,13 @@ export function PayDialog({
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <div className="flex items-center gap-3 mb-3">
                   <QrCode className="w-5 h-5 text-gray-600" />
-                  <span className="font-medium text-gray-700 font-homenaje">
+                  <span className="font-medium text-gray-700 font-homenaje rtl:font-almarai">
                     {t("order.code") || "Order Code"}
                   </span>
                 </div>
                 <Badge
                   variant="secondary"
-                  className="bg-[#535862] text-white font-homenaje text-lg px-3 py-1"
+                  className="bg-[#535862] text-white font-homenaje rtl:font-almarai text-lg px-3 py-1"
                 >
                   {barcode}
                 </Badge>
@@ -141,7 +141,7 @@ export function PayDialog({
                 name="shift_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium text-gray-700 font-homenaje">
+                    <FormLabel className="text-sm font-medium text-gray-700 font-homenaje rtl:font-almarai">
                       {t("shifts.label", { default: "Shift" })}
                     </FormLabel>
                     <Select
@@ -149,7 +149,7 @@ export function PayDialog({
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger className="font-homenaje h-12">
+                        <SelectTrigger className="font-homenaje rtl:font-almarai h-12">
                           <SelectValue
                             placeholder={t("shifts.select_placeholder", {
                               default: "Select a shift",
@@ -162,7 +162,7 @@ export function PayDialog({
                           <SelectItem
                             key={s.id}
                             value={String(s.id)}
-                            className="font-homenaje"
+                            className="font-homenaje rtl:font-almarai"
                           >
                             <span className="font-medium">
                               {s.name} ({s.from.slice(0, 5)} -{" "}
@@ -182,7 +182,7 @@ export function PayDialog({
                 name="pay_amount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium text-gray-700 font-homenaje">
+                    <FormLabel className="text-sm font-medium text-gray-700 font-homenaje rtl:font-almarai">
                       {t("payment.amount")}
                     </FormLabel>
                     <FormControl>
@@ -191,7 +191,7 @@ export function PayDialog({
                         <Input
                           type="number"
                           placeholder="0.00"
-                          className="pl-10 font-homenaje text-lg h-12"
+                          className="pl-10 font-homenaje rtl:font-almarai text-lg h-12"
                           min="0"
                           step="0.01"
                           {...field}
@@ -209,14 +209,14 @@ export function PayDialog({
                 type="button"
                 variant="outline"
                 onClick={handleClose}
-                className="font-homenaje"
+                className="font-homenaje rtl:font-almarai"
                 disabled={isProcessing}
               >
                 {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
-                className="bg-[#535862] hover:bg-[#424751] text-white font-homenaje flex items-center gap-2"
+                className="bg-[#535862] hover:bg-[#424751] text-white font-homenaje rtl:font-almarai flex items-center gap-2"
                 disabled={isProcessing}
               >
                 <CreditCard className="w-4 h-4" />

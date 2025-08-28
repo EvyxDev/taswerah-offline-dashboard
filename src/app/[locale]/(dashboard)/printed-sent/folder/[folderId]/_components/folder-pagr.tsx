@@ -40,7 +40,7 @@ export default function FolderPage({
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbPage className="flex items-center gap-2 font-homenaje text-sm text-gray-400">
+            <BreadcrumbPage className="flex items-center gap-2 font-homenaje rtl:font-almarai text-sm text-gray-400">
               {t("navigation.printedSent")}
             </BreadcrumbPage>
           </BreadcrumbItem>
@@ -51,15 +51,21 @@ export default function FolderPage({
           <Folder id={folderId} />
         </div>
         <div className="flex items-center gap-3 self-end">
-          <button className="main-button" onClick={handleDownload}>
+          <button
+            className="main-button !text-xl !px-5 !py-3"
+            onClick={handleDownload}
+          >
             {t("printedSent.download")}
           </button>
-          <button className="main-button" onClick={() => router.back()}>
+          <button
+            className="main-button !text-xl !px-5 !py-3"
+            onClick={() => router.back()}
+          >
             {t("printedSent.back")}
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {photos?.map((photo) => (
           <div
             key={photo.id}

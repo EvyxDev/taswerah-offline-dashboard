@@ -9,7 +9,7 @@ export function ReceiptDialog({ clientId }: { clientId: string }) {
   return (
     <>
       <TableCell
-        className="text-center font-homenaje text-lg font-medium text-muted-foreground cursor-pointer underline"
+        className="text-center font-homenaje rtl:font-almarai text-lg font-medium text-muted-foreground cursor-pointer underline"
         onClick={() => setIsOpen(true)}
       >
         View Receipt

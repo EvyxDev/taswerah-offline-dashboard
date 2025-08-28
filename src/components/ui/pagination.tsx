@@ -70,7 +70,7 @@ const PaginationPrevious = ({
     aria-label="Go to previous page"
     size="default"
     className={cn(
-      "gap-2 font-homenaje text-xl shadow-sm border disabled:bg-[#FAFAFA] bg-background hover:bg-slate-200",
+      "gap-2 font-homenaje rtl:font-almarai text-xl shadow-sm border disabled:bg-[#FAFAFA] bg-background hover:bg-slate-200",
       className
     )}
     {...props}
@@ -90,7 +90,7 @@ const PaginationNext = ({
     aria-label="Go to next page"
     size="default"
     className={cn(
-      "gap-2 font-homenaje text-xl shadow-sm border bg-background hover:bg-slate-200 disabled:bg-[#FAFAFA]",
+      "gap-2 font-homenaje rtl:font-almarai text-xl shadow-sm border bg-background hover:bg-slate-200 disabled:bg-[#FAFAFA]",
       className
     )}
     {...props}

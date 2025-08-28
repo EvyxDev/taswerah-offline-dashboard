@@ -24,11 +24,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginFields, useLoginSchema } from "@/lib/schemes/auth.schema";
 import useLogin from "../_hooks/use-login";
+import { useTranslations } from "next-intl";
 
 export default function LoginDialog() {
   const { isPending, error, login } = useLogin();
   const loginSchema = useLoginSchema();
-
+  const t = useTranslations();
   const form = useForm<LoginFields>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -83,8 +84,8 @@ export default function LoginDialog() {
                     <Input
                       {...field}
                       type="text"
-                      placeholder="Phone Number"
-                      className="h-12 sm:h-13 2xl:h-14 w-full placeholder:font-homenaje rounded-lg border border-gray-400 bg-white/80 p-2 px-3 pe-8 sm:pe-10 text-xs sm:text-sm focus:outline-none focus:ring-0"
+                      placeholder={t("phone-number")}
+                      className="h-12 sm:h-13 2xl:h-14 w-full placeholder:font-homenaje rtl:font-almarai rounded-lg border border-gray-400 bg-white/80 p-2 px-3 pe-8 sm:pe-10 text-xs sm:text-sm focus:outline-none focus:ring-0"
                       disabled={isPending}
                     />
                   </FormControl>
@@ -103,8 +104,8 @@ export default function LoginDialog() {
                   <FormControl>
                     <PasswordInput
                       {...field}
-                      placeholder="Password"
-                      className="h-12 sm:h-13 2xl:h-14 w-full placeholder:font-homenaje rounded-lg border border-gray-400 bg-white/80 p-2 px-3 pr-8 sm:pr-10 text-xs sm:text-sm focus:outline-none focus:ring-0"
+                      placeholder={t("password")}
+                      className="h-12 sm:h-13 2xl:h-14 w-full placeholder:font-homenaje rtl:font-almarai rounded-lg border border-gray-400 bg-white/80 p-2 px-3 pe-8 sm:pe-10 text-xs sm:text-sm focus:outline-none focus:ring-0"
                       disabled={isPending}
                     />
                   </FormControl>
@@ -123,7 +124,7 @@ export default function LoginDialog() {
             <Button
               type="submit"
               disabled={isPending}
-              className="main-button self-center font-homenaje mt-3 sm:mt-4 h-[50px] sm:h-[55px] 2xl:h-[60px] w-48 sm:w-52 2xl:w-56 bg-[#202020] text-lg sm:text-xl"
+              className="main-button self-center font-homenaje rtl:font-almarai mt-3 sm:mt-4 h-[50px] sm:h-[55px] 2xl:h-[60px] w-48 sm:w-52 2xl:w-56 bg-[#202020] text-lg sm:text-xl hover:!bg-[#202020]"
             >
               {isPending ? "Confirming..." : "Confirm"}
             </Button>

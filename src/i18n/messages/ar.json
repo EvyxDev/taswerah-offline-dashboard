@@ -190,7 +190,9 @@
     "noOrdersTitle": "لا يوجد طلابات",
     "noOrdersDescription": "لا توجد أي طلبات في الوقت الحالي",
     "create": {
-      "title": "اضافة طلب"
+      "title": "اضافة طلب",
+      "open": "إضافة",
+      "submit": "إنشاء"
     },
     "barcode_prefix": "بادئة الباركود",
     "barcode_prefix_placeholder": "أدخل بادئة الباركود",
@@ -198,12 +200,7 @@
     "phone_number_placeholder": "أدخل رقم الهاتف",
     "employee": "الموظف",
     "select_employee_placeholder": "اختر الموظف",
-    "select_photos": "اختر الصور",
-    "create": {
-      "title": "اضافة طلب",
-      "open": "إضافة",
-      "submit": "إنشاء"
-    }
+    "select_photos": "اختر الصور"
   },
   "shifts": {
     "label": "الوردية",
@@ -269,5 +266,7 @@
     "tryAgain": "حاول مرة أخرى",
     "goHome": "العودة إلى الرئيسية"
   },
-  "application-title": "تصويرة"
+  "application-title": "تصويرة",
+  "phone-number": "رقم الهاتف",
+  "password": "كلمة السر"
 }

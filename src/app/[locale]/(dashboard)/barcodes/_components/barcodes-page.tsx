@@ -72,26 +72,26 @@ export default function BarcodesPage({ barcodes, pagination, filter }: Props) {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbPage className="flex items-center gap-2 font-homenaje text-sm text-gray-400">
+            <BreadcrumbPage className="flex items-center gap-2 font-homenaje rtl:font-almarai text-sm text-gray-400">
               <IoMdHome size={28} color="black" className="-mt-2" />{" "}
               {t("title", { default: "Barcodes" })}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <h2 className="text-3xl font-homenaje  text-main-black mb-5">
+      <h2 className="text-3xl font-homenaje rtl:font-almarai  text-main-black mb-5">
         {t("title", { default: "Barcodes" })}
       </h2>
       <Card className="bg-background max-w-screen-2xl mx-auto rounded-2xl py-6 ">
         <div className="w-full">
           <div className="flex items-center justify-between mb-5 px-7">
             <div className="flex items-center gap-3">
-              <h3 className="text-2xl font-homenaje text-foreground">
+              <h3 className="text-2xl font-homenaje rtl:font-almarai text-foreground">
                 {t("title", { default: "Barcodes" })}
               </h3>
               <Badge
                 variant="secondary"
-                className="bg-[#535862] font-homenaje text-white hover:bg-[#535862]"
+                className="bg-[#535862] font-homenaje rtl:font-almarai text-white hover:bg-[#535862]"
               >
                 {rows.length}
               </Badge>
@@ -123,10 +123,10 @@ export default function BarcodesPage({ barcodes, pagination, filter }: Props) {
             <Table className="px-5">
               <TableHeader>
                 <TableRow className="px-7">
-                  <TableHead className="font-medium font-homenaje text-black text-lg rtl:text-3xl text-muted-foreground text-start w-[200px]">
+                  <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg   text-muted-foreground text-start w-[200px]">
                     {t("barcode", { default: "Barcode" })}
                   </TableHead>
-                  <TableHead className="font-medium font-homenaje text-black text-lg rtl:text-3xl text-muted-foreground text-start w-[200px]">
+                  <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg   text-muted-foreground text-start w-[200px]">
                     {t("used", { default: "Used" })}
                   </TableHead>
                 </TableRow>
@@ -141,12 +141,12 @@ export default function BarcodesPage({ barcodes, pagination, filter }: Props) {
                       }`}
                     >
                       <TableCell>
-                        <span className="font-homenaje text-lg">
+                        <span className="font-homenaje rtl:font-almarai text-lg">
                           {item.barcode}
                         </span>
                       </TableCell>
                       <TableCell>
-                        <span className="font-homenaje text-lg">
+                        <span className="font-homenaje rtl:font-almarai text-lg">
                           {item.used
                             ? t("yes", { default: "Yes" })
                             : t("no", { default: "No" })}

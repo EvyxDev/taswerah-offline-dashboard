@@ -109,7 +109,7 @@ export default function ReusableDataTable<T>({
   // Default cell renderer
   const defaultRenderCell = (key: string, value: any) => {
     return (
-      <span className="font-homenaje text-lg font-medium text-muted-foreground">
+      <span className="font-homenaje rtl:font-almarai text-lg font-medium text-muted-foreground">
         {value}
       </span>
     );
@@ -120,11 +120,13 @@ export default function ReusableDataTable<T>({
       {/* Header */}
       <div className="flex items-center justify-between mb-8 px-7">
         <div className="flex items-center gap-3">
-          <h2 className="text-2xl font-homenaje text-foreground">{title}</h2>
+          <h2 className="text-2xl font-homenaje rtl:font-almarai text-foreground">
+            {title}
+          </h2>
           {showBadge && (
             <Badge
               variant="secondary"
-              className="bg-[#535862] font-homenaje text-white hover:bg-[#535862]"
+              className="bg-[#535862] font-homenaje rtl:font-almarai text-white hover:bg-[#535862]"
             >
               {data.length}
             </Badge>
@@ -140,7 +142,7 @@ export default function ReusableDataTable<T>({
               {Object.entries(headers).map(([key, displayName]) => (
                 <TableHead
                   key={key}
-                  className={`text-start text-gray-400 font-homenaje text-lg ${
+                  className={`text-start text-gray-400 font-homenaje rtl:font-almarai text-lg ${
                     columnWidths[key] || ""
                   }`}
                 >
@@ -191,7 +193,7 @@ export default function ReusableDataTable<T>({
         <div className="flex items-center justify-between mt-6 px-7">
           <Button
             variant="ghost"
-            className="flex items-center gap-2 font-homenaje text-xl shadow-sm border disabled:bg-[#FAFAFA]"
+            className="flex items-center gap-2 font-homenaje rtl:font-almarai text-xl shadow-sm border disabled:bg-[#FAFAFA]"
             onClick={goToPrevious}
             disabled={currentPage === 1}
           >
@@ -224,7 +226,7 @@ export default function ReusableDataTable<T>({
 
           <Button
             variant="ghost"
-            className="flex items-center gap-2 font-homenaje text-xl shadow-sm border"
+            className="flex items-center gap-2 font-homenaje rtl:font-almarai text-xl shadow-sm border"
             onClick={goToNext}
             disabled={currentPage === totalPages}
           >

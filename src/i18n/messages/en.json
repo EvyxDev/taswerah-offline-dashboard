@@ -187,7 +187,9 @@
     "noOrdersTitle": "No Orders Yet",
     "noOrdersDescription": "there is not any orders at the moment. ",
     "create": {
-      "title": "Create New Order"
+      "title": "Create New Order",
+      "open": "Add",
+      "submit": "Create"
     },
     "barcode_prefix": "Barcode Prefix",
     "barcode_prefix_placeholder": "Enter barcode prefix",
@@ -195,12 +197,7 @@
     "phone_number_placeholder": "Enter phone number",
     "employee": "Employee",
     "select_employee_placeholder": "Select employee",
-    "select_photos": "Select Photos",
-    "create": {
-      "title": "Create New Order",
-      "open": "Add",
-      "submit": "Create"
-    }
+    "select_photos": "Select Photos"
   },
   "shifts": {
     "label": "Shift",
@@ -266,5 +263,7 @@
     "tryAgain": "Try again",
     "goHome": "Back to Home"
   },
-  "application-title": "Taswera"
+  "application-title": "Taswera",
+  "phone-number": "Phone Number",
+  "password": "Password"
 }

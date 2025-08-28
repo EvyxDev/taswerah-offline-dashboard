@@ -137,7 +137,7 @@ export default function ImportPhotosDialog({
     <Dialog open={isOpen} onOpenChange={() => handleDialogClose()}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-homenaje text-xl">
+          <DialogTitle className="font-homenaje rtl:font-almarai text-xl">
             {t("employeePhotos.dialog.title")}
           </DialogTitle>
           <DialogDescription>

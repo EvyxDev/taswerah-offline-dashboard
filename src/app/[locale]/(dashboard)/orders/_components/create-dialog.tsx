@@ -28,7 +28,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { X, Plus, Phone, Hash } from "lucide-react";
+import { X, Phone, Hash } from "lucide-react";
 import { CreateOrder } from "../_action/create-order";
 import ImageUploader from "../../employee-photos/_components/file-upload-area";
 import { toast } from "sonner";
@@ -146,10 +146,10 @@ export function CreateOrderDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto font-homenaje">
+      <DialogContent className="sm:max-w-[500px] max-h-[100vh] overflow-y-auto font-homenaje rtl:font-almarai">
         <DialogHeader>
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-xl font-homenaje text-foreground">
+            <DialogTitle className="text-xl font-homenaje rtl:font-almarai text-foreground">
               {t("order.create.title")}
             </DialogTitle>
             <Button
@@ -172,7 +172,7 @@ export function CreateOrderDialog({
                 name="barcode_prefix"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium text-gray-700 font-homenaje">
+                    <FormLabel className="text-sm font-medium text-gray-700 font-homenaje rtl:font-almarai">
                       {t("order.barcode_prefix")}
                     </FormLabel>
                     <FormControl>
@@ -180,7 +180,7 @@ export function CreateOrderDialog({
                         <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
                           placeholder={t("order.barcode_prefix_placeholder")}
-                          className="pl-10 font-homenaje h-12"
+                          className="pl-10 font-homenaje rtl:font-almarai h-12"
                           {...field}
                           readOnly
                           disabled
@@ -198,7 +198,7 @@ export function CreateOrderDialog({
                 name="phone_number"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium text-gray-700 font-homenaje">
+                    <FormLabel className="text-sm font-medium text-gray-700 font-homenaje rtl:font-almarai">
                       {t("order.phone_number")}
                     </FormLabel>
                     <FormControl>
@@ -206,7 +206,7 @@ export function CreateOrderDialog({
                         <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
                           placeholder={t("order.phone_number_placeholder")}
-                          className="pl-10 font-homenaje h-12"
+                          className="pl-10 font-homenaje rtl:font-almarai h-12"
                           {...field}
                         />
                       </div>
@@ -222,7 +222,7 @@ export function CreateOrderDialog({
                 name="employee_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium text-gray-700 font-homenaje">
+                    <FormLabel className="text-sm font-medium text-gray-700 font-homenaje rtl:font-almarai">
                       {t("order.employee")}
                     </FormLabel>
                     <Select
@@ -230,7 +230,7 @@ export function CreateOrderDialog({
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger className="font-homenaje h-12">
+                        <SelectTrigger className="font-homenaje rtl:font-almarai h-12">
                           <SelectValue
                             placeholder={t("order.select_employee_placeholder")}
                           />
@@ -241,7 +241,7 @@ export function CreateOrderDialog({
                           <SelectItem
                             key={employee.id}
                             value={employee.id.toString()}
-                            className="font-homenaje"
+                            className="font-homenaje rtl:font-almarai"
                           >
                             <span className="font-medium">{employee.name}</span>
                           </SelectItem>
@@ -282,16 +282,15 @@ export function CreateOrderDialog({
                 type="button"
                 variant="outline"
                 onClick={handleClose}
-                className="font-homenaje"
+                className="font-homenaje rtl:font-almarai main-button-border !rounded-none !px-8 !py-7"
               >
                 {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
-                className="main-button text-white font-homenaje flex items-center gap-2"
+                className="main-button text-white font-homenaje rtl:font-almarai !rounded-none !px-8 !py-7"
                 disabled={isUploading}
               >
-                <Plus className="w-4 h-4" />
                 {t("order.create.submit")}
               </Button>
             </DialogFooter>

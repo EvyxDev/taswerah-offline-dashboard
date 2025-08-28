@@ -86,8 +86,8 @@ export function PhotoSalesChart({ photoStats }: { photoStats: PhotoStatsNew }) {
 
   return (
     <Card className="w-full min-w-xs mx-auto p-0 rounded-3xl">
-      <CardHeader className="text-center">
-        <CardTitle className="text-lg font-medium">
+      <CardHeader className="text-center mt-7">
+        <CardTitle className="text-lg font-medium sr-only">
           {t("dashboard.date")}
         </CardTitle>
       </CardHeader>
@@ -128,7 +128,7 @@ export function PhotoSalesChart({ photoStats }: { photoStats: PhotoStatsNew }) {
               className="w-4 h-4 rounded-full"
               style={{ backgroundColor: chartConfig.print.color }}
             />
-            <span className="text-sm font-medium font-homenaje text-gray-700">
+            <span className="text-sm font-medium font-homenaje rtl:font-almarai text-gray-700">
               {t("readyToPrint.print")}
             </span>
           </div>
@@ -137,7 +137,7 @@ export function PhotoSalesChart({ photoStats }: { photoStats: PhotoStatsNew }) {
               className="w-4 h-4 rounded-full"
               style={{ backgroundColor: chartConfig.send.color }}
             />
-            <span className="text-sm font-medium font-homenaje text-gray-700">
+            <span className="text-sm font-medium font-homenaje rtl:font-almarai text-gray-700">
               {t("readyToPrint.sendSoftCopy")}
             </span>
           </div>
@@ -146,7 +146,7 @@ export function PhotoSalesChart({ photoStats }: { photoStats: PhotoStatsNew }) {
               className="w-4 h-4 rounded-full"
               style={{ backgroundColor: chartConfig.both.color }}
             />
-            <span className="text-sm font-medium font-homenaje text-gray-700">
+            <span className="text-sm font-medium font-homenaje rtl:font-almarai text-gray-700">
               {t("readyToPrint.both")}
             </span>
           </div>

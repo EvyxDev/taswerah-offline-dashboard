@@ -26,7 +26,7 @@ type MonthlyPayments = MonthlyPayment[];
 
 const chartConfig = {
   desktop: {
-    label: "Desktop",
+    label: "Payment",
     color: "#D5020280",
   },
 } satisfies ChartConfig;
