@@ -51,6 +51,24 @@
     "noPhotosTitle": "لا توجد صور متاحة",
     "noPhotosDescription": "لم يتم التقاط أو بيع أي صور بعد."
   },
+  "mediaUploader": {
+    "selected": "محدد",
+    "uploading": "جاري الرفع...",
+    "dragDropText": "اسحب وأفلت الصور هنا، أو",
+    "browseFiles": "تصفح الملفات",
+    "supportedFormats": "تدعم PNG, JPG, SVG",
+    "remove": "إزالة",
+    "clearSelection": "مسح التحديد"
+  },
+  "mediaGallery": {
+    "items": "عناصر",
+    "unselectAll": "إلغاء تحديد الكل",
+    "selectAll": "تحديد الكل",
+    "deleting": "جاري الحذف...",
+    "noItems": "لا توجد عناصر",
+    "selected": "محدد",
+    "media": "وسائط"
+  },
   "employees": {
     "employeesTab": "الموظفين",
     "photographersTab": "المصورين",
@@ -85,7 +103,16 @@
     "cancel": "إلغاء",
     "selectBranch": "اختر الفرع",
     "name": "الاسم",
-    "branch": "الفرع"
+    "namePlaceholder": "أدخل الاسم",
+    "emailPlaceholder": "أدخل البريد الإلكتروني",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "errorAddingPhotographer": "حدث خطأ أثناء إضافة المصور",
+    "errorEditingPhotographer": "حدث خطأ أثناء تحديث المصور",
+    "branch": "الفرع",
+    "photographer_created_successfully": "تم إنشاء المصور بنجاح",
+    "photographer_updated_successfully": "تم تحديث المصور بنجاح",
+    "error_updating_photographer": "فشل في تحديث بيانات المصور. حاول مرة أخرى",
+    "error_creating_photographer": "فشل في إنشاء المصور. حاول مرة أخرى"
   },
   "branches": {
     "status": "الحالة",
@@ -176,7 +203,16 @@
   },
   "settings": {
     "comingSoonTitle": "قريباً",
-    "comingSoonDescription": "نعمل على إعداد هذه الصفحة، يرجى العودة لاحقًا."
+    "comingSoonDescription": "نعمل على إعداد هذه الصفحة، يرجى العودة لاحقًا.",
+    "frames": "إطارات",
+    "framesUploaderDescription": "قم برفع وإدارة الإطارات هنا",
+    "upload": "رفع",
+    "framesGallery": "معرض الإطارات",
+    "noItems": "لا توجد عناصر متاحة",
+    "stickersUploaderDescription": "قم برفع وإدارة الملصقات هنا",
+    "stickers": "ملصقات",
+    "stickersGallery": "معرض الملصقات",
+    "delete": "حذف"
   },
   "order": {
     "dashboard": {
@@ -242,7 +278,10 @@
     "resetSuccess": "إعادة تعيين الباركود بنجاح",
     "resetSuccessDescription": "تمت إعادة تعيين جميع الاكواد إلى حالة غير مستخدمة",
     "resetError": "فشل في إعادة ضبط الاكواد",
-    "resetErrorDescription": "حدث خطأ أثناء إعادة تعيين الاكواد"
+    "resetErrorDescription": "حدث خطأ أثناء إعادة تعيين الاكواد",
+    "resetConfirmTitle": "إعادة تعيين الأكواد",
+    "resetConfirmDescription": "سيتم حذف جميع الأكواد. هل تريد المتابعة؟",
+    "resetConfirmCta": "حذف الكل"
   },
   "employeePhotos": {
     "import": {

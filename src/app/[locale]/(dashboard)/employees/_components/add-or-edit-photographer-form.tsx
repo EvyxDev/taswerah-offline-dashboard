@@ -28,6 +28,8 @@ import { toast } from "sonner";
 
 const photographerSchema = z.object({
   name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 type PhotographerFields = z.infer<typeof photographerSchema>;
@@ -57,12 +59,16 @@ export default function AddOrEditPhotographerForm({
     resolver: zodResolver(photographerSchema),
     defaultValues: {
       name: photoGrapher ? photoGrapher.name : "",
+      email: photoGrapher ? photoGrapher.email : "",
+      password: "",
     },
   });
 
   async function onSubmit(values: PhotographerFields) {
     const sendData: CreatePhotographerBody = {
       name: values.name,
+      email: values.email,
+      password: values.password,
     };
 
     if (edit) {
@@ -125,8 +131,53 @@ export default function AddOrEditPhotographerForm({
                     <Input
                       {...field}
                       id="name"
-                      placeholder={t("name")}
+                      placeholder={t("namePlaceholder")}
                       type="text"
+                      required
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-row gap-4">
+          <div className="flex-1">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      id="email"
+                      placeholder={t("emailPlaceholder")}
+                      type="email"
+                      required
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="flex-1">
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      id="password"
+                      placeholder={t("passwordPlaceholder")}
+                      type="password"
                       required
                       disabled={isPending}
                     />

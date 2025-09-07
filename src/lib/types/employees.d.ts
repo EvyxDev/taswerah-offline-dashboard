@@ -72,6 +72,8 @@ declare type PhGrapher = {
 
 declare type CreatePhotographerBody = {
   name: string;
+  email?: string;
+  password?: string;
 };
 
 declare type PaginationLink = {

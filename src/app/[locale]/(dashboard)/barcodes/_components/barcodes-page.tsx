@@ -16,6 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { PaginationComponent } from "@/components/common/pagination-comp";
 import GenerateBarcodesDialog from "./generate-barcodes-dialog";
+import ResetBarcodesDialog from "./reset-barcodes-dialog";
 import {
   Select,
   SelectContent,
@@ -134,15 +135,25 @@ export default function BarcodesPage({ barcodes, pagination, filter }: Props) {
                 </Select>
               </div>
               <GenerateBarcodesDialog />
-              <Button
-                className="font-homenaje rtl:font-almarai text-lg main-button !w-[50px] !px-2 !py-0 !rounded-none"
-                type="button"
-                variant="default"
-                onClick={handleReset}
-                disabled={Reseting || !rows}
+              <ResetBarcodesDialog
+                title={t("resetConfirmTitle", { default: "Reset barcodes" })}
+                description={t("resetConfirmDescription", {
+                  default: "All barcodes will be deleted. Continue?",
+                })}
+                confirmLabel={t("resetConfirmCta", { default: "Delete all" })}
+                onConfirm={() => handleReset()}
+                pending={Reseting}
+                disabled={Reseting || !rows.length}
               >
-                <RotateCw className={Reseting ? "animate-spin" : ""} />
-              </Button>
+                <Button
+                  className="font-homenaje rtl:font-almarai text-lg main-button !w-[50px] !px-2 !py-0 !rounded-none"
+                  type="button"
+                  variant="default"
+                  disabled={Reseting || !rows.length}
+                >
+                  <RotateCw className={Reseting ? "animate-spin" : ""} />
+                </Button>
+              </ResetBarcodesDialog>
             </div>
           </div>
 

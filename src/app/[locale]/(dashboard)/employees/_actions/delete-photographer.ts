@@ -4,7 +4,10 @@
 import { getAuthToken } from "@/lib/utils/auth.token";
 import { revalidatePath } from "next/cache";
 
-export default async function deletePhotographer(id: string | number) {
+export default async function deletePhotographer(
+  id: string | number,
+  credentials?: { email?: string; password?: string }
+) {
   const token = await getAuthToken();
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API}/branch-manager/photographers/${id}`,
@@ -12,7 +15,12 @@ export default async function deletePhotographer(id: string | number) {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        manager_email: credentials?.email,
+        manager_password: credentials?.password,
+      }),
     }
   );
 

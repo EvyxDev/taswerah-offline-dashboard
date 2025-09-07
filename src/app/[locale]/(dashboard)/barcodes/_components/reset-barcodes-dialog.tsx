@@ -11,37 +11,35 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-type DeleteDialogProps = {
+type ResetBarcodesDialogProps = {
   title: string;
   description: string;
-  action: (credentials?: { email?: string; password?: string }) => void;
+  confirmLabel: string;
+  onConfirm: () => void;
+  pending?: boolean;
+  disabled?: boolean;
   children: React.ReactNode; // trigger
 };
 
-export default function DeleteDialog({
+export default function ResetBarcodesDialog({
   title,
   description,
-  action,
+  confirmLabel,
+  onConfirm,
+  pending,
+  disabled,
   children,
-}: DeleteDialogProps) {
+}: ResetBarcodesDialogProps) {
   const [open, setOpen] = useState(false);
-  const [pending, setPending] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
-  const onConfirm = () => {
-    setPending(true);
-    try {
-      action({ email, password });
-      setOpen(false);
-    } finally {
-      setPending(false);
-    }
+  const handleConfirm = () => {
+    onConfirm();
+    setOpen(false);
   };
 
   return (
     <>
-      <span onClick={() => setOpen(true)}>{children}</span>
+      <span onClick={() => !disabled && setOpen(true)}>{children}</span>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[420px] text-center font-homenaje rtl:font-almarai">
           <DialogHeader>
@@ -50,26 +48,6 @@ export default function DeleteDialog({
               {description}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-3 text-left">
-            <div>
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full border rounded px-3 py-2"
-              />
-            </div>
-            <div>
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full border rounded px-3 py-2"
-              />
-            </div>
-          </div>
           <DialogFooter className="flex items-center justify-center gap-3 sm:justify-center">
             <Button
               variant="outline"
@@ -79,11 +57,11 @@ export default function DeleteDialog({
               Cancel
             </Button>
             <Button
-              onClick={onConfirm}
+              onClick={handleConfirm}
               disabled={pending}
               className="bg-red-600 hover:bg-red-700 text-white font-homenaje rtl:font-almarai"
             >
-              {pending ? "Deleting..." : "Delete"}
+              {pending ? "Processing..." : confirmLabel}
             </Button>
           </DialogFooter>
         </DialogContent>

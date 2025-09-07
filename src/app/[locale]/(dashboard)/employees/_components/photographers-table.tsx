@@ -142,8 +142,12 @@ export default function PhotographersTable({
                     <TableCell className="text-center">
                       <div className="flex justify-center gap-7">
                         <DeleteDialog
-                          action={() =>
-                            DeleteEmployeer({ id: String(photoGrapher.id) })
+                          action={({ email, password } = {}) =>
+                            DeleteEmployeer({
+                              id: String(photoGrapher.id),
+                              email,
+                              password,
+                            })
                           }
                           description="Are you sure you want to delete this Photographers? This action cannot be undone."
                           title="Delete Photographers"

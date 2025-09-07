@@ -3,8 +3,16 @@ import deletePhotographer from "../_actions/delete-photographer";
 
 export default function useDeleteEmployeer() {
   const { mutate, isPending, error } = useMutation({
-    mutationFn: async ({ id }: { id: string }) => {
-      const payload = await deletePhotographer(id);
+    mutationFn: async ({
+      id,
+      email,
+      password,
+    }: {
+      id: string;
+      email?: string;
+      password?: string;
+    }) => {
+      const payload = await deletePhotographer(id, { email, password });
       if ("errors" in payload) {
         throw new Error("Error deleting employee");
       }

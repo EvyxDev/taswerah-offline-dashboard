@@ -9,18 +9,25 @@ export default async function editPhotographer(
   id: string
 ) {
   const token = await getAuthToken();
+  const sendData = {
+    name: data.name,
+    manager_email: data.email,
+    manager_password: data.password,
+  };
 
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API}/branch-manager/photographers/${id}`,
     {
-      method: "PUT",
-      body: JSON.stringify({ name: data.name }),
+      method: "POST",
+      body: JSON.stringify(sendData),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     }
   );
+  console.log(response);
+  console.log(sendData);
   if (!response.ok) {
     throw new Error("Failed to Update photographer");
   }

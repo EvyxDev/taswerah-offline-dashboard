@@ -10,7 +10,11 @@ export default async function createPhotographer(data: CreatePhotographerBody) {
     `${process.env.NEXT_PUBLIC_API}/branch-manager/photographers`,
     {
       method: "POST",
-      body: JSON.stringify({ name: data.name }),
+      body: JSON.stringify({
+        name: data.name,
+        manager_email: data.email,
+        manager_password: data.password,
+      }),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

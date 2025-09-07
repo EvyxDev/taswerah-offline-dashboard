@@ -47,6 +47,24 @@
     "noPhotosTitle": "No Photos Available",
     "noPhotosDescription": "No photos have been captured or sold yet"
   },
+  "mediaUploader": {
+    "selected": "selected",
+    "uploading": "Uploading...",
+    "dragDropText": "Drag and drop images here, or",
+    "browseFiles": "Browse Files",
+    "supportedFormats": "PNG, JPG, SVG supported",
+    "remove": "Remove",
+    "clearSelection": "Clear selection"
+  },
+  "mediaGallery": {
+    "items": "items",
+    "unselectAll": "Unselect all",
+    "selectAll": "Select all",
+    "deleting": "Deleting...",
+    "noItems": "No items",
+    "selected": "Selected",
+    "media": "media"
+  },
   "branches": {
     "status": "Status",
     "name": "Name",
@@ -132,7 +150,16 @@
     "cancel": "Cancel",
     "selectBranch": "Select branch",
     "name": "Name",
-    "branch": "Branch"
+    "namePlaceholder": "Enter name",
+    "emailPlaceholder": "Enter email",
+    "passwordPlaceholder": "Enter password",
+    "errorAddingPhotographer": "Error adding photographer",
+    "errorEditingPhotographer": "Error editing photographer",
+    "branch": "Branch",
+    "photographer_created_successfully": "Photographer created successfully",
+    "photographer_updated_successfully": "Photographer updated successfully",
+    "error_updating_photographer": "Failed to update photographer. Please try again",
+    "error_creating_photographer": "Failed to create photographer. Please try again"
   },
   "readyToPrint": {
     "breadcrumb": "Ready to print",
@@ -173,7 +200,16 @@
   },
   "settings": {
     "comingSoonTitle": "Coming soon",
-    "comingSoonDescription": "We're working on this page. Please check back later."
+    "comingSoonDescription": "We're working on this page. Please check back later.",
+    "frames": "Frams",
+    "framesUploaderDescription": "Upload and manage your frames here",
+    "upload": "Upload",
+    "framesGallery": "Frames Gallery",
+    "noItems": "No items availabl",
+    "stickersUploaderDescription": "Upload and manage your stickers here",
+    "stickers": "Stickers",
+    "stickersGallery": "Stickers Gallery",
+    "delete": "Delete"
   },
   "order": {
     "dashboard": {
@@ -239,7 +275,10 @@
     "resetSuccess": "Barcodes reset successfully",
     "resetSuccessDescription": "All barcodes have been reset to unused state",
     "resetError": "Failed to reset barcodes",
-    "resetErrorDescription": "An error occurred while resetting barcodes"
+    "resetErrorDescription": "An error occurred while resetting barcodes",
+    "resetConfirmTitle": "Reset barcodes",
+    "resetConfirmDescription": "All barcodes will be deleted. Continue?",
+    "resetConfirmCta": "Delete all"
   },
   "employeePhotos": {
     "import": {

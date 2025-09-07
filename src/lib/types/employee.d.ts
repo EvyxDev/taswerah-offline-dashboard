@@ -63,6 +63,8 @@ declare type PaginatedEmployees = {
 };
 declare type Photo = {
   id: number;
+  photo: string;
+  name: string;
   file_path: string;
   status: string;
   taken_by: Photographer;
