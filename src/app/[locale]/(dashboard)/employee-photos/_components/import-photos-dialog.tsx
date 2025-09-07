@@ -23,6 +23,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
 import ImageUploader from "./file-upload-area";
 import { useUploadPhotos } from "../_hooks/use-upload-photos";
 
@@ -31,6 +32,9 @@ const importPhotosSchema = z.object({
     .string()
     .length(4, "Code must be exactly 4 characters (auto from folder name)"),
   photos: z.array(z.instanceof(File)).min(1, "At least one photo is required"),
+  selectedEmployees: z
+    .array(z.number())
+    .min(1, "At least one employee must be selected"),
 });
 
 type ImportPhotosFormData = z.infer<typeof importPhotosSchema>;
@@ -43,16 +47,26 @@ interface SelectedFile {
 interface ImportPhotosDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  employeeId: string;
+  employees: PhGrapher[];
 }
 
 export default function ImportPhotosDialog({
   isOpen,
   onClose,
-  employeeId,
+  employees,
 }: ImportPhotosDialogProps) {
   const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
+  const [selectedEmployeeOptions, setSelectedEmployeeOptions] = useState<
+    Option[]
+  >([]);
   const t = useTranslations();
+
+  // Convert employees to options format
+  const employeeOptions: Option[] = employees.map((employee) => ({
+    label: employee.name,
+    value: employee.id.toString(),
+    disable: employee.status !== "active", // Disable inactive employees if needed
+  }));
 
   const form = useForm<ImportPhotosFormData>({
     resolver: zodResolver(importPhotosSchema),
@@ -87,6 +101,21 @@ export default function ImportPhotosDialog({
     }
   };
 
+  const handleEmployeeSelectionChange = (selectedOptions: Option[]) => {
+    setSelectedEmployeeOptions(selectedOptions);
+    const employeeIds = selectedOptions.map((option) => parseInt(option.value));
+    form.setValue("selectedEmployees", employeeIds, { shouldValidate: true });
+
+    if (employeeIds.length === 0) {
+      form.setError("selectedEmployees", {
+        type: "manual",
+        message: "At least one employee must be selected",
+      });
+    } else {
+      form.clearErrors("selectedEmployees");
+    }
+  };
+
   const handleFolderNameChange = (folderName: string | null) => {
     const code = (folderName ?? "").trim();
     form.setValue("barcodePrefix", code, { shouldValidate: true });
@@ -116,7 +145,7 @@ export default function ImportPhotosDialog({
     uploadPhotosMutation.mutate({
       photos: data.photos,
       barcodePrefix: data.barcodePrefix,
-      employeeId: employeeId,
+      employeeIds: data.selectedEmployees, // Pass the array of selected employee IDs
     });
     // Close immediately after submit as requested
     handleDialogClose(true);
@@ -126,6 +155,7 @@ export default function ImportPhotosDialog({
     if (force || !uploadPhotosMutation.isPending) {
       selectedFiles.forEach(({ preview }) => URL.revokeObjectURL(preview));
       setSelectedFiles([]);
+      setSelectedEmployeeOptions([]);
       form.reset();
       onClose();
     }
@@ -147,6 +177,35 @@ export default function ImportPhotosDialog({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Employee Selection Field */}
+            <FormField
+              control={form.control}
+              name="selectedEmployees"
+              render={() => (
+                <FormItem>
+                  <FormLabel className="font-medium">
+                    {t("employeePhotos.dialog.selectEmployees")}
+                  </FormLabel>
+                  <FormControl>
+                    <MultipleSelector
+                      value={selectedEmployeeOptions}
+                      onChange={handleEmployeeSelectionChange}
+                      defaultOptions={employeeOptions}
+                      placeholder={t(
+                        "employeePhotos.dialog.selectEmployeesPlaceholder"
+                      )}
+                      emptyIndicator={
+                        <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                          {t("employeePhotos.dialog.noEmployeesFound")}
+                        </p>
+                      }
+                      disabled={isUploading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             {/* Barcode Prefix Field */}
             <FormField
               control={form.control}

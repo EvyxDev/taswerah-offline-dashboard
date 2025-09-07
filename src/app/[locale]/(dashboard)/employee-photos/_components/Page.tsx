@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import Folder from "@/components/common/folder";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,15 +15,13 @@ import { FiFolder, FiUpload } from "react-icons/fi";
 import ImportPhotosDialog from "./import-photos-dialog";
 
 interface EmployeePhotosPageProps {
-  employeeName: string;
-  employeeId: string;
   codes: string[];
+  employees: PhGrapher[];
 }
 
 export default function EmployeePhotosPage({
-  employeeName,
   codes,
-  employeeId,
+  employees,
 }: EmployeePhotosPageProps) {
   const t = useTranslations();
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
@@ -57,24 +54,6 @@ export default function EmployeePhotosPage({
           <h2 className="text-3xl font-homenaje rtl:font-almarai text-main-black">
             {t("dashboard.viewPhotos")}
           </h2>
-          <div className="flex items-center gap-3 border-main-black border-1 border p-3 rounded-xl">
-            <Avatar className="h-12 w-12">
-              <AvatarImage
-                src={"/placeholder.svg"}
-                alt={employeeName || t("dashboard.employeeName")}
-              />
-              <AvatarFallback className="text-sm font-medium">
-                {employeeName
-                  ? employeeName.charAt(0).toUpperCase()
-                  : t("dashboard.employeeInitials")}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col">
-              <span className="font-medium font-homenaje rtl:font-almarai text-xl">
-                {employeeName || t("dashboard.employeeName")}
-              </span>
-            </div>
-          </div>
         </div>
 
         <div className="">
@@ -124,7 +103,7 @@ export default function EmployeePhotosPage({
       <ImportPhotosDialog
         isOpen={isImportDialogOpen}
         onClose={() => setIsImportDialogOpen(false)}
-        employeeId={employeeId}
+        employees={employees}
       />
     </div>
   );

@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 
-import { cn } from "@/lib//utils/tailwind-merge";
+import { cn } from "@/lib/utils/tailwind-merge";
 
 function Dialog({
   ...props

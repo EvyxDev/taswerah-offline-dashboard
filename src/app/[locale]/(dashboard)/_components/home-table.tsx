@@ -20,7 +20,6 @@ import {
 // } from "@/components/ui/dropdown-menu";
 import { Card } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import { PaginationComponent } from "@/components/common/pagination-comp";
 // import TablePagination from "./table-pagination";
 // import { useState } from "react";
@@ -112,9 +111,9 @@ export default function HomeTable0({
                 <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-center  min-w-[150px] sm:w-[100px]">
                   {t("dashboard.noPhotos")}
                 </TableHead>
-                <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-center min-w-[150px] sm:w-[150px]">
+                {/* <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-center min-w-[150px] sm:w-[150px]">
                   {t("dashboard.action")}
-                </TableHead>
+                </TableHead> */}
               </TableRow>
             </TableHeader>
             <TableBody className="">
@@ -150,7 +149,7 @@ export default function HomeTable0({
                     <TableCell className="text-center font-homenaje rtl:font-almarai text-lg font-medium text-muted-foreground">
                       {PhotoGrapher.stats?.total_photos}
                     </TableCell>
-                    <TableCell className="text-center font-homenaje rtl:font-almarai text-lg rtl:text-sm font-medium !text-white ">
+                    {/* <TableCell className="text-center font-homenaje rtl:font-almarai text-lg rtl:text-sm font-medium !text-white ">
                       <Link
                         href={`/employee-photos/${PhotoGrapher.id}?name=${PhotoGrapher.name}`}
                         className={
@@ -161,7 +160,7 @@ export default function HomeTable0({
                       >
                         {t("dashboard.viewPhotos")}
                       </Link>
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 ))
               ) : (

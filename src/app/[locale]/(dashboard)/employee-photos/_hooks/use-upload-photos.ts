@@ -4,7 +4,7 @@ import { uploadPhotosAction } from "../_actions/upload-photos";
 interface UploadPhotosData {
   photos: File[];
   barcodePrefix: string;
-  employeeId: string;
+  employeeIds: number[];
 }
 
 interface UseUploadPhotosOptions {
@@ -27,9 +27,11 @@ export const useUploadPhotos = ({
       });
 
       formData.append("barcode_prefix", data.barcodePrefix);
-      formData.append("employee_id", data.employeeId);
 
-      const result = await uploadPhotosAction(formData, data.employeeId);
+      data.employeeIds.forEach((employeeId) => {
+        formData.append("employee_ids[]", employeeId.toString());
+      });
+      const result = await uploadPhotosAction(formData);
 
       if (!result.success) {
         throw new Error(result.error || "Upload failed");

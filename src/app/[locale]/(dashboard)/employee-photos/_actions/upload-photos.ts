@@ -8,8 +8,7 @@ interface UploadResponse {
 }
 
 export async function uploadPhotosAction(
-  formData: FormData,
-  employeeId?: string
+  formData: FormData
 ): Promise<UploadResponse> {
   try {
     const response = await fetch(
@@ -21,7 +20,6 @@ export async function uploadPhotosAction(
     );
     revalidatePath("/");
     revalidatePath("/employee-photos");
-    revalidatePath(`/employee-photos/${employeeId}`);
     if (response.ok) {
       return {
         success: true,

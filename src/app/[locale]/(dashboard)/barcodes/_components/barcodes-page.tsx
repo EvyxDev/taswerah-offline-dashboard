@@ -30,6 +30,10 @@ import {
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 import { IoMdHome } from "react-icons/io";
+import useResetBarcodes from "../_hooks/use-reset-barcodes";
+import { Button } from "@/components/ui/button";
+import { RotateCw } from "lucide-react";
+import { toast } from "sonner";
 
 type Props = {
   barcodes: PaginatedBarcodes;
@@ -43,6 +47,7 @@ type Props = {
 
 export default function BarcodesPage({ barcodes, pagination, filter }: Props) {
   const t = useTranslations("barcodes");
+  const { Reset, Reseting } = useResetBarcodes();
   const router = useRouter();
   const pathname = usePathname();
   const selectedFilterValue = filter === "yes" ? "yes" : "all";
@@ -64,7 +69,20 @@ export default function BarcodesPage({ barcodes, pagination, filter }: Props) {
     if (nextValue === "yes") params.set("filter", "yes");
     router.push(`${pathname}?${params.toString()}`);
   };
-
+  const handleReset = async () => {
+    Reset(undefined, {
+      onSuccess: () => {
+        toast.success(t("resetSuccess"), {
+          description: t("resetSuccessDescription"),
+        });
+      },
+      onError: (error) => {
+        toast.error(t("resetError"), {
+          description: error.message || t("resetErrorDescription"),
+        });
+      },
+    });
+  };
   const rows = barcodes?.data || [];
 
   return (
@@ -116,6 +134,15 @@ export default function BarcodesPage({ barcodes, pagination, filter }: Props) {
                 </Select>
               </div>
               <GenerateBarcodesDialog />
+              <Button
+                className="font-homenaje rtl:font-almarai text-lg main-button !w-[50px] !px-2 !py-0 !rounded-none"
+                type="button"
+                variant="default"
+                onClick={handleReset}
+                disabled={Reseting || !rows}
+              >
+                <RotateCw className={Reseting ? "animate-spin" : ""} />
+              </Button>
             </div>
           </div>
 

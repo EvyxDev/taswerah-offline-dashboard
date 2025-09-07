@@ -157,10 +157,10 @@ export async function GetReadyToPrintCodes(token: string) {
     );
   }
 }
-export async function GetUploadedbBarcodes(token: string, id: string) {
+export async function GetUploadedbBarcodes(token: string) {
   try {
     const response = await fetch(
-      `${process.env.API}/branch-manager/staff/${id}/uploaded-barcodes`,
+      `${process.env.API}/branch-manager/staff/uploaded-barcodes`,
       {
         method: "GET",
         headers: {

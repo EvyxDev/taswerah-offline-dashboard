@@ -15,7 +15,8 @@
     "printedSent": "Printed & Sent",
     "orders": "Orders",
     "shifts": "Shifts",
-    "barcodes": "Barcodes"
+    "barcodes": "Barcodes",
+    "upload": "Upload Photos"
   },
   "dashboard": {
     "totalSales": "Total Sales",
@@ -234,7 +235,11 @@
     "generate": "Generate",
     "generating": "Generating...",
     "generated": "Barcodes generated",
-    "generate_error": "Failed to generate"
+    "generate_error": "Failed to generate",
+    "resetSuccess": "Barcodes reset successfully",
+    "resetSuccessDescription": "All barcodes have been reset to unused state",
+    "resetError": "Failed to reset barcodes",
+    "resetErrorDescription": "An error occurred while resetting barcodes"
   },
   "employeePhotos": {
     "import": {
@@ -251,7 +256,10 @@
       "barcodePrefixPlaceholder": "Enter barcode prefix (e.g., 8888)",
       "selectPhotos": "Select Photos",
       "upload": "Upload Photos",
-      "uploading": "Uploading..."
+      "uploading": "Uploading...",
+      "selectEmployees": "Select Employees",
+      "selectEmployeesPlaceholder": "Choose employees to assign photos...",
+      "noEmployeesFound": "No employees found."
     }
   },
   "common": {

@@ -306,7 +306,7 @@ export default function ImageUploader({
       {/* Upload Options */}
       <div className="grid grid-cols-1 gap-4">
         {/* Folder Selection */}
-        <div className="relative">
+        <div className="relative z-0">
           <input
             type="file"
             multiple
