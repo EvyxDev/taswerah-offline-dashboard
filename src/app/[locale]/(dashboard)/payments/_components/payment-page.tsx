@@ -8,8 +8,9 @@ import {
 import DashTable from "./payment-table";
 import { useTranslations } from "next-intl";
 import ChartsSectoin from "./charts-sectoin";
-import { ShiftSelect } from "./shift-select";
 import { IoMdHome } from "react-icons/io";
+import ExportDialog from "./export-dialog";
+import FilterDialog from "./filter-dialog";
 
 export default function PaymentPage({
   monthlyPayments,
@@ -17,12 +18,20 @@ export default function PaymentPage({
   clients,
   shifts,
   selectedShiftId,
+  fromDate,
+  toDate,
+  staff,
+  selectedStaffId,
 }: {
   monthlyPayments: paymentStates2["monthly_payments"];
   photoStats: paymentStates2["photo_stats"];
   clients: Client[];
   shifts: TShift[];
   selectedShiftId?: string;
+  fromDate?: string;
+  toDate?: string;
+  staff: Employee[];
+  selectedStaffId?: string;
 }) {
   const t = useTranslations("payments");
   return (
@@ -42,7 +51,17 @@ export default function PaymentPage({
           <h2 className="text-3xl font-homenaje rtl:font-almarai  text-main-black mb-5">
             {t("title")}
           </h2>
-          <ShiftSelect shifts={shifts} selectedShiftId={selectedShiftId} />
+          <div className="flex items-center gap-3">
+            <ExportDialog />
+            <FilterDialog
+              shifts={shifts}
+              selectedShiftId={selectedShiftId}
+              fromDate={fromDate}
+              toDate={toDate}
+              staff={staff}
+              selectedStaffId={selectedStaffId}
+            />
+          </div>
         </div>
         <ChartsSectoin
           monthlyPayments={monthlyPayments}

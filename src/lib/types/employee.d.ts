@@ -16,6 +16,7 @@ declare type Employee = {
   email: string;
   phone: string;
   branch_id: number;
+  total_paid: string;
   role: "staff" | string;
   status: "active" | "inactive" | string;
   branch: Branch;

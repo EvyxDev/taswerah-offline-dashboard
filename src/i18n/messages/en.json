@@ -126,7 +126,16 @@
     "yes": "Yes",
     "no": "No",
     "sentYes": "✔ Yes",
-    "sentNo": "✘ No"
+    "sentNo": "✘ No",
+    "export": "Export PDF",
+    "export_title": "Export Statistics",
+    "from_date": "From date",
+    "to_date": "To date",
+    "export_generate": "Generate",
+    "loading": "Loading...",
+    "export_error": "Failed to load export data",
+    "downloading": "Preparing...",
+    "download": "Download PDF"
   },
   "logout": {
     "logOut": "Log Out",

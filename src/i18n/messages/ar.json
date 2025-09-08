@@ -152,7 +152,16 @@
     "yes": "نعم",
     "no": "لا",
     "sentYes": "✔ نعم",
-    "sentNo": "✘ لا"
+    "sentNo": "✘ لا",
+    "export": "تصدير PDF",
+    "export_title": "تصدير الإحصائيات",
+    "from_date": "من تاريخ",
+    "to_date": "إلى تاريخ",
+    "export_generate": "توليد",
+    "loading": "جارٍ التحميل...",
+    "export_error": "فشل في تحميل بيانات التصدير",
+    "downloading": "جارٍ التحضير...",
+    "download": "تحميل PDF"
   },
   "logout": {
     "logOut": "تسجيل الخروج",

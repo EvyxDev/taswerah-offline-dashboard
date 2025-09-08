@@ -27,6 +27,9 @@ export function ShiftSelect({
     } else {
       params.set("shift_id", value);
     }
+    // Only one filter active: selecting shift clears date filters
+    params.delete("from_date");
+    params.delete("to_date");
     const queryString = params.toString();
     router.push(`${pathname}${queryString ? `?${queryString}` : ""}`);
   };

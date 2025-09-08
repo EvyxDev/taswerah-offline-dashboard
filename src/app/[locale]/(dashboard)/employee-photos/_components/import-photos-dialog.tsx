@@ -65,7 +65,6 @@ export default function ImportPhotosDialog({
   const employeeOptions: Option[] = employees.map((employee) => ({
     label: employee.name,
     value: employee.id.toString(),
-    disable: employee.status !== "active", // Disable inactive employees if needed
   }));
 
   const form = useForm<ImportPhotosFormData>({

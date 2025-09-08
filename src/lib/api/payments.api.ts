@@ -4,7 +4,10 @@ import { getServerSession } from "next-auth/next";
 import { getAuthToken } from "../utils/auth.token";
 
 export async function GetPaymentsByBransh(
-  shiftId?: string | number
+  shiftId?: string | number,
+  fromDate?: string,
+  toDate?: string,
+  staffId?: string | number
 ): Promise<paymentStates2> {
   try {
     // Get the session to extract user ID
@@ -20,6 +23,15 @@ export async function GetPaymentsByBransh(
     );
     if (shiftId !== undefined && shiftId !== null && `${shiftId}`.length > 0) {
       url.searchParams.set("shift_id", String(shiftId));
+    }
+    if (fromDate) {
+      url.searchParams.set("from_date", fromDate);
+    }
+    if (toDate) {
+      url.searchParams.set("to_date", toDate);
+    }
+    if (staffId !== undefined && staffId !== null && `${staffId}`.length > 0) {
+      url.searchParams.set("staff_id", String(staffId));
     }
 
     const response = await fetch(url.toString(), {

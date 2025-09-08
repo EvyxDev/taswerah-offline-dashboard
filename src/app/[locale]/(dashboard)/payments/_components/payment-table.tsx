@@ -137,9 +137,6 @@ export default function PaymentTable({ clients }: { clients: Client[] }) {
                 <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg text-gray-400 text-muted-foreground text-center min-w-[150px] ">
                   {t("payments.amount")}
                 </TableHead>
-                <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-center min-w-[150px]">
-                  {t("payments.date")}
-                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -157,10 +154,7 @@ export default function PaymentTable({ clients }: { clients: Client[] }) {
                       {client.phone_number}
                     </TableCell>
                     <TableCell className="text-center font-homenaje rtl:font-almarai text-lg ">
-                      100
-                    </TableCell>
-                    <TableCell className="text-center font-homenaje rtl:font-almarai text-lg mx-auto ">
-                      {formatDateTime(client.created_at)}
+                      {client.total_paid}
                     </TableCell>
                   </TableRow>
                 ))

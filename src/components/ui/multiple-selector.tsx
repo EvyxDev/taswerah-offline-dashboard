@@ -541,9 +541,14 @@ const MultipleSelector = React.forwardRef<
           </div>
           <button
             type="button"
-            onClick={() => {
-              setSelected(selected.filter((s) => s.fixed));
-              onChange?.(selected.filter((s) => s.fixed));
+            onMouseDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen(false);
+              inputRef.current?.blur();
             }}
             className={cn(
               "size-5",
@@ -551,21 +556,29 @@ const MultipleSelector = React.forwardRef<
                 disabled ||
                 selected.length < 1 ||
                 selected.filter((s) => s.fixed).length === selected.length) &&
-                "hidden"
+                "hidden",
+              !open && "hidden"
             )}
           >
             <X />
           </button>
-          <ChevronDownIcon
-            className={cn(
-              "size-5 text-muted-foreground/50",
-              (hideClearAllButton ||
-                disabled ||
-                selected.length >= 1 ||
-                selected.filter((s) => s.fixed).length !== selected.length) &&
-                "hidden"
-            )}
-          />
+          <button
+            type="button"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (!disabled) {
+                setOpen(true);
+                inputRef.current?.focus();
+              }
+            }}
+            className={cn("size-5", open && "hidden", disabled && "hidden")}
+          >
+            <ChevronDownIcon className="size-5 text-muted-foreground/50" />
+          </button>
         </div>
         <div className="relative">
           {open && (

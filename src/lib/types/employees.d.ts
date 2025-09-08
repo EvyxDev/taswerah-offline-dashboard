@@ -120,6 +120,7 @@ declare type Client = {
   phone_number: string;
   branch_id: number;
   last_visit: string;
+  total_paid: string;
   created_at: string;
   updated_at: string;
 };
