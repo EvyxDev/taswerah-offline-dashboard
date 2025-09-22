@@ -304,7 +304,7 @@
       "title": "استيراد الصور بالأكواد",
       "description": "اختر الصور من مجلد وأدخل بادئة الباركود لهذه الصور.",
       "barcodePrefix": "بادئة الباركود",
-      "barcodePrefixPlaceholder": "أدخل بادئة الباركود (مثال: 8888)",
+      "barcodePrefixPlaceholder": "أدخل بادئة الباركود (مثال: 88888)",
       "selectPhotos": "اختر الصور",
       "upload": "رفع الصور",
       "uploading": "جاري الرفع...",

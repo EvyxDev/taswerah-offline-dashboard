@@ -70,8 +70,11 @@ export default function BarcodesPage({ barcodes, pagination, filter }: Props) {
     if (nextValue === "yes") params.set("filter", "yes");
     router.push(`${pathname}?${params.toString()}`);
   };
-  const handleReset = async () => {
-    Reset(undefined, {
+  const handleReset = async (credentials: {
+    email: string;
+    password: string;
+  }) => {
+    Reset(credentials, {
       onSuccess: () => {
         toast.success(t("resetSuccess"), {
           description: t("resetSuccessDescription"),
@@ -125,12 +128,8 @@ export default function BarcodesPage({ barcodes, pagination, filter }: Props) {
                     <SelectValue placeholder={t("used", { default: "Used" })} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">
-                      {t("all", { default: "All" })}
-                    </SelectItem>
-                    <SelectItem value="yes">
-                      {t("yes", { default: "Yes" })}
-                    </SelectItem>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="yes">Unused</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -141,7 +140,7 @@ export default function BarcodesPage({ barcodes, pagination, filter }: Props) {
                   default: "All barcodes will be deleted. Continue?",
                 })}
                 confirmLabel={t("resetConfirmCta", { default: "Delete all" })}
-                onConfirm={() => handleReset()}
+                onConfirm={handleReset}
                 pending={Reseting}
                 disabled={Reseting || !rows.length}
               >

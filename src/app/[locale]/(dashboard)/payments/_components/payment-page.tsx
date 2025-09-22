@@ -11,6 +11,8 @@ import ChartsSectoin from "./charts-sectoin";
 import { IoMdHome } from "react-icons/io";
 import ExportDialog from "./export-dialog";
 import FilterDialog from "./filter-dialog";
+import SyncStatus from "./sync-status";
+import SyncFilterDialog from "./sync-filter-dialog";
 
 export default function PaymentPage({
   monthlyPayments,
@@ -52,7 +54,6 @@ export default function PaymentPage({
             {t("title")}
           </h2>
           <div className="flex items-center gap-3">
-            <ExportDialog />
             <FilterDialog
               shifts={shifts}
               selectedShiftId={selectedShiftId}
@@ -61,8 +62,16 @@ export default function PaymentPage({
               staff={staff}
               selectedStaffId={selectedStaffId}
             />
+            <ExportDialog />
+            <SyncFilterDialog staff={staff} />
           </div>
         </div>
+
+        {/* Sync Status Component */}
+        <div className="mb-6">
+          <SyncStatus />
+        </div>
+
         <ChartsSectoin
           monthlyPayments={monthlyPayments}
           photoStats={photoStats}

@@ -203,11 +203,17 @@ export default function ImageUploader({
         onFolderNameChange?.(null);
         return;
       }
-      if (detectedFolder.length !== 4) {
-        onError?.("Folder name must be exactly 4 characters");
-        onFolderNameChange?.(detectedFolder);
+      if (detectedFolder.length < 5) {
+        onError?.(
+          "Folder name must have at least 5 characters to extract barcode prefix"
+        );
+        onFolderNameChange?.(null);
         return;
       }
+
+      // Extract the last 5 characters from the folder name
+      const barcodePrefix = detectedFolder.slice(-5);
+      onFolderNameChange?.(barcodePrefix);
 
       const { validFiles, errors } = validateFiles(files);
 
@@ -224,7 +230,7 @@ export default function ImageUploader({
         preview: URL.createObjectURL(file),
       }));
 
-      onFolderNameChange?.(detectedFolder);
+      onFolderNameChange?.(barcodePrefix);
       onFilesChange([...selectedFiles, ...newFiles]);
     },
     [
@@ -325,8 +331,8 @@ export default function ImageUploader({
               Select Entire Folder
             </p>
             <p className="text-xs text-gray-500">
-              Choose a folder containing images (folder name must be exactly 4
-              characters)
+              Choose a folder containing images (last 5 characters of folder
+              name will be used as barcode prefix)
             </p>
           </div>
         </div>

@@ -4,7 +4,10 @@
 import { getAuthToken } from "@/lib/utils/auth.token";
 import { revalidatePath } from "next/cache";
 
-export default async function resetBarcodes() {
+export default async function resetBarcodes(credentials?: {
+  email?: string;
+  password?: string;
+}) {
   const token = await getAuthToken();
 
   const response = await fetch(
@@ -15,6 +18,10 @@ export default async function resetBarcodes() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify({
+        manager_email: credentials?.email,
+        manager_password: credentials?.password,
+      }),
     }
   );
 

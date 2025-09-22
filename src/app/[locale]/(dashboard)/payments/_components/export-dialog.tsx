@@ -59,7 +59,10 @@ export default function ExportDialog() {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="main-button !py-[23px] !px-5 !rounded-none font-homenaje rtl:font-almarai text-sm">
+        <Button
+          variant="outline"
+          className="font-homenaje rtl:font-almarai text-sm"
+        >
           {t("export", { default: "Export PDF" })}
         </Button>
       </DialogTrigger>

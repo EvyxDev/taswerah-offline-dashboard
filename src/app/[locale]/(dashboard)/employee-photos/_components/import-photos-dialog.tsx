@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Loader2, Upload, CheckCircle } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -30,7 +31,7 @@ import { useUploadPhotos } from "../_hooks/use-upload-photos";
 const importPhotosSchema = z.object({
   barcodePrefix: z
     .string()
-    .length(4, "Code must be exactly 4 characters (auto from folder name)"),
+    .length(5, "Code must be exactly 5 characters (auto from folder name)"),
   photos: z.array(z.instanceof(File)).min(1, "At least one photo is required"),
   selectedEmployees: z
     .array(z.number())
@@ -123,10 +124,10 @@ export default function ImportPhotosDialog({
         type: "manual",
         message: "Select a folder so code can be auto-filled",
       });
-    } else if (code.length !== 4) {
+    } else if (code.length !== 5) {
       form.setError("barcodePrefix", {
         type: "manual",
-        message: "Code must be exactly 4 characters (from folder name)",
+        message: "Code must be exactly 5 characters (from folder name)",
       });
     } else {
       form.clearErrors("barcodePrefix");
@@ -144,10 +145,8 @@ export default function ImportPhotosDialog({
     uploadPhotosMutation.mutate({
       photos: data.photos,
       barcodePrefix: data.barcodePrefix,
-      employeeIds: data.selectedEmployees, // Pass the array of selected employee IDs
+      employeeIds: data.selectedEmployees,
     });
-    // Close immediately after submit as requested
-    handleDialogClose(true);
   };
 
   const handleDialogClose = (force = false) => {
@@ -261,8 +260,21 @@ export default function ImportPhotosDialog({
 
             {/* Display mutation error if any */}
             {uploadPhotosMutation.isError && (
-              <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md">
-                {uploadPhotosMutation.error?.message || "Upload failed"}
+              <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md border border-red-200">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+                  {uploadPhotosMutation.error?.message || "Upload failed"}
+                </div>
+              </div>
+            )}
+
+            {/* Display success message */}
+            {uploadPhotosMutation.isSuccess && (
+              <div className="text-sm text-green-600 bg-green-50 p-3 rounded-md border border-green-200">
+                <div className="flex items-center">
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Photos uploaded successfully!
+                </div>
               </div>
             )}
 
@@ -278,11 +290,19 @@ export default function ImportPhotosDialog({
               <Button
                 type="submit"
                 disabled={isUploading}
-                className="bg-main-black text-white hover:bg-gray-800"
+                className="bg-main-black text-white hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isUploading
-                  ? t("employeePhotos.dialog.uploading")
-                  : t("employeePhotos.dialog.upload")}
+                {isUploading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {t("employeePhotos.dialog.uploading")}
+                  </>
+                ) : (
+                  <>
+                    <Upload className="mr-2 h-4 w-4" />
+                    {t("employeePhotos.dialog.upload")}
+                  </>
+                )}
               </Button>
             </DialogFooter>
           </form>

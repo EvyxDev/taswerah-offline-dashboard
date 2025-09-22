@@ -47,7 +47,7 @@ type CreateOrderDialogProps = {
 const formSchema = z.object({
   barcode_prefix: z
     .string()
-    .length(4, "Code must be exactly 4 characters (auto from folder name)"),
+    .length(5, "Code must be exactly 5 characters (auto from folder name)"),
   phone_number: z
     .string()
     .min(1, "Phone number is required")
@@ -94,10 +94,10 @@ export function CreateOrderDialog({
         type: "manual",
         message: "Select a folder so code can be auto-filled",
       });
-    } else if (code.length !== 4) {
+    } else if (code.length !== 5) {
       form.setError("barcode_prefix", {
         type: "manual",
-        message: "Code must be exactly 4 characters (from folder name)",
+        message: "Code must be exactly 5 characters (from folder name)",
       });
     } else {
       form.clearErrors("barcode_prefix");

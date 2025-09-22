@@ -4,6 +4,16 @@ import { getPhotosByBarcode } from "@/lib/api/barcodes";
 
 export const runtime = "nodejs";
 
+// Extended Photo type that includes the type field
+interface PhotoWithType extends Photo {
+  type: string | null;
+}
+
+// Helper function to determine if image is small or large based on type field
+function isSmallImage(photoType: string | null): boolean {
+  return photoType === "small";
+}
+
 export async function GET(
   _req: Request,
   context: { params: { folderId: string } }
@@ -18,7 +28,9 @@ export async function GET(
     const photos = await getPhotosByBarcode(token || "", folderId);
 
     const zip = new JSZip();
-    const folder = zip.folder(folderId)!;
+    const mainFolder = zip.folder(folderId)!;
+    const smallFolder = mainFolder.folder("small")!;
+    const largeFolder = mainFolder.folder("large")!;
 
     await Promise.all(
       (photos || []).map(async (photo, index) => {
@@ -30,7 +42,16 @@ export async function GET(
         const arrayBuffer = await res.arrayBuffer();
         const fileNameFromPath =
           fileUrl.split("/").pop() || `image_${index + 1}.jpg`;
-        folder.file(fileNameFromPath, arrayBuffer);
+
+        // Determine if image is small or large based on type field
+        const isSmall = isSmallImage((photo as PhotoWithType).type);
+
+        // Place image in appropriate folder
+        if (isSmall) {
+          smallFolder.file(fileNameFromPath, arrayBuffer);
+        } else {
+          largeFolder.file(fileNameFromPath, arrayBuffer);
+        }
       })
     );
 

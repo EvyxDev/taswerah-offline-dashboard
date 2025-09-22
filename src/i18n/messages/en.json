@@ -301,7 +301,7 @@
       "title": "Import Photos by Codes",
       "description": "Select images from a folder and enter the barcode prefix for these photos.",
       "barcodePrefix": "Barcode Prefix",
-      "barcodePrefixPlaceholder": "Enter barcode prefix (e.g., 8888)",
+      "barcodePrefixPlaceholder": "Enter barcode prefix (e.g., 88888)",
       "selectPhotos": "Select Photos",
       "upload": "Upload Photos",
       "uploading": "Uploading...",

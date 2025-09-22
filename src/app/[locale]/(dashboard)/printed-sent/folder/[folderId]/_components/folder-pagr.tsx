@@ -19,6 +19,7 @@ export default function FolderPage({
 }) {
   const router = useRouter();
   const t = useTranslations();
+  console.log(photos);
   const handleDownload = async () => {
     try {
       const res = await fetch(`/api/zip/${folderId}`, { cache: "no-store" });

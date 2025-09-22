@@ -72,6 +72,7 @@ declare type Photo = {
   branch: Branch;
   metadata: string | Metadata;
   sync_status: string;
+  type: string | null;
   created_at: string;
   updated_at: string;
 };
