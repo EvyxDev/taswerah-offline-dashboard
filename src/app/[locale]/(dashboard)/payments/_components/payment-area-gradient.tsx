@@ -47,7 +47,7 @@ export function ChartAreaGradient({
   // If no data, show empty state
   if (hasNoData) {
     return (
-      <Card className="pt-10 pl-0 rounded-3xl  pb-3">
+      <Card className="pt-10 pl-0 rounded-3xl  pb-3 w-full">
         <CardContent className="flex flex-col items-center justify-center h-80 text-center">
           <div className="text-gray-400 space-y-4">
             {/* Empty state icon */}
@@ -87,13 +87,13 @@ export function ChartAreaGradient({
   }));
 
   return (
-    <Card className="pt-10 pb-5 pl-0 rounded-3xl">
+    <Card className="pt-10 pb-5 pl-0 rounded-3xl w-full">
       <CardHeader className="sr-only">
         <CardTitle>{t("dashboard.areaChartTitle")}</CardTitle>
         <CardDescription>{t("dashboard.areaChartDescription")}</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer className="h-64 w-full" config={chartConfig}>
+        <ChartContainer className="h-96 w-full" config={chartConfig}>
           <AreaChart
             accessibilityLayer
             data={chartData}
