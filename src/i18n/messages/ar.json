@@ -324,5 +324,18 @@
   },
   "application-title": "تصويرة",
   "phone-number": "رقم الهاتف",
-  "password": "كلمة السر"
+  "password": "كلمة السر",
+  "phoneNumbers": {
+    "navigation": {
+      "phoneNumbers": "أرقام الهاتف"
+    },
+    "dashboard": {
+      "title": "أرقام الهاتف"
+    },
+    "index": "#",
+    "phoneNumber": "رقم الهاتف",
+    "exportExcel": "تصدير إلى Excel",
+    "noPhoneNumbersTitle": "لا توجد أرقام هواتف",
+    "noPhoneNumbersDescription": "لا توجد أرقام هواتف متاحة في الوقت الحالي."
+  }
 }

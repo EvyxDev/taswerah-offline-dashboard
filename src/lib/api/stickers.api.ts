@@ -17,6 +17,8 @@ export async function GetAllStickers(token: string): Promise<any[]> {
   }
 
   const payload: APIResponse<Photo[]> = await response.json();
+  console.log(response);
+
   if (!("data" in payload)) {
     throw new Error(payload.message);
   }

@@ -14,6 +14,7 @@
     "readyToPrint": "Ready to Print",
     "printedSent": "Printed & Sent",
     "orders": "Orders",
+    "phoneNumbers": "Phone Numbers",
     "shifts": "Shifts",
     "barcodes": "Barcodes",
     "upload": "Upload Photos"
@@ -321,5 +322,18 @@
   },
   "application-title": "Taswera",
   "phone-number": "Phone Number",
-  "password": "Password"
+  "password": "Password",
+  "phoneNumbers": {
+    "navigation": {
+      "phoneNumbers": "Phone Numbers"
+    },
+    "dashboard": {
+      "title": "Phone Numbers"
+    },
+    "index": "#",
+    "phoneNumber": "Phone Number",
+    "exportExcel": "Export Excel",
+    "noPhoneNumbersTitle": "No Phone Numbers Yet",
+    "noPhoneNumbersDescription": "There are no phone numbers available at the moment."
+  }
 }

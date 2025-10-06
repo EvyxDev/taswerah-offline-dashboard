@@ -9,7 +9,7 @@ export default async function Page() {
     GetAllFrames(token || ""),
     GetAllStickers(token || ""),
   ]);
-
+console.log(frames, stickers);
   // Normalize to shape expected by client
 
   return <SettingsPage frames={frames} stickers={stickers} />;

@@ -3,6 +3,7 @@ export const NAV_LINKS = [
   { href: "/barcodes", label: "barcodes" },
   { href: "/employee-photos", label: "upload" },
   { href: "/orders", label: "orders" },
+  { href: "/phone-numbers", label: "phoneNumbers" },
   { href: "/ready-to-print", label: "readyToPrint" },
   { href: "/printed-sent", label: "printedSent" },
   { href: "/employees", label: "employees" },
