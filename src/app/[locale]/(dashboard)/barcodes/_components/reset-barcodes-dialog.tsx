@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 type ResetBarcodesDialogProps = {
   title: string;
@@ -33,7 +34,7 @@ export default function ResetBarcodesDialog({
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const t = useTranslations("common");
   const handleConfirm = () => {
     onConfirm({ email, password });
     setOpen(false);
@@ -46,7 +47,7 @@ export default function ResetBarcodesDialog({
       <span onClick={() => !disabled && setOpen(true)}>{children}</span>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[420px] text-center font-homenaje rtl:font-almarai">
-          <DialogHeader>
+          <DialogHeader className="rtl:font-almarai">
             <DialogTitle className="text-2xl">{title}</DialogTitle>
             <DialogDescription className="text-gray-500">
               {description}
@@ -80,7 +81,7 @@ export default function ResetBarcodesDialog({
               onClick={() => setOpen(false)}
               className="font-homenaje rtl:font-almarai"
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button
               onClick={handleConfirm}

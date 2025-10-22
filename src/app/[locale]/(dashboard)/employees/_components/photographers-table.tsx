@@ -15,12 +15,11 @@ import {
 import { Card } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
 import AddOrEditPhotographerDialog from "./add-photographer-dialog";
-import { Switch } from "@/components/ui/switch";
 import DeleteDialog from "@/components/common/delete-dialog";
 import { PaginationComponent } from "@/components/common/pagination-comp";
-import { toast } from "sonner";
-import useToggleEmployeeStatus from "../_hooks/use-toggle-employee-status";
 import useDeleteEmployeer from "../_hooks/use-delete-employeer";
+import { Users } from "lucide-react";
+import EmptyState from "@/components/common/empty-state";
 
 interface Props {
   PhotoGraphers: PaginatedPhGraphers;
@@ -38,30 +37,10 @@ export default function PhotographersTable({
   // Translation
   const t = useTranslations("employees");
 
-  const { toggleStatus, togglePending } = useToggleEmployeeStatus();
   const { DeleteEmployeer } = useDeleteEmployeer();
 
   // Variables
   const photoGraphersData = PhotoGraphers?.data;
-  const handleToggleStatus = (photographer: PhGrapher) => {
-    const nextStatus = photographer.status === "active" ? "inactive" : "active";
-    toggleStatus(
-      { photographerId: photographer.id, status: nextStatus },
-      {
-        onSuccess: () => {
-          toast.success(
-            nextStatus === "active"
-              ? "Activated successfully"
-              : "Deactivated successfully"
-          );
-        },
-        onError: (error: unknown) => {
-          toast.error("Failed to toggle status");
-          console.error("Toggle error:", error);
-        },
-      }
-    );
-  };
 
   return (
     <Card className="bg-background max-w-screen-2xl mx-auto rounded-2xl py-6 h-full ">
@@ -82,39 +61,29 @@ export default function PhotographersTable({
           <AddOrEditPhotographerDialog />
         </div>
 
-        {/* Table */}
-        <div className="border">
-          <Table className="px-5">
-            <TableHeader>
-              <TableRow className=" px-7">
-                <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg    text-muted-foreground text-start  w-[150px]">
-                  {t("status")}
-                </TableHead>
-                <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg    text-muted-foreground text-start  ">
-                  {t("name")}
-                </TableHead>
-                <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg    text-muted-foreground text-center w-[250px] ">
-                  {t("branch")}
-                </TableHead>
-                <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg   text-muted-foreground text-center w-[100px] "></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody className="">
-              {photoGraphersData?.length > 0 ? (
-                photoGraphersData?.map((photoGrapher, index) => (
+        {/* Table or Empty State */}
+        {photoGraphersData?.length > 0 ? (
+          <div className="border">
+            <Table className="px-5">
+              <TableHeader>
+                <TableRow className=" px-7">
+                  <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg    text-muted-foreground text-start  ">
+                    {t("name")}
+                  </TableHead>
+                  <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg    text-muted-foreground text-center w-[250px] ">
+                    {t("branch")}
+                  </TableHead>
+                  <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg   text-muted-foreground text-center w-[100px] "></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="">
+                {photoGraphersData?.map((photoGrapher, index) => (
                   <TableRow
                     key={index}
                     className={`px-7 h-[70px] ${
                       index % 2 === 0 ? "bg-[#E9EAEB]" : "bg-white"
                     }`}
                   >
-                    <TableCell>
-                      <Switch
-                        onCheckedChange={() => handleToggleStatus(photoGrapher)}
-                        disabled={togglePending}
-                        checked={photoGrapher.status === "active"}
-                      />
-                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-3 ">
                         <Avatar className="h-10 w-10">
@@ -168,19 +137,20 @@ export default function PhotographersTable({
                       </div>
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8">
-                    <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                      <p>{t("noEmployeesFound")}</p>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <EmptyState
+            icon={<Users className="w-12 h-12 text-gray-400" />}
+            title={t("noEmployeesFound")}
+            description={t("noEmployeesDescription", {
+              default:
+                "No employees have been added yet. Add your first employee to get started.",
+            })}
+          />
+        )}
 
         {/* Pagination - Only show if there are results */}
         {photoGraphersData?.length > 0 && (

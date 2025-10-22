@@ -33,8 +33,9 @@ import {
 import { IoMdHome } from "react-icons/io";
 import useResetBarcodes from "../_hooks/use-reset-barcodes";
 import { Button } from "@/components/ui/button";
-import { RotateCw } from "lucide-react";
+import { RotateCw, QrCode } from "lucide-react";
 import { toast } from "sonner";
+import EmptyState from "@/components/common/empty-state";
 
 type Props = {
   barcodes: PaginatedBarcodes;
@@ -135,11 +136,9 @@ export default function BarcodesPage({ barcodes, pagination, filter }: Props) {
               </div>
               <GenerateBarcodesDialog />
               <ResetBarcodesDialog
-                title={t("resetConfirmTitle", { default: "Reset barcodes" })}
-                description={t("resetConfirmDescription", {
-                  default: "All barcodes will be deleted. Continue?",
-                })}
-                confirmLabel={t("resetConfirmCta", { default: "Delete all" })}
+                title={t("resetConfirmTitle")}
+                description={t("resetConfirmDescription")}
+                confirmLabel={t("resetConfirmCta")}
                 onConfirm={handleReset}
                 pending={Reseting}
                 disabled={Reseting || !rows.length}
@@ -156,21 +155,22 @@ export default function BarcodesPage({ barcodes, pagination, filter }: Props) {
             </div>
           </div>
 
-          <div className="border">
-            <Table className="px-5">
-              <TableHeader>
-                <TableRow className="px-7">
-                  <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg   text-muted-foreground text-start w-[200px]">
-                    {t("barcode", { default: "Barcode" })}
-                  </TableHead>
-                  <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg   text-muted-foreground text-start w-[200px]">
-                    {t("used", { default: "Used" })}
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {rows.length > 0 ? (
-                  rows.map((item, index) => (
+          {/* Table or Empty State */}
+          {rows.length > 0 ? (
+            <div className="border">
+              <Table className="px-5">
+                <TableHeader>
+                  <TableRow className="px-7">
+                    <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg   text-muted-foreground text-start w-[200px]">
+                      {t("barcode", { default: "Barcode" })}
+                    </TableHead>
+                    <TableHead className="font-medium font-homenaje rtl:font-almarai text-black text-lg   text-muted-foreground text-start w-[200px]">
+                      {t("used", { default: "Used" })}
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {rows.map((item, index) => (
                     <TableRow
                       key={`${item.barcode}-${index}`}
                       className={`px-7 h-[70px] ${
@@ -190,19 +190,20 @@ export default function BarcodesPage({ barcodes, pagination, filter }: Props) {
                         </span>
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={2} className="text-center py-8">
-                      <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                        <p>{t("empty", { default: "No barcodes found" })}</p>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          ) : (
+            <EmptyState
+              icon={<QrCode className="w-12 h-12 text-gray-400" />}
+              title={t("empty")}
+              description={t("emptyDescription", {
+                default:
+                  "No barcodes have been generated yet. Generate barcodes to start processing orders.",
+              })}
+            />
+          )}
 
           {rows.length > 0 && (
             <div className="mt-6">

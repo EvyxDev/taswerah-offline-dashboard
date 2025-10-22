@@ -16,6 +16,7 @@ import { Package } from "lucide-react";
 import { PayDialog } from "./pay-dialog";
 import { CreateOrderDialog } from "./create-dialog";
 import { FaPlus } from "react-icons/fa6";
+import EmptyState from "@/components/common/empty-state";
 
 type Props = {
   orders: TOrders[];
@@ -123,17 +124,15 @@ export default function OrderTable({ orders, employees, shifts }: Props) {
               </Table>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-16 px-8">
-              <div className="bg-gray-100 rounded-full p-6 mb-6">
-                <Package className="w-12 h-12 text-gray-400" />
-              </div>
-              <h3 className="text-xl font-homenaje rtl:font-almarai text-gray-600 mb-3">
-                {t("order.noOrdersTitle")}
-              </h3>
-              <p className="text-gray-500 font-homenaje rtl:font-almarai text-center max-w-md mb-6">
-                {t("order.noOrdersDescription")}
-              </p>
-            </div>
+            <EmptyState
+              icon={<Package className="w-12 h-12 text-gray-400" />}
+              title={t("order.noOrdersTitle")}
+              description={t("order.noOrdersDescription")}
+              actionButton={{
+                label: t("order.createOrder", { default: "Create Order" }),
+                onClick: () => setIsCreateDialogOpen(true),
+              }}
+            />
           )}
         </div>
       </Card>

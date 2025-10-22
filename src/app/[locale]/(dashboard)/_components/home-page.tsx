@@ -9,8 +9,9 @@ import {
 import { IoMdHome } from "react-icons/io";
 
 import { useTranslations } from "next-intl";
-import HomeTable from "./home-table";
+import PhotographersTable from "../employees/_components/photographers-table";
 import { usePathname, useRouter } from "@/i18n/routing";
+
 type Props = {
   PhotoGraphers: Employee[];
   pagination: {
@@ -35,7 +36,7 @@ export default function HomePage({ PhotoGraphers, pagination }: Props) {
     // Update URL with new parameters
     router.push(`${pathname}?${params.toString()}`);
   };
-  console.log(PhotoGraphers);
+
   return (
     <div className=" space-y-8 px-6 xl:px-10 py-5">
       <Breadcrumb>
@@ -52,8 +53,27 @@ export default function HomePage({ PhotoGraphers, pagination }: Props) {
         <h2 className="text-3xl font-homenaje rtl:font-almarai  text-main-black mb-5">
           {t("dashboard.employees")}
         </h2>
-        <HomeTable
-          PhotoGraphers={PhotoGraphers}
+        <PhotographersTable
+          PhotoGraphers={{
+            data: PhotoGraphers,
+            meta: {
+              last_page: pagination.totalPages[0],
+              current_page: pagination.currentPage,
+              from: 1,
+              to: PhotoGraphers.length,
+              total: PhotoGraphers.length,
+              per_page: pagination.limit,
+              links: [],
+              path: "",
+            },
+            links: {
+              first: "",
+              last: "",
+              prev: null,
+              next: null,
+            },
+            photographer_count: PhotoGraphers.length,
+          }}
           onPageChange={handlePageChange}
           currentPage={pagination.currentPage}
           totalPages={pagination.totalPages[0]}

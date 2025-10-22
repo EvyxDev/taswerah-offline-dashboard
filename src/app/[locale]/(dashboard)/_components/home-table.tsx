@@ -1,7 +1,6 @@
 "use client";
 
-import { Calendar } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -12,18 +11,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu";
+
 import { Card } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
 import { PaginationComponent } from "@/components/common/pagination-comp";
-// import TablePagination from "./table-pagination";
-// import { useState } from "react";
-// import { useQuery } from "@tanstack/react-query";
+import EmptyState from "@/components/common/empty-state";
+
 interface Props {
   PhotoGraphers: Employee[];
   onPageChange: (page: number) => void;
@@ -36,20 +29,7 @@ export default function HomeTable0({
   onPageChange,
   totalPages,
 }: Props) {
-  // locale = useLocale();
   const t = useTranslations();
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const limit = 5;
-
-  // const {
-  //   data: branchData,
-
-  // } = useQuery<APIResponse<BranchListData>, Error>({
-  //   queryKey: ["branches", "ar", currentPage, limit],
-  //   queryFn: () => GetListBranches("ar", currentPage, limit),
-  // });
-
-  // const successfulResponse = branchData as SuccessfulResponse<BranchListData>;
 
   const PhotoGraphersData = PhotoGraphers;
   return (
@@ -68,57 +48,25 @@ export default function HomeTable0({
               {PhotoGraphersData.length}
             </Badge>
           </div>
-
-          {/* <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="flex items-center text-xs sm:text-base px-1 sm:px-4 gap-2 bg-transparent self-end"
-              >
-                <Calendar className="sm:h-4 h-2 w-2 sm:w-4" />
-                {t("dashboard.date")}:
-                <ChevronDown className="sm:h-4 h-2 w-2 sm:w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              {dateOptions.map((option) => (
-                <DropdownMenuItem
-                  key={option.value}
-                  className={selectedDate === option.value ? "bg-muted" : ""}
-                >
-                  {option.label}
-                  {selectedDate === option.value && (
-                    <span className="ml-auto text-xs text-muted-foreground">
-                      ✓
-                    </span>
-                  )}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu> */}
         </div>
-        {/* Table */}
-        <div className="border">
-          <Table className="px-5">
-            <TableHeader>
-              <TableRow className=" px-7">
-                <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-start min-w-[200px] ">
-                  {t("dashboard.name")}
-                </TableHead>
-                <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-center  min-w-[150px] sm:w-[100px]">
-                  {t("dashboard.noCustomers")}
-                </TableHead>
-                <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-center  min-w-[150px] sm:w-[100px]">
-                  {t("dashboard.noPhotos")}
-                </TableHead>
-                {/* <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-center min-w-[150px] sm:w-[150px]">
-                  {t("dashboard.action")}
-                </TableHead> */}
-              </TableRow>
-            </TableHeader>
-            <TableBody className="">
-              {PhotoGraphersData?.length > 0 ? (
-                PhotoGraphersData?.map((PhotoGrapher, index) => (
+        {PhotoGraphersData?.length > 0 ? (
+          <div className="border">
+            <Table className="px-5">
+              <TableHeader>
+                <TableRow className=" px-7">
+                  <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-start min-w-[200px] ">
+                    {t("dashboard.name")}
+                  </TableHead>
+                  <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-center  min-w-[150px] sm:w-[100px]">
+                    {t("dashboard.noCustomers")}
+                  </TableHead>
+                  <TableHead className="font-medium font-homenaje rtl:font-almarai text-lg   text-gray-400 text-muted-foreground text-center  min-w-[150px] sm:w-[100px]">
+                    {t("dashboard.noPhotos")}
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="">
+                {PhotoGraphersData?.map((PhotoGrapher, index) => (
                   <TableRow
                     key={PhotoGrapher.id}
                     className={`px-7 h-[70px] ${
@@ -149,36 +97,21 @@ export default function HomeTable0({
                     <TableCell className="text-center font-homenaje rtl:font-almarai text-lg font-medium text-muted-foreground">
                       {PhotoGrapher.stats?.total_photos}
                     </TableCell>
-                    {/* <TableCell className="text-center font-homenaje rtl:font-almarai text-lg rtl:text-sm font-medium !text-white ">
-                      <Link
-                        href={`/employee-photos/${PhotoGrapher.id}?name=${PhotoGrapher.name}`}
-                        className={
-                          index % 2 === 0
-                            ? "bg-black rounded-full px-2 cursor-pointer text-white py-1"
-                            : "bg-gray-500 rounded-full px-2 cursor-pointer text-white py-1"
-                        }
-                      >
-                        {t("dashboard.viewPhotos")}
-                      </Link>
-                    </TableCell> */}
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8">
-                    <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                      <Calendar className="h-8 w-8" />
-                      <p>{t("dashboard.noEmployeesFound")}</p>
-                      <Button variant="ghost" size="sm" className="text-xs">
-                        {t("dashboard.viewAllEmployees")}
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <EmptyState
+            icon={<Users className="w-12 h-12 text-gray-400" />}
+            title={t("dashboard.noEmployeesFound")}
+            description={t("dashboard.noEmployeesDescription", {
+              default:
+                "No employees have been added yet. Add your first employee to get started.",
+            })}
+          />
+        )}
         {PhotoGraphersData?.length > 0 && (
           <>
             <div className="mt-6">

@@ -10,7 +10,7 @@ export async function SendPhotosAction(
   try {
     const token = await getAuthToken();
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API}/branch-manager/orders/${orderId}/photos?send_type=${sendType}`,
+      `${process.env.API}/branch-manager/orders/${orderId}/photos?send_type=${sendType}`,
       {
         method: "GET",
         headers: {
@@ -19,6 +19,8 @@ export async function SendPhotosAction(
         cache: "no-store",
       }
     );
+
+    console.log(response);
 
     if (!response.ok) {
       throw new Error(

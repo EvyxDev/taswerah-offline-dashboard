@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 export default async function createPhotographer(data: CreatePhotographerBody) {
   const token = await getAuthToken();
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API}/branch-manager/photographers`,
+    `${process.env.API}/branch-manager/photographers`,
     {
       method: "POST",
       body: JSON.stringify({
@@ -28,6 +28,7 @@ export default async function createPhotographer(data: CreatePhotographerBody) {
   const payload: APIResponse<CreateBranchManagerResponse> =
     await response.json();
   revalidatePath("/employees");
-
+  console.log(payload);
+  console.log(response);
   return payload;
 }

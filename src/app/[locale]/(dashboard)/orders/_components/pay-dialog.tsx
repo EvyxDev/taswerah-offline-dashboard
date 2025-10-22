@@ -19,12 +19,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { CreditCard, X, QrCode, DollarSign } from "lucide-react";
-import { SubmitOrderAction } from "../_action/submit-order";
+import useSubmitOrder from "../_hooks/use-submit-order";
 import {
   Select,
   SelectContent,
@@ -33,6 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { SendPhotosAction } from "../../ready-to-print/_actoin/send-photos";
 
 type PayDialogProps = {
   isOpen: boolean;
@@ -62,32 +62,38 @@ export function PayDialog({
   shifts,
 }: PayDialogProps) {
   const t = useTranslations();
-  const [isProcessing, setIsProcessing] = useState(false);
+  const { submitOrder, isSubmitting } = useSubmitOrder();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: { pay_amount: "", shift_id: "" },
   });
 
-  const onSubmit = async (data: FormData) => {
-    setIsProcessing(true);
-    try {
-      const payload = await SubmitOrderAction(orderId!, {
+  const onSubmit = (data: FormData) => {
+    submitOrder(
+      {
+        orderId: orderId!,
         shift_id: Number(data.shift_id),
         pay_amount: parseFloat(data.pay_amount),
-      });
-      if ("success" in payload && payload.success === false) {
-        throw new Error(payload.message);
+      },
+      {
+        onSuccess: async () => {
+          toast.success("Payment submitted");
+          const result = await SendPhotosAction(
+            barcode || "",
+            "print_and_send"
+          );
+          console.log(result);
+          form.reset();
+          onClose();
+        },
+        onError: (error) => {
+          const message =
+            error instanceof Error ? error.message : "Payment failed";
+          toast.error(message);
+        },
       }
-      toast.success("Payment submitted");
-      form.reset();
-      onClose();
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Payment failed";
-      toast.error(message);
-    } finally {
-      setIsProcessing(false);
-    }
+    );
   };
   const handleClose = () => {
     form.reset();
@@ -210,17 +216,17 @@ export function PayDialog({
                 variant="outline"
                 onClick={handleClose}
                 className="font-homenaje rtl:font-almarai"
-                disabled={isProcessing}
+                disabled={isSubmitting}
               >
                 {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
                 className="bg-[#535862] hover:bg-[#424751] text-white font-homenaje rtl:font-almarai flex items-center gap-2"
-                disabled={isProcessing}
+                disabled={isSubmitting}
               >
                 <CreditCard className="w-4 h-4" />
-                {isProcessing ? t("payment.processing") : t("payment.payNow")}
+                {isSubmitting ? t("payment.processing") : t("payment.payNow")}
               </Button>
             </DialogFooter>
           </form>

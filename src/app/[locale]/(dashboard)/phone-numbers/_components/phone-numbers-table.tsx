@@ -12,6 +12,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import { Phone, FileDown } from "lucide-react";
+import EmptyState from "@/components/common/empty-state";
 import { exportPhoneNumbersToExcel } from "@/lib/utils/excel-export";
 import { toast } from "sonner";
 
@@ -100,17 +101,11 @@ export default function PhoneNumbersTable({ phoneNumbers }: Props) {
               </Table>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-16 px-8">
-              <div className="bg-gray-100 rounded-full p-6 mb-6">
-                <Phone className="w-12 h-12 text-gray-400" />
-              </div>
-              <h3 className="text-xl font-homenaje rtl:font-almarai text-gray-600 mb-3">
-                {t("phoneNumbers.noPhoneNumbersTitle")}
-              </h3>
-              <p className="text-gray-500 font-homenaje rtl:font-almarai text-center max-w-md mb-6">
-                {t("phoneNumbers.noPhoneNumbersDescription")}
-              </p>
-            </div>
+            <EmptyState
+              icon={<Phone className="w-12 h-12 text-gray-400" />}
+              title={t("phoneNumbers.noPhoneNumbersTitle")}
+              description={t("phoneNumbers.noPhoneNumbersDescription")}
+            />
           )}
         </div>
       </Card>
