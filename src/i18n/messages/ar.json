@@ -198,6 +198,7 @@
     "cancel": "إلغاء",
     "printSuccess": "تمت الطباعة بنجاح!",
     "printSuccessDesc": "تم إرسال صورك إلى الطابعة. شكرًا لك!",
+    "printError": "فشل في الطباعة",
     "close": "إغلاق",
     "sendSoftCopy": "إرسال النسخة الرقمية",
     "photosWillBeSent": "سيتم إرسال الصور إلى رقم الواتساب",
@@ -250,7 +251,12 @@
     "phone_number_placeholder": "أدخل رقم الهاتف",
     "employee": "الموظف",
     "select_employee_placeholder": "اختر الموظف",
-    "select_photos": "اختر الصور"
+    "select_photos": "اختر الصور",
+    "cancelConfirm": "هل أنت متأكد أنك تريد إلغاء هذا الطلب؟",
+    "cancelSuccess": "تم إلغاء الطلب",
+    "cancelError": "فشل إلغاء الطلب",
+    "cancelling": "جارٍ الإلغاء...",
+    "cancelOrder": "إلغاء الطلب"
   },
   "shifts": {
     "label": "الوردية",

@@ -193,6 +193,7 @@
     "cancel": "Cancel",
     "printSuccess": "Print Successful!",
     "printSuccessDesc": "Your photos have been sent to the printer. Thank you!",
+    "printError": "Failed to print",
     "close": "Close",
     "sendSoftCopy": "Send Soft Copy",
     "photosWillBeSent": "Photos will be sent to the WhatsApp number",
@@ -247,7 +248,12 @@
     "phone_number_placeholder": "Enter phone number",
     "employee": "Employee",
     "select_employee_placeholder": "Select employee",
-    "select_photos": "Select Photos"
+    "select_photos": "Select Photos",
+    "cancelConfirm": "Cancel this order?",
+    "cancelSuccess": "Order cancelled",
+    "cancelError": "Failed to cancel",
+    "cancelling": "Cancelling...",
+    "cancelOrder": "Cancel Order"
   },
   "shifts": {
     "label": "Shift",

@@ -32,7 +32,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { SendPhotosAction } from "../../ready-to-print/_actoin/send-photos";
 
 type PayDialogProps = {
   isOpen: boolean;
@@ -79,12 +78,6 @@ export function PayDialog({
       {
         onSuccess: async () => {
           toast.success("Payment submitted");
-          const result = await SendPhotosAction(
-            barcode || "",
-            "print_and_send"
-          );
-          console.log(result);
-          form.reset();
           onClose();
         },
         onError: (error) => {
