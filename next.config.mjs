@@ -5,7 +5,7 @@ const withNextIntl = createNextIntlPlugin();
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["taswera.evyx.lol"],
+    domains: ["taswera.evyx.lol","127.0.0.1"],
   },
   output: "standalone",
 };

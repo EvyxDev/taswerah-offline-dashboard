@@ -12,7 +12,7 @@ export async function uploadPhotosAction(
 ): Promise<UploadResponse> {
   try {
     const response = await fetch(
-      "https://taswera.evyx.lol/api/branch-manager/photos/upload",
+      `${process.env.API}/branch-manager/photos/upload`,
       {
         method: "POST",
         body: formData,
