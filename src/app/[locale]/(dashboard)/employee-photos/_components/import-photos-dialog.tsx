@@ -14,7 +14,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Loader2, Upload, CheckCircle } from "lucide-react";
 import {
   Form,
@@ -204,29 +203,6 @@ export default function ImportPhotosDialog({
                 </FormItem>
               )}
             />
-            {/* Barcode Prefix Field */}
-            <FormField
-              control={form.control}
-              name="barcodePrefix"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-medium">
-                    {t("employeePhotos.dialog.barcodePrefix")}
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t(
-                        "employeePhotos.dialog.barcodePrefixPlaceholder"
-                      )}
-                      {...field}
-                      readOnly
-                      disabled
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             {/* File Upload Field using ImageUploader component */}
             <FormField
@@ -244,6 +220,8 @@ export default function ImportPhotosDialog({
                       onError={handleFileError}
                       onFolderNameChange={handleFolderNameChange}
                       disabled={isUploading}
+                      employeeIds={form.watch("selectedEmployees") || []}
+                      autoUpload={true}
                     />
                   </FormControl>
                   <FormMessage />

@@ -1,47 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
-import { useState, useCallback } from "react";
+import { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { FiX, FiUpload, FiFolder } from "react-icons/fi";
+import { Progress } from "@/components/ui/progress";
+import { FiX, FiFolder } from "react-icons/fi";
+import { useUploadSinglePhoto } from "../_hooks/use-upload-single-photo";
 
 interface SelectedFile {
   file: File;
   preview: string;
+  uploadStatus?: "idle" | "uploading" | "success" | "error";
+  uploadError?: string;
 }
-
-// Minimal types for WebKit directory drag-and-drop support
-interface WebkitFileSystemEntry {
-  isFile: boolean;
-  isDirectory: boolean;
-  name: string;
-  fullPath: string;
-}
-
-interface WebkitFileSystemFileEntry extends WebkitFileSystemEntry {
-  file: (
-    successCallback: (file: File) => void,
-    errorCallback?: (error: DOMException) => void
-  ) => void;
-}
-
-interface WebkitFileSystemDirectoryReader {
-  readEntries: (
-    successCallback: (entries: WebkitFileSystemEntry[]) => void,
-    errorCallback?: (error: DOMException) => void
-  ) => void;
-}
-
-interface WebkitFileSystemDirectoryEntry extends WebkitFileSystemEntry {
-  createReader: () => WebkitFileSystemDirectoryReader;
-}
-
-const isDirectoryEntry = (
-  entry: WebkitFileSystemEntry
-): entry is WebkitFileSystemDirectoryEntry => entry.isDirectory === true;
-
-const isFileEntry = (
-  entry: WebkitFileSystemEntry
-): entry is WebkitFileSystemFileEntry => entry.isFile === true;
 
 interface ImageUploaderProps {
   selectedFiles: SelectedFile[];
@@ -50,8 +20,10 @@ interface ImageUploaderProps {
   onFolderNameChange?: (folderName: string | null) => void;
   disabled?: boolean;
   maxFiles?: number;
-  maxSizePerFile?: number; // in MB
+  maxSizePerFile?: number;
   acceptedFormats?: string[];
+  employeeIds?: number[];
+  autoUpload?: boolean;
 }
 
 export default function ImageUploader({
@@ -60,7 +32,6 @@ export default function ImageUploader({
   onError,
   onFolderNameChange,
   disabled = false,
-  // maxSizePerFile retained for prop compatibility but not used
   acceptedFormats = [
     "image/jpeg",
     "image/jpg",
@@ -69,9 +40,31 @@ export default function ImageUploader({
     "image/webp",
     "image/bmp",
   ],
+  employeeIds = [],
+  autoUpload = true,
 }: ImageUploaderProps) {
-  const [isDragOver, setIsDragOver] = useState(false);
+  const [processingProgress, setProcessingProgress] = useState<{
+    total: number;
+    processed: number;
+  } | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<{
+    total: number;
+    uploaded: number;
+    failed: number;
+  } | null>(null);
 
+  // Use ref to track latest files for upload callbacks
+  const filesRef = useRef(selectedFiles);
+  useEffect(() => {
+    filesRef.current = selectedFiles;
+  }, [selectedFiles]);
+
+  // Upload hook
+  const uploadMutation = useUploadSinglePhoto({
+    onError: (error) => {
+      onError?.(error);
+    },
+  });
   const detectTopLevelFolderName = useCallback(
     (files: File[]): string | null => {
       for (const file of files) {
@@ -95,99 +88,6 @@ export default function ImageUploader({
     []
   );
 
-  // Recursively collect files from dropped folders (Chrome/WebKit)
-  const collectFilesFromDataTransfer = useCallback(
-    async (
-      dataTransfer: DataTransfer
-    ): Promise<{ files: File[]; folderName: string | null }> => {
-      const items = Array.from(dataTransfer.items || []);
-      if (items.length === 0) {
-        return {
-          files: Array.from(dataTransfer.files || []),
-          folderName: null,
-        };
-      }
-
-      const files: File[] = [];
-      let topFolderName: string | null = null;
-
-      const traverseEntry = async (
-        entry: WebkitFileSystemEntry
-      ): Promise<void> => {
-        if (!entry) return;
-        if (isFileEntry(entry)) {
-          await new Promise<void>((resolve, reject) => {
-            entry.file(
-              (file: File) => {
-                try {
-                  const fullPath: string = (entry.fullPath || "").replace(
-                    /^\//,
-                    ""
-                  );
-                  if (!topFolderName) {
-                    topFolderName = fullPath.split("/")[0] || null;
-                  }
-                  files.push(file);
-                  resolve();
-                } catch (err) {
-                  reject(err as DOMException);
-                }
-              },
-              (err: DOMException) => reject(err)
-            );
-          });
-        } else if (isDirectoryEntry(entry)) {
-          if (!topFolderName) {
-            const dirPath = (entry.fullPath || "").replace(/^\//, "");
-            topFolderName = dirPath.split("/")[0] || entry.name || null;
-          }
-          const reader = entry.createReader();
-          await new Promise<void>((resolve) => {
-            const readEntries = () => {
-              reader.readEntries(async (entries: WebkitFileSystemEntry[]) => {
-                if (!entries.length) {
-                  resolve();
-                  return;
-                }
-                await Promise.all(entries.map((child) => traverseEntry(child)));
-                readEntries();
-              });
-            };
-            readEntries();
-          });
-        }
-      };
-
-      await Promise.all(
-        items.map(async (item) => {
-          const entryGetter = (
-            item as unknown as {
-              webkitGetAsEntry?: () => WebkitFileSystemEntry | null;
-            }
-          ).webkitGetAsEntry;
-          const entry =
-            typeof entryGetter === "function" ? entryGetter.call(item) : null;
-          if (entry) {
-            if (!topFolderName) {
-              const initialPath = (entry.fullPath || "").replace(/^\//, "");
-              const entryWithName: WebkitFileSystemEntry =
-                entry as WebkitFileSystemEntry;
-              topFolderName =
-                initialPath.split("/")[0] || entryWithName.name || null;
-            }
-            await traverseEntry(entry);
-            return;
-          }
-          const file = item.getAsFile && item.getAsFile();
-          if (file) files.push(file);
-        })
-      );
-
-      return { files, folderName: topFolderName };
-    },
-    []
-  );
-
   const processFiles = useCallback(
     (files: File[], folderNameOverride?: string | null) => {
       if (files.length === 0) {
@@ -195,11 +95,9 @@ export default function ImageUploader({
         return;
       }
 
-      // Enforce folder-based selection with exactly 4-character folder name
       const detectedFolder =
         folderNameOverride ?? detectTopLevelFolderName(files);
       if (!detectedFolder) {
-        // silently ignore non-folder drops
         onFolderNameChange?.(null);
         return;
       }
@@ -211,7 +109,6 @@ export default function ImageUploader({
         return;
       }
 
-      // Extract the last 5 characters from the folder name
       const barcodePrefix = detectedFolder.slice(-5);
       onFolderNameChange?.(barcodePrefix);
 
@@ -225,13 +122,116 @@ export default function ImageUploader({
         return;
       }
 
-      const newFiles: SelectedFile[] = validFiles.map((file) => ({
-        file,
-        preview: URL.createObjectURL(file),
-      }));
+      // Create previews in batches to avoid blocking UI
+      const batchSize = 20;
+      const newFiles: SelectedFile[] = [];
+      const totalFiles = validFiles.length;
 
-      onFolderNameChange?.(barcodePrefix);
-      onFilesChange([...selectedFiles, ...newFiles]);
+      // Initialize progress tracking
+      setProcessingProgress({ total: totalFiles, processed: 0 });
+      if (autoUpload && employeeIds.length > 0) {
+        setUploadProgress({ total: totalFiles, uploaded: 0, failed: 0 });
+      }
+
+      const processBatch = (startIndex: number) => {
+        const endIndex = Math.min(startIndex + batchSize, validFiles.length);
+
+        for (let i = startIndex; i < endIndex; i++) {
+          const newFile: SelectedFile = {
+            file: validFiles[i],
+            preview: URL.createObjectURL(validFiles[i]),
+            uploadStatus: "idle",
+          };
+          newFiles.push(newFile);
+        }
+
+        const processedCount = endIndex;
+        const currentNewFiles = [...selectedFiles, ...newFiles];
+
+        // Update progress
+        setProcessingProgress({ total: totalFiles, processed: processedCount });
+
+        // Update UI with current batch
+        onFilesChange(currentNewFiles);
+
+        // Upload each new file if autoUpload is enabled
+        if (autoUpload && employeeIds.length > 0 && barcodePrefix) {
+          newFiles.forEach((newFile, batchIndex) => {
+            const globalIndex = selectedFiles.length + batchIndex;
+
+            // Update status to uploading immediately
+            setTimeout(() => {
+              const currentFiles = [...filesRef.current];
+              if (currentFiles[globalIndex]) {
+                currentFiles[globalIndex] = {
+                  ...currentFiles[globalIndex],
+                  uploadStatus: "uploading",
+                };
+                onFilesChange(currentFiles);
+              }
+
+              // Upload with a small delay to avoid overwhelming the server
+              uploadMutation.mutate(
+                {
+                  photo: newFile.file,
+                  barcodePrefix: barcodePrefix,
+                  employeeIds: employeeIds,
+                },
+                {
+                  onSuccess: () => {
+                    const successFiles = [...filesRef.current];
+                    if (successFiles[globalIndex]) {
+                      successFiles[globalIndex] = {
+                        ...successFiles[globalIndex],
+                        uploadStatus: "success",
+                        uploadError: undefined,
+                      };
+                      onFilesChange(successFiles);
+                    }
+                    setUploadProgress((prev) => {
+                      if (!prev) return null;
+                      return {
+                        ...prev,
+                        uploaded: prev.uploaded + 1,
+                      };
+                    });
+                  },
+                  onError: (error: Error) => {
+                    const errorFiles = [...filesRef.current];
+                    if (errorFiles[globalIndex]) {
+                      errorFiles[globalIndex] = {
+                        ...errorFiles[globalIndex],
+                        uploadStatus: "error",
+                        uploadError: error.message,
+                      };
+                      onFilesChange(errorFiles);
+                    }
+                    setUploadProgress((prev) => {
+                      if (!prev) return null;
+                      return {
+                        ...prev,
+                        failed: prev.failed + 1,
+                      };
+                    });
+                  },
+                }
+              );
+            }, batchIndex * 100);
+          });
+        }
+
+        // Process next batch if there are more files
+        if (endIndex < validFiles.length) {
+          setTimeout(() => processBatch(endIndex), 0);
+        } else {
+          // All files processed, clear processing progress after a short delay
+          setTimeout(() => {
+            setProcessingProgress(null);
+          }, 500);
+        }
+      };
+
+      processBatch(0);
     },
     [
       selectedFiles,
@@ -240,6 +240,9 @@ export default function ImageUploader({
       onFilesChange,
       detectTopLevelFolderName,
       onFolderNameChange,
+      autoUpload,
+      employeeIds,
+      uploadMutation,
     ]
   );
 
@@ -250,35 +253,6 @@ export default function ImageUploader({
       event.target.value = "";
     },
     [processFiles]
-  );
-
-  const handleDrop = useCallback(
-    async (event: React.DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      setIsDragOver(false);
-
-      const { files, folderName } = await collectFilesFromDataTransfer(
-        event.dataTransfer
-      );
-      processFiles(files, folderName);
-    },
-    [processFiles, collectFilesFromDataTransfer]
-  );
-
-  const handleDragOver = useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      setIsDragOver(true);
-    },
-    []
-  );
-
-  const handleDragLeave = useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      setIsDragOver(false);
-    },
-    []
   );
 
   const removeFile = useCallback(
@@ -295,23 +269,87 @@ export default function ImageUploader({
     selectedFiles.forEach(({ preview }) => URL.revokeObjectURL(preview));
     onFilesChange([]);
     onFolderNameChange?.(null);
+    setProcessingProgress(null);
+    setUploadProgress(null);
   }, [selectedFiles, onFilesChange, onFolderNameChange]);
 
-  // const getTotalSize = useCallback(() => {
-  // 	return selectedFiles.reduce((acc, file) => acc + file.file.size, 0);
-  // }, [selectedFiles]);
+  // Memoize grid to prevent unnecessary re-renders
+  const imageGrid = useMemo(() => {
+    return selectedFiles.map((selectedFile, index) => {
+      const getStatusColor = () => {
+        switch (selectedFile.uploadStatus) {
+          case "uploading":
+            return "border-yellow-400";
+          case "success":
+            return "border-green-400";
+          case "error":
+            return "border-red-400";
+          default:
+            return "border-gray-200";
+        }
+      };
 
-  // const getFormatsList = useCallback(() => {
-  // 	return acceptedFormats
-  // 		.map((format) => format.split("/")[1].toUpperCase())
-  // 		.join(", ");
-  // }, [acceptedFormats]);
+      const getStatusIcon = () => {
+        switch (selectedFile.uploadStatus) {
+          case "uploading":
+            return (
+              <div className="absolute top-1 left-1 bg-yellow-500 text-white rounded-full p-1">
+                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              </div>
+            );
+          case "success":
+            return (
+              <div className="absolute top-1 left-1 bg-green-500 text-white rounded-full p-1">
+                <span className="text-xs">✓</span>
+              </div>
+            );
+          case "error":
+            return (
+              <div className="absolute top-1 left-1 bg-red-500 text-white rounded-full p-1">
+                <span className="text-xs">✕</span>
+              </div>
+            );
+          default:
+            return null;
+        }
+      };
+
+      return (
+        <div key={index} className="relative group">
+          <div
+            className={`aspect-square overflow-hidden rounded-lg border-2 ${getStatusColor()} hover:border-blue-300 transition-colors`}
+          >
+            <img
+              src={selectedFile.preview}
+              alt={`Preview ${index + 1}`}
+              className="w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+            {getStatusIcon()}
+          </div>
+          <button
+            type="button"
+            onClick={() => removeFile(index)}
+            className="absolute -top-0 -right-0 bg-red-500 text-white rounded-full p-.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:bg-red-600"
+            disabled={disabled}
+            title="Remove image"
+          >
+            <FiX size={14} />
+          </button>
+          {selectedFile.uploadError && (
+            <div className="absolute bottom-0 left-0 right-0 bg-red-500 text-white text-xs p-1 truncate">
+              {selectedFile.uploadError}
+            </div>
+          )}
+        </div>
+      );
+    });
+  }, [selectedFiles, disabled, removeFile]);
 
   return (
     <div className="space-y-4">
-      {/* Upload Options */}
       <div className="grid grid-cols-1 gap-4">
-        {/* Folder Selection */}
         <div className="relative z-0">
           <input
             type="file"
@@ -338,30 +376,53 @@ export default function ImageUploader({
         </div>
       </div>
 
-      {/* Drag and Drop Area */}
-      <div
-        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-          isDragOver
-            ? "border-blue-500 bg-blue-100"
-            : "border-blue-300 bg-blue-50 hover:bg-blue-100"
-        }`}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-      >
-        <FiUpload
-          size={32}
-          className={`mx-auto mb-3 ${
-            isDragOver ? "text-blue-600" : "text-blue-400"
-          }`}
-        />
-        <p className="text-base font-medium text-gray-700 mb-2">
-          {isDragOver ? "Drop images here" : "Drag and drop images here"}
-        </p>
-        <p className="text-sm text-gray-500">Or select a folder above</p>
-      </div>
+      {processingProgress && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-700 font-medium">
+              Processing images: {processingProgress.processed} /{" "}
+              {processingProgress.total}
+            </span>
+            {processingProgress.processed === processingProgress.total && (
+              <span className="text-green-600 font-medium">✓ All rendered</span>
+            )}
+          </div>
+          <Progress
+            value={
+              (processingProgress.processed / processingProgress.total) * 100
+            }
+            className="h-2"
+          />
+        </div>
+      )}
 
-      {/* Selected Files Preview */}
+      {uploadProgress && uploadProgress.total > 0 && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-700 font-medium">
+              Uploading: {uploadProgress.uploaded} / {uploadProgress.total}
+              {uploadProgress.failed > 0 && (
+                <span className="text-red-600 ml-2">
+                  ({uploadProgress.failed} failed)
+                </span>
+              )}
+            </span>
+            {uploadProgress.uploaded + uploadProgress.failed ===
+              uploadProgress.total && (
+              <span className="text-green-600 font-medium">✓ All uploaded</span>
+            )}
+          </div>
+          <Progress
+            value={
+              ((uploadProgress.uploaded + uploadProgress.failed) /
+                uploadProgress.total) *
+              100
+            }
+            className="h-2"
+          />
+        </div>
+      )}
+
       {selectedFiles.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -382,26 +443,7 @@ export default function ImageUploader({
 
           <div className="border rounded-lg p-4 bg-gray-50">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 max-h-80 overflow-y-auto">
-              {selectedFiles.map((selectedFile, index) => (
-                <div key={index} className="relative group">
-                  <div className="aspect-square overflow-hidden rounded-lg border-2 border-gray-200 hover:border-blue-300 transition-colors">
-                    <img
-                      src={selectedFile.preview}
-                      alt={`Preview ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => removeFile(index)}
-                    className="absolute -top-0 -right-0 bg-red-500 text-white rounded-full p-.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:bg-red-600"
-                    disabled={disabled}
-                    title="Remove image"
-                  >
-                    <FiX size={14} />
-                  </button>
-                </div>
-              ))}
+              {imageGrid}
             </div>
           </div>
         </div>
