@@ -84,8 +84,14 @@ export const useUploadSinglePhoto = ({
         },
       };
 
+      // queueRef.current.push(queueItem);
+      // processQueue();
+
       queueRef.current.push(queueItem);
-      processQueue();
+
+      if (!isProcessingRef.current) {
+        processQueue();
+      }
     },
     [processQueue, onSuccess, onError]
   );

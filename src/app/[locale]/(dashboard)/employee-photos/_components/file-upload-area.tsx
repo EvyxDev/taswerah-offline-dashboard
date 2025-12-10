@@ -136,6 +136,7 @@ export default function ImageUploader({
 
       const processBatch = (startIndex: number) => {
         const endIndex = Math.min(startIndex + batchSize, validFiles.length);
+        const batchNewFiles: SelectedFile[] = [];
 
         for (let i = startIndex; i < endIndex; i++) {
           const newFile: SelectedFile = {
@@ -143,8 +144,9 @@ export default function ImageUploader({
             preview: URL.createObjectURL(validFiles[i]),
             uploadStatus: "idle",
           };
-          newFiles.push(newFile);
+          batchNewFiles.push(newFile);
         }
+        newFiles.push(...batchNewFiles);
 
         const processedCount = endIndex;
         const currentNewFiles = [...selectedFiles, ...newFiles];
@@ -157,7 +159,7 @@ export default function ImageUploader({
 
         // Upload each new file if autoUpload is enabled
         if (autoUpload && employeeIds.length > 0 && barcodePrefix) {
-          newFiles.forEach((newFile, batchIndex) => {
+          batchNewFiles.forEach((newFile, batchIndex) => {
             const globalIndex = selectedFiles.length + startIndex + batchIndex;
 
             // Queue the upload (will be processed sequentially)
