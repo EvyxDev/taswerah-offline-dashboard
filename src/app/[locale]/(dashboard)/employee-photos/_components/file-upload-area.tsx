@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { useCallback, useMemo, useState, useRef, useEffect } from "react";
+import { useCallback, useMemo, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { FiX, FiFolder } from "react-icons/fi";
@@ -54,10 +54,15 @@ export default function ImageUploader({
     failed: number;
   } | null>(null);
 
-  const filesRef = useRef(selectedFiles);
-  useEffect(() => {
-    filesRef.current = selectedFiles;
-  }, [selectedFiles]);
+  const filesRef = useRef<SelectedFile[]>(selectedFiles);
+  const pendingUpdatesRef = useRef<SelectedFile[]>([]);
+  const flushUpdates = useCallback(() => {
+    if (pendingUpdatesRef.current.length > 0) {
+      filesRef.current = [...filesRef.current, ...pendingUpdatesRef.current];
+      onFilesChange(filesRef.current);
+      pendingUpdatesRef.current = [];
+    }
+  }, [onFilesChange]);
 
   const uploadMutation = useUploadSinglePhoto({
     onError: (error) => onError?.(error),
@@ -104,118 +109,122 @@ export default function ImageUploader({
       if (errors.length > 0) onError?.(errors.join(", "));
       if (!validFiles.length) return;
 
-      const batchSize = 30;
-      const addedFiles: SelectedFile[] = [];
       const total = validFiles.length;
-
       setProcessingProgress({ total, processed: 0 });
       if (autoUpload && employeeIds.length) {
         setUploadProgress({ total, uploaded: 0, failed: 0 });
       }
 
-      const processBatch = (start: number) => {
-        const end = Math.min(start + batchSize, total);
-        const batch: SelectedFile[] = [];
+      // Sequential processing with concurrency limit
+      const maxConcurrent = 3;
+      let activeCount = 0;
+      let index = 0;
 
-        for (let i = start; i < end; i++) {
-          batch.push({
-            file: validFiles[i],
-            preview: URL.createObjectURL(validFiles[i]),
+      const processNext = () => {
+        if (index >= total) return;
+        if (activeCount >= maxConcurrent) return;
+
+        while (activeCount < maxConcurrent && index < total) {
+          const file = validFiles[index];
+          // const fileIndex = index;
+          index++;
+          activeCount++;
+
+          const selectedFile: SelectedFile = {
+            file,
+            preview: URL.createObjectURL(file),
             uploadStatus: "idle",
-          });
-        }
+          };
+          pendingUpdatesRef.current.push(selectedFile);
+          flushUpdates();
 
-        addedFiles.push(...batch);
+          setProcessingProgress((p) =>
+            p ? { ...p, processed: p.processed + 1 } : p
+          );
 
-        const newProcessed = end;
-        setProcessingProgress({ total, processed: newProcessed });
-
-        onFilesChange([...filesRef.current, ...batch]);
-
-        if (autoUpload && employeeIds.length && barcodePrefix) {
-          batch.forEach((item, bIndex) => {
-            const globalIndex = filesRef.current.length + start + bIndex;
-
+          if (autoUpload && employeeIds.length && barcodePrefix) {
             (async () => {
               try {
-                const compressed = await imageCompression(item.file, {
+                const compressed = await imageCompression(file, {
                   maxSizeMB: 1,
                   maxWidthOrHeight: 1920,
                   useWebWorker: true,
                 });
 
+                // Mark uploading
+                const listUploading = [...filesRef.current];
+                const idx = listUploading.findIndex(
+                  (f) => f.preview === selectedFile.preview
+                );
+                if (idx !== -1) listUploading[idx].uploadStatus = "uploading";
+                onFilesChange(listUploading);
+
                 uploadMutation.mutate(
                   {
-                    photo: item.file,
+                    photo: file,
                     compressedPhoto: compressed,
                     barcodePrefix,
                     employeeIds,
                   },
                   {
                     onSuccess: () => {
-                      const x = [...filesRef.current];
-                      if (x[globalIndex]) {
-                        x[globalIndex].uploadStatus = "success";
-                        x[globalIndex].uploadError = undefined;
+                      const list = [...filesRef.current];
+                      const idx = list.findIndex(
+                        (f) => f.preview === selectedFile.preview
+                      );
+                      if (idx !== -1) {
+                        list[idx].uploadStatus = "success";
+                        list[idx].uploadError = undefined;
                       }
-                      onFilesChange(x);
+                      onFilesChange(list);
 
                       setUploadProgress((p) =>
-                        p
-                          ? {
-                              ...p,
-                              uploaded: p.uploaded + 1,
-                            }
-                          : p
+                        p ? { ...p, uploaded: p.uploaded + 1 } : p
                       );
+                      activeCount--;
+                      processNext();
                     },
                     onError: (err: Error) => {
-                      const x = [...filesRef.current];
-                      if (x[globalIndex]) {
-                        x[globalIndex].uploadStatus = "error";
-                        x[globalIndex].uploadError = err.message;
+                      const list = [...filesRef.current];
+                      const idx = list.findIndex(
+                        (f) => f.preview === selectedFile.preview
+                      );
+                      if (idx !== -1) {
+                        list[idx].uploadStatus = "error";
+                        list[idx].uploadError = err.message;
                       }
-                      onFilesChange(x);
+                      onFilesChange(list);
 
                       setUploadProgress((p) =>
-                        p
-                          ? {
-                              ...p,
-                              failed: p.failed + 1,
-                            }
-                          : p
+                        p ? { ...p, failed: p.failed + 1 } : p
                       );
+                      activeCount--;
+                      processNext();
                     },
                   }
                 );
-
-                const list = [...filesRef.current];
-                if (list[globalIndex]) {
-                  list[globalIndex].uploadStatus = "uploading";
-                }
-                onFilesChange(list);
               } catch (err: unknown) {
                 if (err instanceof Error) {
                   onError?.(`Compression failed: ${err.message}`);
                 } else {
                   onError?.("Compression failed");
                 }
+                activeCount--;
+                processNext();
               }
             })();
-          });
-        }
-
-        if (end < total) {
-          queueMicrotask(() => processBatch(end));
-        } else {
-          setTimeout(() => setProcessingProgress(null), 400);
+          } else {
+            activeCount--;
+            processNext();
+          }
         }
       };
 
-      processBatch(0);
+      processNext();
     },
     [
       employeeIds,
+      flushUpdates,
       autoUpload,
       detectTopLevelFolderName,
       validateFiles,
@@ -240,6 +249,7 @@ export default function ImageUploader({
       const temp = [...filesRef.current];
       URL.revokeObjectURL(temp[index].preview);
       temp.splice(index, 1);
+      filesRef.current = temp;
       onFilesChange(temp);
     },
     [onFilesChange]
@@ -248,6 +258,7 @@ export default function ImageUploader({
   const clearAllFiles = useCallback(() => {
     uploadMutation.clearQueue();
     filesRef.current.forEach((f) => URL.revokeObjectURL(f.preview));
+    filesRef.current = [];
     onFilesChange([]);
     onFolderNameChange?.(null);
     setProcessingProgress(null);
