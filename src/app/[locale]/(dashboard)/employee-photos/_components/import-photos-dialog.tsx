@@ -155,11 +155,6 @@ export default function ImportPhotosDialog({
   };
 
   const onSubmit = async (data: ImportPhotosFormData) => {
-    // uploadPhotosMutation.mutate({
-    //   photos: data.photos,
-    //   barcodePrefix: data.barcodePrefix,
-    //   employeeIds: data.selectedEmployees,
-    // });
     mutate();
   };
 
@@ -177,7 +172,7 @@ export default function ImportPhotosDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={() => handleDialogClose()}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-homenaje rtl:font-almarai text-xl">
             {t("employeePhotos.dialog.title")}

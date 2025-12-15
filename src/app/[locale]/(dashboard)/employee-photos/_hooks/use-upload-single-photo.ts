@@ -1,132 +1,3 @@
-// import { useRef, useCallback } from "react";
-// import { uploadSinglePhotoAction } from "../_actions/upload-single-photo";
-// import imageCompression from "browser-image-compression";
-
-// interface UploadSinglePhotoData {
-//   photo: File;
-//   compressedPhoto: File;
-//   barcodePrefix: string;
-//   employeeIds: number[];
-// }
-
-// interface UseUploadSinglePhotoOptions {
-//   onSuccess?: () => void;
-//   onError?: (error: string) => void;
-// }
-
-// interface UploadQueueItem {
-//   data: UploadSinglePhotoData;
-//   onSuccess: () => void;
-//   onError: (error: Error) => void;
-// }
-
-// export const useUploadSinglePhoto = ({
-//   onSuccess,
-//   onError,
-// }: UseUploadSinglePhotoOptions = {}) => {
-//   const queueRef = useRef<UploadQueueItem[]>([]);
-//   const isProcessingRef = useRef(false);
-
-//   const processQueue = useCallback(async () => {
-//     if (isProcessingRef.current || queueRef.current.length === 0) {
-//       return;
-//     }
-
-//     isProcessingRef.current = true;
-
-//     while (queueRef.current.length > 0) {
-//       const item = queueRef.current.shift();
-//       if (!item) break;
-//       console.log(item);
-
-//       try {
-//         const formData = new FormData();
-//         formData.append("photo", item.data.photo);
-//         formData.append("photo_compressed", item.data.compressedPhoto);
-//         formData.append("barcode_prefix", item.data.barcodePrefix);
-
-//         item.data.employeeIds.forEach((employeeId) => {
-//           formData.append("employee_id", employeeId.toString());
-//         });
-
-//         const result = await uploadSinglePhotoAction(formData);
-
-//         if (!result.success) {
-//           throw new Error(result.error || "Upload failed");
-//         }
-
-//         item.onSuccess();
-//       } catch (error) {
-//         item.onError(error as Error);
-//       }
-
-//       // delay
-//       await new Promise((resolve) => setTimeout(resolve, 100));
-//     }
-
-//     isProcessingRef.current = false;
-//   }, []);
-
-//   const mutate = useCallback(
-//     async (
-//       data: UploadSinglePhotoData,
-//       callbacks?: {
-//         onSuccess?: () => void;
-//         onError?: (error: Error) => void;
-//       }
-//     ) => {
-//       try {
-//         // 1) compress image
-//         const compressed = await imageCompression(data.photo, {
-//           maxSizeMB: 1,
-//           maxWidthOrHeight: 1920,
-//           useWebWorker: true,
-//         });
-
-//         console.log(compressed);
-
-//         // 2) Add both original + compressed into queue
-//         const queueItem: UploadQueueItem = {
-//           data: {
-//             ...data,
-//             photo: data.photo,
-//             compressedPhoto: compressed,
-//           },
-//           onSuccess: () => {
-//             callbacks?.onSuccess?.();
-//             onSuccess?.();
-//           },
-//           onError: (error: Error) => {
-//             callbacks?.onError?.(error);
-//             onError?.(error.message);
-//           },
-//         };
-
-//         queueRef.current.push(queueItem);
-
-//         if (!isProcessingRef.current) {
-//           processQueue();
-//         }
-//       } catch (err) {
-//         callbacks?.onError?.(err as Error);
-//         onError?.((err as Error).message);
-//       }
-//     },
-//     [processQueue, onSuccess, onError]
-//   );
-
-//   const clearQueue = useCallback(() => {
-//     queueRef.current = [];
-//     isProcessingRef.current = false;
-//   }, []);
-
-//   return {
-//     mutate,
-//     clearQueue,
-//     isLoading: isProcessingRef.current,
-//   };
-// };
-
 import { useRef, useCallback, useState } from "react";
 import { uploadSinglePhotoAction } from "../_actions/upload-single-photo";
 import imageCompression from "browser-image-compression";
@@ -135,17 +6,7 @@ interface UploadSinglePhotoData {
   photo: File;
   compressedPhoto: File;
   barcodePrefix: string;
-  employeeIds: number[];
-}
-interface UseUploadSinglePhotoOptions {
-  onSuccess?: () => void;
-  onError?: (error: string) => void;
-}
-
-interface UploadQueueItem {
-  data: UploadSinglePhotoData;
-  onSuccess: () => void;
-  onError: (error: Error) => void;
+  employeeId: number;
 }
 
 interface UseUploadSinglePhotoOptions {
@@ -154,7 +15,7 @@ interface UseUploadSinglePhotoOptions {
 }
 
 interface UploadQueueItem {
-  data: UploadSinglePhotoData;
+  data: Omit<UploadSinglePhotoData, "compressedPhoto"> & { photo: File };
   onSuccess: () => void;
   onError: (error: Error) => void;
 }
@@ -164,109 +25,106 @@ export const useUploadSinglePhoto = ({
   onError,
 }: UseUploadSinglePhotoOptions = {}) => {
   const queueRef = useRef<UploadQueueItem[]>([]);
-  const isProcessingRef = useRef(false);
+  const activeCountRef = useRef(0);
   const [queueLength, setQueueLength] = useState(0);
+  const [activeUploads, setActiveUploads] = useState(0);
 
-  const processQueue = useCallback(async () => {
-    if (isProcessingRef.current || queueRef.current.length === 0) {
+  const MAX_CONCURRENT_UPLOADS = 6;
+
+  const uploadNext = useCallback(async () => {
+    if (
+      queueRef.current.length === 0 ||
+      activeCountRef.current >= MAX_CONCURRENT_UPLOADS
+    ) {
       return;
     }
 
-    isProcessingRef.current = true;
+    const item = queueRef.current.shift()!;
+    activeCountRef.current++;
+    setActiveUploads(activeCountRef.current);
+    setQueueLength(queueRef.current.length);
 
-    while (queueRef.current.length > 0) {
-      const item = queueRef.current.shift();
-      setQueueLength(queueRef.current.length);
+    try {
+      // Compress image
+      const compressed = await imageCompression(item.data.photo, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true, // Offloads to worker — very important!
+      });
 
-      if (!item) break;
+      // Prepare FormData
+      const formData = new FormData();
+      formData.append("photo", item.data.photo);
+      formData.append("photo_compressed", compressed);
+      formData.append("barcode_prefix", item.data.barcodePrefix);
 
-      try {
-        // Compress image here, one at a time
-        console.log("Compressing image:", item.data.photo.name);
-        const compressed = await imageCompression(item.data.photo, {
-          maxSizeMB: 1,
-          maxWidthOrHeight: 1920,
-          useWebWorker: true,
-        });
+      formData.append("employee_id", item.data.employeeId.toString());
 
-        console.log("Compressed:", compressed.name);
+      // Upload
+      const result = await uploadSinglePhotoAction(formData);
 
-        // Upload
-        const formData = new FormData();
-        formData.append("photo", item.data.photo);
-        formData.append("photo_compressed", compressed);
-        formData.append("barcode_prefix", item.data.barcodePrefix);
-
-        item.data.employeeIds.forEach((employeeId) => {
-          formData.append("employee_id", employeeId.toString());
-        });
-
-        const result = await uploadSinglePhotoAction(formData);
-
-        if (!result.success) {
-          throw new Error(result.error || "Upload failed");
-        }
-
-        item.onSuccess();
-      } catch (error) {
-        item.onError(error as Error);
+      if (!result.success) {
+        throw new Error(result.error || "Upload failed");
       }
 
-      // Small delay between uploads
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
+      item.onSuccess();
+      onSuccess?.();
+    } catch (err) {
+      const error = err as Error;
+      item.onError(error);
+      onError?.(error.message);
+    } finally {
+      activeCountRef.current--;
+      setActiveUploads(activeCountRef.current);
+      setQueueLength(queueRef.current.length);
 
-    isProcessingRef.current = false;
-    setQueueLength(0);
-  }, []);
+      // Continue processing next items
+      uploadNext();
+    }
+  }, [onSuccess, onError]);
 
   const mutate = useCallback(
     (
-      data: UploadSinglePhotoData,
+      data: Omit<UploadSinglePhotoData, "compressedPhoto">,
       callbacks?: {
         onSuccess?: () => void;
         onError?: (error: Error) => void;
       }
     ) => {
-      // Don't compress here - just add to queue
       const queueItem: UploadQueueItem = {
         data: {
           photo: data.photo,
-          compressedPhoto: data.compressedPhoto,
           barcodePrefix: data.barcodePrefix,
-          employeeIds: data.employeeIds,
+          employeeId: data.employeeId,
         },
-        onSuccess: () => {
-          callbacks?.onSuccess?.();
-          onSuccess?.();
-        },
-        onError: (error: Error) => {
-          callbacks?.onError?.(error);
-          onError?.(error.message);
-        },
+        onSuccess: callbacks?.onSuccess || (() => {}),
+        onError: callbacks?.onError || (() => {}),
       };
 
       queueRef.current.push(queueItem);
       setQueueLength(queueRef.current.length);
 
-      // Start processing if not already running
-      if (!isProcessingRef.current) {
-        processQueue();
+      // Trigger as many parallel uploads as allowed
+      while (
+        activeCountRef.current < MAX_CONCURRENT_UPLOADS &&
+        queueRef.current.length > 0
+      ) {
+        uploadNext();
       }
     },
-    [processQueue, onSuccess, onError]
+    [uploadNext]
   );
 
   const clearQueue = useCallback(() => {
     queueRef.current = [];
-    isProcessingRef.current = false;
     setQueueLength(0);
   }, []);
 
   return {
     mutate,
     clearQueue,
-    isLoading: isProcessingRef.current,
+    isLoading: activeCountRef.current > 0 || queueRef.current.length > 0,
     queueLength,
+    activeUploads, // Optional: show "Uploading 6/100..." in UI
   };
 };

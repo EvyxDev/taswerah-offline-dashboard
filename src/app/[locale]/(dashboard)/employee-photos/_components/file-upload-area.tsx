@@ -2,14 +2,22 @@
 import { useCallback, useMemo, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { FiX, FiFolder } from "react-icons/fi";
+import {
+  FiX,
+  FiFolder,
+  FiImage,
+  FiCheck,
+  FiAlertCircle,
+  FiLoader,
+} from "react-icons/fi";
 import { useUploadSinglePhoto } from "../_hooks/use-upload-single-photo";
-import imageCompression from "browser-image-compression";
 
-interface SelectedFile {
+export interface SelectedFile {
   file: File;
-  preview: string;
-  uploadStatus?: "idle" | "uploading" | "success" | "error";
+  name: string;
+  size: string;
+  preview?: string;
+  uploadStatus: "idle" | "uploading" | "success" | "error";
   uploadError?: string;
 }
 
@@ -19,8 +27,6 @@ interface ImageUploaderProps {
   onError?: (error: string) => void;
   onFolderNameChange?: (folderName: string | null) => void;
   disabled?: boolean;
-  maxFiles?: number;
-  maxSizePerFile?: number;
   acceptedFormats?: string[];
   employeeIds?: number[];
   autoUpload?: boolean;
@@ -55,14 +61,6 @@ export default function ImageUploader({
   } | null>(null);
 
   const filesRef = useRef<SelectedFile[]>(selectedFiles);
-  const pendingUpdatesRef = useRef<SelectedFile[]>([]);
-  const flushUpdates = useCallback(() => {
-    if (pendingUpdatesRef.current.length > 0) {
-      filesRef.current = [...filesRef.current, ...pendingUpdatesRef.current];
-      onFilesChange(filesRef.current);
-      pendingUpdatesRef.current = [];
-    }
-  }, [onFilesChange]);
 
   const uploadMutation = useUploadSinglePhoto({
     onError: (error) => onError?.(error),
@@ -70,7 +68,9 @@ export default function ImageUploader({
 
   const detectTopLevelFolderName = useCallback((files: File[]) => {
     for (const file of files) {
-      const relativePath = file.webkitRelativePath;
+      const relativePath = (file as File).webkitRelativePath as
+        | string
+        | undefined;
       if (relativePath) {
         const first = relativePath.split("/")[0];
         if (first) return first;
@@ -79,12 +79,32 @@ export default function ImageUploader({
     return null;
   }, []);
 
-  const validateFiles = useCallback((files: File[]) => {
-    return { validFiles: files, errors: [] };
-  }, []);
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  };
+
+  const validateFiles = useCallback(
+    (files: File[]) => {
+      const validFiles: File[] = [];
+      const errors: string[] = [];
+
+      for (const file of files) {
+        if (!acceptedFormats.includes(file.type)) {
+          errors.push(`Invalid format: ${file.name}`);
+          continue;
+        }
+        validFiles.push(file);
+      }
+
+      return { validFiles, errors };
+    },
+    [acceptedFormats]
+  );
 
   const processFiles = useCallback(
-    (files: File[], forcedFolder?: string | null) => {
+    async (files: File[], forcedFolder?: string | null) => {
       if (!files.length) {
         onError?.("Please select at least one image file");
         return;
@@ -92,6 +112,7 @@ export default function ImageUploader({
 
       const folder = forcedFolder ?? detectTopLevelFolderName(files);
       if (!folder) {
+        onError?.("Could not detect folder name. Please select a folder.");
         onFolderNameChange?.(null);
         return;
       }
@@ -106,7 +127,7 @@ export default function ImageUploader({
       onFolderNameChange?.(barcodePrefix);
 
       const { validFiles, errors } = validateFiles(files);
-      if (errors.length > 0) onError?.(errors.join(", "));
+      if (errors.length > 0) onError?.(errors.join("; "));
       if (!validFiles.length) return;
 
       const total = validFiles.length;
@@ -115,116 +136,119 @@ export default function ImageUploader({
         setUploadProgress({ total, uploaded: 0, failed: 0 });
       }
 
-      // Sequential processing with concurrency limit
-      const maxConcurrent = 3;
-      let activeCount = 0;
-      let index = 0;
+      const newFiles: SelectedFile[] = validFiles.map((file) => ({
+        file,
+        name: file.name,
+        size: formatFileSize(file.size),
+        uploadStatus: autoUpload && employeeIds.length ? "idle" : "success",
+        uploadError: undefined,
+      }));
 
-      const processNext = () => {
-        if (index >= total) return;
-        if (activeCount >= maxConcurrent) return;
+      filesRef.current = [...filesRef.current, ...newFiles];
+      onFilesChange(filesRef.current);
 
-        while (activeCount < maxConcurrent && index < total) {
-          const file = validFiles[index];
-          // const fileIndex = index;
-          index++;
-          activeCount++;
+      setProcessingProgress((p) => (p ? { ...p, processed: total } : null));
 
-          const selectedFile: SelectedFile = {
-            file,
-            preview: URL.createObjectURL(file),
-            uploadStatus: "idle",
-          };
-          pendingUpdatesRef.current.push(selectedFile);
-          flushUpdates();
+      // Auto-upload with concurrency control
+      if (autoUpload && employeeIds.length && barcodePrefix) {
+        const maxConcurrent = 10;
+        let activeCount = 0;
+        let index = 0;
 
-          setProcessingProgress((p) =>
-            p ? { ...p, processed: p.processed + 1 } : p
-          );
+        const uploadNext = async () => {
+          if (index >= total) return;
+          if (activeCount >= maxConcurrent) return;
 
-          if (autoUpload && employeeIds.length && barcodePrefix) {
-            (async () => {
-              try {
-                const compressed = await imageCompression(file, {
-                  maxSizeMB: 1,
-                  maxWidthOrHeight: 1920,
-                  useWebWorker: true,
-                });
+          while (activeCount < maxConcurrent && index < total) {
+            const currentIndex = index;
+            const selectedFile = newFiles[index];
+            index++;
+            activeCount++;
 
-                // Mark uploading
-                const listUploading = [...filesRef.current];
-                const idx = listUploading.findIndex(
-                  (f) => f.preview === selectedFile.preview
-                );
-                if (idx !== -1) listUploading[idx].uploadStatus = "uploading";
-                onFilesChange(listUploading);
+            const employeeId = employeeIds[currentIndex % employeeIds.length];
 
-                uploadMutation.mutate(
-                  {
-                    photo: file,
-                    compressedPhoto: compressed,
-                    barcodePrefix,
-                    employeeIds,
+            // Update status to uploading
+            const currentList = [...filesRef.current];
+            const idx = currentList.findIndex(
+              (f) =>
+                f.name === selectedFile.name && f.size === selectedFile.size
+            );
+            if (idx !== -1) {
+              currentList[idx].uploadStatus = "uploading";
+              onFilesChange(currentList);
+            }
+
+            try {
+              uploadMutation.mutate(
+                {
+                  photo: selectedFile.file,
+                  barcodePrefix,
+                  employeeId,
+                },
+                {
+                  onSuccess: () => {
+                    const list = [...filesRef.current];
+                    const i = list.findIndex(
+                      (f) =>
+                        f.name === selectedFile.name &&
+                        f.size === selectedFile.size
+                    );
+                    if (i !== -1) {
+                      list[i].uploadStatus = "success";
+                      onFilesChange(list);
+                    }
+                    setUploadProgress((p) =>
+                      p ? { ...p, uploaded: p.uploaded + 1 } : p
+                    );
+                    activeCount--;
+                    uploadNext();
                   },
-                  {
-                    onSuccess: () => {
-                      const list = [...filesRef.current];
-                      const idx = list.findIndex(
-                        (f) => f.preview === selectedFile.preview
-                      );
-                      if (idx !== -1) {
-                        list[idx].uploadStatus = "success";
-                        list[idx].uploadError = undefined;
-                      }
+                  onError: (err: Error) => {
+                    const list = [...filesRef.current];
+                    const i = list.findIndex(
+                      (f) =>
+                        f.name === selectedFile.name &&
+                        f.size === selectedFile.size
+                    );
+                    if (i !== -1) {
+                      list[i].uploadStatus = "error";
+                      list[i].uploadError = err.message;
                       onFilesChange(list);
-
-                      setUploadProgress((p) =>
-                        p ? { ...p, uploaded: p.uploaded + 1 } : p
-                      );
-                      activeCount--;
-                      processNext();
-                    },
-                    onError: (err: Error) => {
-                      const list = [...filesRef.current];
-                      const idx = list.findIndex(
-                        (f) => f.preview === selectedFile.preview
-                      );
-                      if (idx !== -1) {
-                        list[idx].uploadStatus = "error";
-                        list[idx].uploadError = err.message;
-                      }
-                      onFilesChange(list);
-
-                      setUploadProgress((p) =>
-                        p ? { ...p, failed: p.failed + 1 } : p
-                      );
-                      activeCount--;
-                      processNext();
-                    },
-                  }
-                );
-              } catch (err: unknown) {
-                if (err instanceof Error) {
-                  onError?.(`Compression failed: ${err.message}`);
-                } else {
-                  onError?.("Compression failed");
+                    }
+                    setUploadProgress((p) =>
+                      p ? { ...p, failed: p.failed + 1 } : p
+                    );
+                    activeCount--;
+                    uploadNext();
+                  },
                 }
-                activeCount--;
-                processNext();
+              );
+            } catch (err) {
+              const list = [...filesRef.current];
+              const i = list.findIndex(
+                (f) =>
+                  f.name === selectedFile.name && f.size === selectedFile.size
+              );
+              if (i !== -1) {
+                list[i].uploadStatus = "error";
+                list[i].uploadError =
+                  ((err as Error)?.message as string) || "Compression failed";
+                onFilesChange(list);
               }
-            })();
-          } else {
-            activeCount--;
-            processNext();
+              setUploadProgress((p) =>
+                p ? { ...p, failed: p.failed + 1 } : p
+              );
+              activeCount--;
+              uploadNext();
+            }
           }
-        }
-      };
+        };
 
-      processNext();
+        uploadNext();
+      }
     },
     [
       employeeIds,
-      flushUpdates,
       autoUpload,
       detectTopLevelFolderName,
       validateFiles,
@@ -247,7 +271,6 @@ export default function ImageUploader({
   const removeFile = useCallback(
     (index: number) => {
       const temp = [...filesRef.current];
-      URL.revokeObjectURL(temp[index].preview);
       temp.splice(index, 1);
       filesRef.current = temp;
       onFilesChange(temp);
@@ -257,7 +280,6 @@ export default function ImageUploader({
 
   const clearAllFiles = useCallback(() => {
     uploadMutation.clearQueue();
-    filesRef.current.forEach((f) => URL.revokeObjectURL(f.preview));
     filesRef.current = [];
     onFilesChange([]);
     onFolderNameChange?.(null);
@@ -265,103 +287,82 @@ export default function ImageUploader({
     setUploadProgress(null);
   }, [onFilesChange, onFolderNameChange, uploadMutation]);
 
-  const imageGrid = useMemo(() => {
+  const fileList = useMemo(() => {
     return selectedFiles.map((file, index) => {
-      const border =
-        file.uploadStatus === "uploading"
-          ? "border-yellow-400"
-          : file.uploadStatus === "success"
-          ? "border-green-400"
-          : file.uploadStatus === "error"
-          ? "border-red-400"
-          : "border-gray-200";
+      const statusIcon =
+        file.uploadStatus === "uploading" ? (
+          <FiLoader className="animate-spin text-yellow-600" />
+        ) : file.uploadStatus === "success" ? (
+          <FiCheck className="text-green-600" />
+        ) : file.uploadStatus === "error" ? (
+          <FiAlertCircle className="text-red-600" />
+        ) : (
+          <FiImage className="text-gray-500" />
+        );
 
       return (
-        <div key={index} className="relative group">
-          <div
-            className={`aspect-square overflow-hidden rounded-lg border-2 ${border} hover:border-blue-300 transition`}
-          >
-            <img
-              src={file.preview}
-              alt=""
-              className="w-full h-full object-cover"
-              loading="lazy"
-              decoding="async"
-            />
-
-            {file.uploadStatus === "uploading" && (
-              <div className="absolute top-1 left-1 bg-yellow-500 text-white rounded-full p-1">
-                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              </div>
-            )}
-
-            {file.uploadStatus === "success" && (
-              <div className="absolute top-1 left-1 bg-green-500 text-white rounded-full p-1">
-                ✓
-              </div>
-            )}
-
-            {file.uploadStatus === "error" && (
-              <div className="absolute top-1 left-1 bg-red-500 text-white rounded-full p-1">
-                ✕
-              </div>
-            )}
+        <div
+          key={`${file.name}-${file.size}-${index}`}
+          className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg"
+        >
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div className="text-lg">{statusIcon}</div>
+            <div className="min-w-0">
+              <p className="text-sm font-medium truncate">{file.name}</p>
+              <p className="text-xs text-gray-500">{file.size}</p>
+            </div>
           </div>
+
+          {file.uploadError && (
+            <p className="text-xs text-red-600 max-w-xs truncate mr-8">
+              {file.uploadError}
+            </p>
+          )}
 
           <button
             onClick={() => removeFile(index)}
             disabled={disabled}
-            className="absolute -top-0 -right-0 bg-red-500 text-white rounded-full p-.5 opacity-0 group-hover:opacity-100 transition shadow-md"
+            className="text-red-500 hover:text-red-700 transition"
           >
-            <FiX size={14} />
+            <FiX size={18} />
           </button>
-
-          {file.uploadError && (
-            <div className="absolute bottom-0 left-0 right-0 bg-red-500 text-white text-xs p-1 truncate">
-              {file.uploadError}
-            </div>
-          )}
         </div>
       );
     });
   }, [selectedFiles, disabled, removeFile]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Folder Picker */}
-      <div className="grid grid-cols-1 gap-4">
-        <div className="relative">
-          <input
-            type="file"
-            multiple
-            accept={acceptedFormats.join(",")}
-            onChange={handleFileSelect}
-            disabled={disabled}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-            {...{
-              webkitdirectory: "",
-              directory: "",
-            }}
-          />
+      <div className="relative">
+        <input
+          type="file"
+          multiple
+          accept={acceptedFormats.join(",")}
+          onChange={handleFileSelect}
+          disabled={disabled}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+          {...{ webkitdirectory: "", directory: "" }}
+        />
 
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center bg-gray-50 hover:bg-gray-100 transition">
-            <FiFolder size={24} className="mx-auto mb-2 text-gray-400" />
-            <p className="text-sm font-medium text-gray-700 mb-1">
-              Select Entire Folder
-            </p>
-            <p className="text-xs text-gray-500">
-              Folder last 5 chars = barcode prefix
-            </p>
-          </div>
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50 hover:bg-gray-100 transition cursor-pointer">
+          <FiFolder size={32} className="mx-auto mb-3 text-gray-400" />
+          <p className="text-base font-medium text-gray-700">
+            Click to Select Entire Folder
+          </p>
+          <p className="text-sm text-gray-500 mt-1">
+            Last 5 characters of folder name will be used as barcode prefix
+          </p>
         </div>
       </div>
 
+      {/* Progress Bars */}
       {processingProgress && (
         <div className="space-y-2">
-          <div className="flex items-center justify-between text-sm">
+          <div className="flex justify-between text-sm">
+            <span>Processing files</span>
             <span>
-              Processing images: {processingProgress.processed} /{" "}
-              {processingProgress.total}
+              {processingProgress.processed} / {processingProgress.total}
             </span>
           </div>
           <Progress
@@ -375,24 +376,42 @@ export default function ImageUploader({
 
       {uploadProgress && uploadProgress.total > 0 && (
         <div className="space-y-2">
+          <div className="flex justify-between text-sm">
+            <span>Uploading</span>
+            <span>
+              {uploadProgress.uploaded} successful, {uploadProgress.failed}{" "}
+              failed
+            </span>
+          </div>
           <Progress
-            value={(uploadProgress.uploaded / uploadProgress.total) * 100}
+            value={
+              ((uploadProgress.uploaded + uploadProgress.failed) /
+                uploadProgress.total) *
+              100
+            }
             className="h-2"
           />
         </div>
       )}
 
-      {/* Image Grid */}
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-        {imageGrid}
-      </div>
+      {/* File List */}
+      {selectedFiles.length > 0 && (
+        <div className="space-y-2 max-h-96 overflow-y-auto">
+          <p className="text-sm font-medium text-gray-700">
+            Selected Files ({selectedFiles.length})
+          </p>
+          {fileList}
+        </div>
+      )}
 
+      {/* Clear Button */}
       <Button
         variant="destructive"
         onClick={clearAllFiles}
         disabled={disabled || selectedFiles.length === 0}
+        className="w-full"
       >
-        Clear All
+        Clear All Files
       </Button>
     </div>
   );
