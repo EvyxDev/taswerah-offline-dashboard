@@ -59,10 +59,10 @@ export default function EmployeePhotosPage({
         <div className="">
           {hasPhotos ? (
             <div className="flex items-center gap-5 w-full flex-wrap">
-              {codes.map((code) => {
+              {codes.map((code, index) => {
                 return (
-                  <div key={code}>
-                    <Folder id={code} />
+                  <div key={index}>
+                    <Folder code={code} />
                   </div>
                 );
               })}

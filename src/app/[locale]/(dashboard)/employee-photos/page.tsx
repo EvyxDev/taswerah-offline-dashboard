@@ -9,7 +9,7 @@ export default async function Page() {
   const employees = await GetAllPhotographers(1, 100);
   return (
     <>
-      <EmployeePhotosPage codes={codes.barcodes} employees={employees.data} />
+      <EmployeePhotosPage codes={codes?.barcodes} employees={employees.data} />
     </>
   );
 }
