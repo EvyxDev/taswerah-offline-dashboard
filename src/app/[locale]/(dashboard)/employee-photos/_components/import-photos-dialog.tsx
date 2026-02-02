@@ -172,7 +172,7 @@ export default function ImportPhotosDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={() => handleDialogClose()}>
-      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto overflow-x-visible">
         <DialogHeader>
           <DialogTitle className="font-homenaje rtl:font-almarai text-xl">
             {t("employeePhotos.dialog.title")}
@@ -185,11 +185,12 @@ export default function ImportPhotosDialog({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Employee Selection Field */}
+
             <FormField
               control={form.control}
               name="selectedEmployees"
               render={() => (
-                <FormItem>
+                <FormItem className="relative z-50 mb-4">
                   <FormLabel className="font-medium">
                     {t("employeePhotos.dialog.selectEmployees")}
                   </FormLabel>
@@ -199,7 +200,7 @@ export default function ImportPhotosDialog({
                       onChange={handleEmployeeSelectionChange}
                       defaultOptions={employeeOptions}
                       placeholder={t(
-                        "employeePhotos.dialog.selectEmployeesPlaceholder"
+                        "employeePhotos.dialog.selectEmployeesPlaceholder",
                       )}
                       emptyIndicator={
                         <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
