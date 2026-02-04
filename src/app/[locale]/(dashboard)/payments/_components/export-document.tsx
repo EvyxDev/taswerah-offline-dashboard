@@ -2,13 +2,29 @@
 
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 
+type SyncJob = {
+  id: number;
+  branch_id: number;
+  employee_id: number;
+  employeeName: string;
+  pay_amount: string; // comes as string from API
+  orderprefixcode: string;
+  status: "synced" | "pending" | "failed";
+  shift_name: string;
+  orderphone: string;
+  number_of_photos: number;
+  created_at: string; // ISO date
+  updated_at: string; // ISO date
+};
+
+type Statistics = {
+  total_photos: number;
+  total_money: number;
+};
+
 type ExportStatsResponse = {
-  photographers: { id: number; name: string; total_photos: number }[];
-  daily_stats: {
-    date: string;
-    total_paid: number;
-    shifts: { shift_id: number; amount_paid: number }[];
-  }[];
+  sync_jobs: SyncJob[];
+  statistics: Statistics;
 };
 
 const styles = StyleSheet.create({
@@ -78,13 +94,21 @@ export default function ExportDocument({
   data: ExportStatsResponse;
   periodLabel?: string;
 }) {
-  const totalPhotos = data.photographers.reduce(
-    (sum, p) => sum + (p.total_photos || 0),
-    0
-  );
-  const totalPaid = data.daily_stats.reduce(
-    (sum, d) => sum + (d.total_paid || 0),
-    0
+  // const totalPhotos = data.photographers.reduce(
+  //   (sum, p) => sum + (p.total_photos || 0),
+  //   0
+  // );
+  // const totalPaid = data.daily_stats.reduce(
+  //   (sum, d) => sum + (d.total_paid || 0),
+  //   0
+  // );
+
+  const photosByEmployee = data.sync_jobs.reduce<Record<number, number>>(
+    (acc, job) => {
+      acc[job.employee_id] = (acc[job.employee_id] || 0) + job.number_of_photos;
+      return acc;
+    },
+    {},
   );
 
   return (
@@ -93,8 +117,9 @@ export default function ExportDocument({
         <View style={styles.header}>
           <Text style={styles.brand}>Taswera — Branch Export</Text>
           <Text style={styles.subtitle}>
-            {periodLabel ? periodLabel : "All time"} • Total Paid: {totalPaid} •
-            Total Photos: {totalPhotos}
+            {periodLabel ? periodLabel : "All time"} • Total Paid:{" "}
+            {data?.statistics?.total_money} • Total Photos:{" "}
+            {data?.statistics?.total_photos}
           </Text>
         </View>
 
@@ -109,7 +134,7 @@ export default function ExportDocument({
                 <Text style={styles.th}>Total Photos</Text>
               </View>
             </View>
-            {data.photographers.map((p, idx) => (
+            {data?.sync_jobs?.map((p, idx) => (
               <View
                 key={p.id}
                 style={[
@@ -118,11 +143,14 @@ export default function ExportDocument({
                 ]}
               >
                 <View style={styles.colLeft}>
-                  <Text style={styles.td}>{p.name}</Text>
+                  <Text style={styles.td}>{p.employeeName}</Text>
                 </View>
-                <View style={styles.colRight}>
-                  <Text style={styles.td}>{p.total_photos}</Text>
-                </View>
+                {/* <View style={styles.colRight}>
+                  <Text style={styles.td}>{data.statistics.total_photos}</Text>
+                </View> */}
+                <Text style={styles.td}>
+                  {photosByEmployee[p.employee_id] ?? 0}
+                </Text>
               </View>
             ))}
           </View>
@@ -131,8 +159,8 @@ export default function ExportDocument({
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Daily Stats</Text>
           <View style={styles.card}>
-            {data.daily_stats.map((d, i) => (
-              <View key={d.date}>
+            {data.sync_jobs.map((job, i) => (
+              <View key={job.id}>
                 <View
                   style={[
                     styles.dayHeader,
@@ -141,35 +169,33 @@ export default function ExportDocument({
                       : null,
                   ]}
                 >
-                  <Text style={styles.dayTitle}>{d.date}</Text>
-                  <Text style={styles.dayAmount}>
-                    Total Paid: {d.total_paid}
-                  </Text>
+                  <Text style={styles.dayTitle}>{job.employeeName}</Text>
+
+                  <Text style={styles.dayAmount}>Paid: {job.pay_amount}</Text>
                 </View>
+
                 <View style={styles.shiftsHeader}>
                   <View style={{ flex: 2 }}>
                     <Text style={styles.th}>Shift</Text>
                   </View>
                   <View style={{ flex: 1, textAlign: "right" }}>
-                    <Text style={styles.th}>Amount Paid</Text>
+                    <Text style={styles.th}>Photos</Text>
                   </View>
                 </View>
-                {d.shifts.map((s, idx) => (
-                  <View
-                    key={s.shift_id}
-                    style={[
-                      styles.tableRow,
-                      idx % 2 === 0 ? styles.tableRowAlt : null,
-                    ]}
-                  >
-                    <View style={styles.colLeft}>
-                      <Text style={styles.td}>#{s.shift_id}</Text>
-                    </View>
-                    <View style={styles.colRight}>
-                      <Text style={styles.td}>{s.amount_paid}</Text>
-                    </View>
+
+                <View
+                  style={[
+                    styles.tableRow,
+                    i % 2 === 0 ? styles.tableRowAlt : null,
+                  ]}
+                >
+                  <View style={styles.colLeft}>
+                    <Text style={styles.td}>{job.shift_name}</Text>
                   </View>
-                ))}
+                  <View style={styles.colRight}>
+                    <Text style={styles.td}>{job.number_of_photos}</Text>
+                  </View>
+                </View>
               </View>
             ))}
           </View>

@@ -11,10 +11,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/date-picker";
 import { useTranslations } from "next-intl";
-import { GetExportStats, type ExportStatsResponse } from "@/lib/api/client";
-import { useQuery } from "@tanstack/react-query";
 import { PDFViewer, PDFDownloadLink } from "@react-pdf/renderer";
 import ExportDocument from "./export-document";
+import useSyncFilter from "../_hooks/use-sync-filter";
 
 export default function ExportDialog() {
   const t = useTranslations("payments");
@@ -23,14 +22,14 @@ export default function ExportDialog() {
   const [toDate, setToDate] = useState<string>("");
   const [submitted, setSubmitted] = useState(false);
 
-  const { data, isFetching, refetch, error } = useQuery<ExportStatsResponse>({
-    queryKey: ["export-stats", { fromDate, toDate }],
-    queryFn: () =>
-      GetExportStats({
-        from_date: fromDate || undefined,
-        to_date: toDate || undefined,
-      }),
-    enabled: false,
+  const {
+    syncFilterData,
+    refetch,
+    isLoading: isFetching,
+    error,
+  } = useSyncFilter({
+    from: fromDate || undefined,
+    to: toDate || undefined,
   });
 
   const periodLabel = useMemo(() => {
@@ -112,17 +111,23 @@ export default function ExportDialog() {
           </div>
         )}
 
-        {data && (
+        {syncFilterData && (
           <div className="mt-6 space-y-4">
             <div className="h-[70vh] border">
               <PDFViewer width="100%" height="100%" showToolbar>
-                <ExportDocument data={data} periodLabel={periodLabel} />
+                <ExportDocument
+                  data={syncFilterData}
+                  periodLabel={periodLabel}
+                />
               </PDFViewer>
             </div>
             <div className="flex justify-center">
               <PDFDownloadLink
                 document={
-                  <ExportDocument data={data} periodLabel={periodLabel} />
+                  <ExportDocument
+                    data={syncFilterData}
+                    periodLabel={periodLabel}
+                  />
                 }
                 fileName={`export_${fromDate || "start"}_${
                   toDate || "present"
